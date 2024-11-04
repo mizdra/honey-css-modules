@@ -1,10 +1,10 @@
 {
-  "name": "app_name",
-  "description": "app_description",
+  "name": "honey-css-modules",
+  "description": "The tool to make CSS Modules into first-class modules.",
   "version": "0.0.0",
   "type": "module",
   "sideEffects": false,
-  "repository": "https://github.com/mizdra/app_name.git",
+  "repository": "https://github.com/mizdra/honey-css-modules.git",
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,
