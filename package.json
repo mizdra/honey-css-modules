@@ -6,7 +6,7 @@
   "sideEffects": false,
   "repository": "https://github.com/mizdra/app_name.git",
   "author": "mizdra <pp.mizdra@gmail.com>",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "private": true,
   "exports": {
     ".": {
