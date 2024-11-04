@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            node_modules/.cache/prettier/.prettier-cache
+            .tsconfig.tsbuildinfo
+            .eslintcache
+          key: toolcache-lint-${{ runner.os }}-${{ github.sha }}
+          restore-keys: toolcache-lint-${{ runner.os }}
+      - run: npm install
+      - run: npm run lint
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - run: npm install
+      - run: npm run build
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20, 22]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+      - uses: actions/cache@v4
+        with:
+          path: node_modules/.vite/vitest
+          key: toolcache-test-${{ runner.os }}-node${{ matrix.node }}-${{ github.sha }}
+          restore-keys: toolcache-test-${{ runner.os }}-node${{ matrix.node }}
+      - run: npm install
+      - run: npm run test

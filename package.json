@@ -1,0 +1,59 @@
+{
+  "name": "app_name",
+  "description": "app_description",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "repository": "https://github.com/mizdra/app_name.git",
+  "author": "mizdra <pp.mizdra@gmail.com>",
+  "license": "CC0-1.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "default": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "npm run build && node bin/example-command.js",
+    "lint": "run-s -c lint:*",
+    "lint:tsc": "tsc",
+    "lint:eslint": "eslint --cache --cache-strategy content .",
+    "lint:prettier": "prettier --cache --check .",
+    "test": "vitest"
+  },
+  "prettier": "@mizdra/prettier-config-mizdra",
+  "devDependencies": {
+    "@mizdra/eslint-config-mizdra": "^4.0.1",
+    "@mizdra/prettier-config-mizdra": "^1.0.0",
+    "@types/eslint": "^8.37.0",
+    "@types/node": "^18.15.11",
+    "eslint": "^8.38.0",
+    "npm-run-all2": "^6.2.2",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "example-command": "bin/example-command.js"
+  },
+  "keywords": [],
+  "files": [
+    "bin",
+    "src",
+    "!src/**/*.test.ts",
+    "!src/**/__snapshots__",
+    "!src/test",
+    "dist"
+  ]
+}
