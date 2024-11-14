@@ -8,5 +8,7 @@
   "typescript.preferences.importModuleSpecifier": "relative",
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifierEnding": "js",
-  "javascript.preferences.importModuleSpecifierEnding": "js"
+  "javascript.preferences.importModuleSpecifierEnding": "js",
+  "typescript.preferences.autoImportSpecifierExcludeRegexes": ["^node:test"],
+  "javascript.preferences.autoImportSpecifierExcludeRegexes": ["^node:test"]
 }
