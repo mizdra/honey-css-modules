@@ -9,7 +9,14 @@ export default [
   {
     files: ['**/*.{js,jsx,mjs,cjs}', '**/*.{ts,tsx,cts,mts}'],
     rules: {
-      // Write your favorite rules
+      'simple-import-sort/imports': [
+        'error',
+        {
+          // Remove blank lines between import groups
+          // ref: https://github.com/lydell/eslint-plugin-simple-import-sort?tab=readme-ov-file#how-do-i-use-this-with-dprint
+          groups: [['^\\u0000', '^node:', '^@?\\w', '^', '^\\.']],
+        },
+      ],
     },
   },
   mizdra.prettierConfig,
