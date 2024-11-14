@@ -1,8 +1,6 @@
-// @ts-check
-import mizdra from '@mizdra/eslint-config-mizdra/flat';
+import mizdra from '@mizdra/eslint-config-mizdra';
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
-// eslint-disable-next-line import-x/no-default-export
+/** @type {import('eslint').Linter.Config[]} */
 export default [
   { ignores: ['**/dist'] },
   ...mizdra.baseConfigs,
