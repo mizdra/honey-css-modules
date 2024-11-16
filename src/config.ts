@@ -18,6 +18,7 @@ export function defineConfig(config: HCMConfig): HCMConfig {
   return config;
 }
 
+// TODO: Support `ts`, `mts` and `cts` extensions
 const ALLOWED_CONFIG_FILE_EXTENSIONS = ['js', 'mjs', 'cjs'];
 
 export async function readConfigFile(cwd: string): Promise<HCMConfig> {
@@ -33,7 +34,7 @@ export async function readConfigFile(cwd: string): Promise<HCMConfig> {
       // eslint-disable-next-line no-await-in-loop
       return (await import(path)).default;
     } catch (error) {
-      throw new ConfigImportError(path, { cause: error });
+      throw new ConfigImportError(path, error);
     }
   }
   throw new ConfigNotFoundError();

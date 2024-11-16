@@ -7,8 +7,8 @@ export class ConfigNotFoundError extends Error {
 
 export class ConfigImportError extends Error {
   code = 'CONFIG_IMPORT_ERROR';
-  constructor(path: string, options: ErrorOptions) {
-    super(`Failed to import config file (${path}).`, options);
+  constructor(path: string, cause: unknown) {
+    super(`Failed to import config file (${path}).`, { cause });
   }
 }
 
