@@ -12,6 +12,10 @@ export class ConfigImportError extends Error {
   }
 }
 
+export class ConfigValidationError extends Error {
+  code = 'CONFIG_VALIDATION_ERROR';
+}
+
 export class CSSModuleParseError extends Error {
   code = 'CSS_MODULE_PARSE_ERROR';
   constructor(filename: string, cause: unknown) {
