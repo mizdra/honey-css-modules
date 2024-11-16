@@ -11,3 +11,10 @@ export class ConfigImportError extends Error {
     super(`Failed to import config file (${path}).`, options);
   }
 }
+
+export class CSSModuleParseError extends Error {
+  code = 'CSS_MODULE_PARSE_ERROR';
+  constructor(filename: string, cause: unknown) {
+    super(`Failed to parse CSS Module file (${filename}).`, { cause });
+  }
+}

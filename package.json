@@ -57,5 +57,8 @@
     "!src/**/__snapshots__",
     "!src/test",
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "lightningcss": "^1.28.1"
+  }
 }

@@ -9,6 +9,7 @@ export interface HCMConfig {
   resolver?: Resolver | undefined;
   alias?: Record<string, string> | undefined;
   arbitraryExtensions?: boolean | undefined;
+  dashedIdents?: boolean | undefined;
   logLevel?: 'debug' | 'info' | 'silent' | undefined;
   cwd?: string | undefined;
 }
