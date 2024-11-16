@@ -21,6 +21,10 @@ export function defineConfig(config: HCMConfig): HCMConfig {
 // TODO: Support `ts`, `mts` and `cts` extensions
 const ALLOWED_CONFIG_FILE_EXTENSIONS = ['js', 'mjs', 'cjs'];
 
+/**
+ * @throws {ConfigNotFoundError}
+ * @throws {ConfigImportError}
+ */
 export async function readConfigFile(cwd: string): Promise<HCMConfig> {
   for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
     const path = join(cwd, `hcm.config.${ext}`);

@@ -34,6 +34,9 @@ export interface ParseCSSModuleCodeOptions {
   dashedIdents: boolean;
 }
 
+/**
+ * @throws {CSSModuleParseError}
+ */
 export function parseCSSModuleCode(code: string, { filename, dashedIdents }: ParseCSSModuleCodeOptions): CSSModuleFile {
   let result: TransformResult;
   try {
