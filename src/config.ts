@@ -83,6 +83,7 @@ export async function readConfigFile(cwd: string): Promise<HCMConfig> {
     }
     let module: object;
     try {
+      // TODO: Fix problem with a old config file being read from import cache.
       // eslint-disable-next-line no-await-in-loop
       module = await import(path);
     } catch (error) {
