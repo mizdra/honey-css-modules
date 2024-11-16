@@ -43,7 +43,7 @@ export function parseCSSModuleCode(code: string, { filename, dashedIdents }: Par
     result = transform({
       filename,
       cssModules: { dashedIdents },
-      code: Buffer.from(code),
+      code: new TextEncoder().encode(code),
       analyzeDependencies: true,
     });
   } catch (e) {
