@@ -33,9 +33,10 @@ describe('parseCSSModuleCode', () => {
           .a { color: red }
           .b, .c { color: red }
           .d {
-            color: red;
-            .e { color: red }
-            & .f { color: red }
+            grid-template-areas: 'e f';
+            grid-column-start: g;
+            .h { color: red }
+            & .i { color: red }
           }
         `,
         options,
@@ -51,16 +52,28 @@ describe('parseCSSModuleCode', () => {
             "d",
             "e",
             "f",
+            "g",
+            "h",
+            "i",
           ],
         }
       `);
     });
     test('collects local tokens as CSS variables if dashedIdents is true', () => {
-      const code = ':root { --a: red; }';
-      const parsed1 = parseCSSModuleCode(code, { ...options, dashedIdents: false });
+      const code1 = ':root { --a: red; }';
+      const parsed1 = parseCSSModuleCode(code1, { ...options, dashedIdents: false });
       expect(parsed1.localTokens).toEqual([]);
-      const parsed2 = parseCSSModuleCode(code, { ...options, dashedIdents: true });
-      expect(parsed2.localTokens).toEqual(['--a']);
+
+      const code2 = dedent`
+        :root { --a: red; }
+        .a {
+          color: var(--b);
+          background-color: var(--c from './a.module.css');
+          background-color: var(--d from global);
+        }
+      `;
+      const parsed2 = parseCSSModuleCode(code2, { ...options, dashedIdents: true });
+      expect(parsed2.localTokens).toEqual(['--a', '--b', 'a']);
     });
   });
   describe('localTokens', () => {
