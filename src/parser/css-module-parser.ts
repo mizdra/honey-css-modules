@@ -1,10 +1,10 @@
 import type { AtRule, Node, Root, Rule } from 'postcss';
 import { parse } from 'postcss';
-import selectorParser from 'postcss-selector-parser';
 import { CSSModuleParseError } from '../error.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
 import { getTokenLocationOfAtValue, getTokenLocationOfClassSelector, type Location } from './location.js';
+import { parseRule } from './rule-parser.js';
 
 function isAtRuleNode(node: Node): node is AtRule {
   return node.type === 'atrule';
@@ -50,17 +50,10 @@ function collectTokens(ast: Root) {
         }
       }
     } else if (isRuleNode(node)) {
-      // In `rule.selector` comes the following string:
-      // 1. ".foo"
-      // 2. ".foo:hover"
-      // 3. ".foo, .bar"
-      selectorParser((selectors) => {
-        selectors.walk((selector) => {
-          if (selector.type === 'class') {
-            localTokens.push({ name: selector.value, loc: getTokenLocationOfClassSelector(node, selector) });
-          }
-        });
-      }).processSync(node);
+      const localClassNames = parseRule(node);
+      for (const localClassName of localClassNames) {
+        localTokens.push({ name: localClassName.value, loc: getTokenLocationOfClassSelector(node, localClassName) });
+      }
     }
   });
   return { localTokens, tokenImporters };

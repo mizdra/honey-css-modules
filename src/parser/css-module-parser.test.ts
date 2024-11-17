@@ -6,7 +6,6 @@ const options: ParseCSSModuleCodeOptions = { filename: '/test.module.css', dashe
 
 describe('parseCSSModuleCode', () => {
   test('collects local tokens', () => {
-    // TODO: Should we take care of `:global`?
     const parsed = parseCSSModuleCode(
       dedent`
         .basic {}
@@ -23,12 +22,7 @@ describe('parseCSSModuleCode', () => {
           }
         }
         .selector_list_1, .selector_list_2 {}
-        :local .local_class_name_1 {}
-        :local {
-          .local_class_name_2 {}
-          .local_class_name_3 {}
-        }
-        :local(.local_class_name_4) {}
+        :local(.local_1) {}
         @value value: #BF4040;
       `,
       options,
@@ -209,7 +203,7 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 26,
+                "column": 15,
                 "line": 15,
               },
               "start": {
@@ -217,56 +211,17 @@ describe('parseCSSModuleCode', () => {
                 "line": 15,
               },
             },
-            "name": "local_class_name_1",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 21,
-                "line": 17,
-              },
-              "start": {
-                "column": 4,
-                "line": 17,
-              },
-            },
-            "name": "local_class_name_2",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 21,
-                "line": 18,
-              },
-              "start": {
-                "column": 4,
-                "line": 18,
-              },
-            },
-            "name": "local_class_name_3",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 26,
-                "line": 20,
-              },
-              "start": {
-                "column": 9,
-                "line": 20,
-              },
-            },
-            "name": "local_class_name_4",
+            "name": "local_1",
           },
           {
             "loc": {
               "end": {
                 "column": 12,
-                "line": 21,
+                "line": 16,
               },
               "start": {
                 "column": 8,
-                "line": 21,
+                "line": 16,
               },
             },
             "name": "value",

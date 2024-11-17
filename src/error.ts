@@ -31,3 +31,7 @@ export class CSSModuleParseError extends Error {
     super(`Failed to parse CSS Module file (${filename}).`, { cause });
   }
 }
+
+export class ScopeError extends Error {
+  code = 'SCOPE_ERROR';
+}

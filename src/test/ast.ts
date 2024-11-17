@@ -23,6 +23,14 @@ export function createAtValues(root: Root): AtRule[] {
   return results;
 }
 
+export function createRules(root: Root): Rule[] {
+  const results: Rule[] = [];
+  root.walkRules((rule) => {
+    results.push(rule);
+  });
+  return results;
+}
+
 export function createClassSelectors(root: Root): { rule: Rule; classSelector: ClassName }[] {
   const results: { rule: Rule; classSelector: ClassName }[] = [];
   root.walkRules((rule) => {
