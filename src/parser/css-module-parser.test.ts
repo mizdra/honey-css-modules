@@ -265,6 +265,8 @@ describe('parseCSSModuleCode', () => {
       }
     `);
   });
+  // TODO: Support local tokens by CSS variables. This is supported by lightningcss.
+  // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L34
   test.fails('collects local tokens as CSS variables if dashedIdents is true', () => {
     const code1 = ':root { --a: red; }';
     const parsed1 = parseCSSModuleCode(code1, { ...options, dashedIdents: false });
@@ -281,4 +283,17 @@ describe('parseCSSModuleCode', () => {
     const parsed2 = parseCSSModuleCode(code2, { ...options, dashedIdents: true });
     expect(parsed2.localTokens).toEqual(['--a', 'a', '--b']);
   });
+  // TODO: Support local tokens by animation names. This is supported by postcss-modules-local-by-default and lightningcss.
+  // https://github.com/css-modules/postcss-modules-local-by-default/blob/39a2f78d9f39f5c0e30dd9b2a25f4a145431cb20/test/index.test.js#L162-L399
+  // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L37
+
+  // TODO: Support local tokens by grid names. This is supported by lightningcss.
+  // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L40
+
+  // TODO: Support local tokens by container names. This is supported by lightningcss.
+  // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L46
+
+  // TODO: Support local tokens by custom identifiers. This is supported by lightningcss.
+  // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L43
+  // https://developer.mozilla.org/ja/docs/Web/CSS/custom-ident
 });
