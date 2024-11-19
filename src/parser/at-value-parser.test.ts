@@ -50,6 +50,8 @@ describe('parseAtValue', () => {
       `),
     );
     expect(() => parseAtValue(atValue1!)).toThrowErrorMatchingInlineSnapshot(`[Error: \`@value\` is invalid!]`);
-    expect(() => parseAtValue(atValue2!)).toThrowErrorMatchingInlineSnapshot(`[Error: \`@value a,,b from "test.css"\` is invalid!]`);
+    expect(() => parseAtValue(atValue2!)).toThrowErrorMatchingInlineSnapshot(
+      `[Error: \`@value a,,b from "test.css"\` is invalid!]`,
+    );
   });
 });
