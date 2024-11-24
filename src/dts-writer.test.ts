@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { getDtsFilePath, writeDtsFile } from './dts-writer.js';
@@ -9,17 +10,17 @@ describe('getDtsFilePath', () => {
   const options = { cwd: '/app', outDir: 'dist', arbitraryExtensions: false };
   test('cwd', () => {
     expect(getDtsFilePath('/app1/src/dir/a.module.css', { ...options, cwd: '/app1' })).toBe(
-      '/app1/dist/src/dir/a.module.css.d.ts',
+      resolve('/app1/dist/src/dir/a.module.css.d.ts'),
     );
   });
   test('outDir', () => {
     expect(getDtsFilePath('/app/src/dir/a.module.css', { ...options, outDir: 'dist/dir' })).toBe(
-      '/app/dist/dir/src/dir/a.module.css.d.ts',
+      resolve('/app/dist/dir/src/dir/a.module.css.d.ts'),
     );
   });
   test('arbitraryExtensions', () => {
     expect(getDtsFilePath('/app/src/dir/a.module.css', { ...options, arbitraryExtensions: true })).toBe(
-      '/app/dist/src/dir/a.module.d.css.ts',
+      resolve('/app/dist/src/dir/a.module.d.css.ts'),
     );
   });
 });
