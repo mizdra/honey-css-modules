@@ -1,7 +1,7 @@
-import { dirname, relative } from 'node:path';
+import { dirname, relative, win32 } from 'node:path';
 
-export function getRelativePath(fromFilePath: string, toFilePath: string): string {
-  const resolved = relative(dirname(fromFilePath), toFilePath);
+export function getPosixRelativePath(fromFilePath: string, toFilePath: string): string {
+  const resolved = relative(dirname(fromFilePath), toFilePath).replaceAll(win32.sep, '/');
   if (resolved.startsWith('..')) {
     return resolved;
   } else {

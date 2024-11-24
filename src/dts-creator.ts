@@ -1,7 +1,7 @@
 import { ResolveError } from './error.js';
 import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
-import { getRelativePath } from './util.js';
+import { getPosixRelativePath } from './util.js';
 
 export interface CreateDtsCodeOptions {
   resolver: Resolver;
@@ -45,7 +45,7 @@ export function createDtsCode(
       } catch (error) {
         throw new ResolveError(tokenImporter.specifier, error);
       }
-      return { ...tokenImporter, specifier: getRelativePath(filename, resolved) };
+      return { ...tokenImporter, specifier: getPosixRelativePath(filename, resolved) };
     })
     .filter((tokenImporter) => !options.isExternalFile(tokenImporter.specifier));
 
