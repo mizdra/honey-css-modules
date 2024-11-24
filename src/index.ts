@@ -1,4 +1,4 @@
-export { run } from './runner.js';
+export { runHCM } from './runner.js';
 export { defineConfig, type HCMConfig, readConfigFile } from './config.js';
 export {
   ConfigNotFoundError,
@@ -8,6 +8,8 @@ export {
   CSSModuleParseError,
   ScopeError,
   ResolveError,
+  WriteDtsFileError,
+  ReadCSSModuleFileError,
 } from './error.js';
 export {
   parseCSSModuleCode,

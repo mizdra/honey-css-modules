@@ -86,3 +86,24 @@ export async function readConfigFile(cwd: string): Promise<HCMConfig> {
   }
   throw new ConfigNotFoundError();
 }
+
+export interface ResolvedHCMConfig {
+  pattern: string;
+  dtsOutDir: string;
+  alias: Record<string, string>;
+  arbitraryExtensions: boolean;
+  dashedIdents: boolean;
+  logLevel: 'debug' | 'info' | 'silent';
+  cwd: string;
+}
+
+export function resolveConfig(config: HCMConfig): ResolvedHCMConfig {
+  return {
+    ...config,
+    alias: config.alias ?? {},
+    arbitraryExtensions: config.arbitraryExtensions ?? false,
+    dashedIdents: config.dashedIdents ?? false,
+    logLevel: config.logLevel ?? 'info',
+    cwd: config.cwd ?? process.cwd(),
+  };
+}
