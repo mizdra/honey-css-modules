@@ -44,3 +44,10 @@ export class ResolveError extends Error {
     super(`Failed to resolve specifier (${specifier}).`, { cause });
   }
 }
+
+export class WriteDtsFileError extends Error {
+  code = 'WRITE_DTS_FILE_ERROR';
+  constructor(filename: string, cause: unknown) {
+    super(`Failed to write .d.ts file (${filename}).`, { cause });
+  }
+}
