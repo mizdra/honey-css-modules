@@ -7,6 +7,8 @@ export {
   ConfigValidationError,
   AtValueInvalidError,
   CSSModuleParseError,
+  ScopeError,
+  ResolveError,
 } from './error.js';
 export {
   parseCSSModuleCode,
@@ -18,3 +20,4 @@ export {
   type ValueTokenImporter,
 } from './parser/css-module-parser.js';
 export { type Location, type Position } from './parser/location.js';
+export { type CreateDtsCodeOptions, createDtsCode } from './dts-creator.js';
