@@ -1,16 +1,7 @@
-import { dirname, relative } from 'node:path';
 import { ResolveError } from './error.js';
 import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
-
-function getRelativePath(fromFilePath: string, toFilePath: string): string {
-  const resolved = relative(dirname(fromFilePath), toFilePath);
-  if (resolved.startsWith('..')) {
-    return resolved;
-  } else {
-    return `./${resolved}`;
-  }
-}
+import { getRelativePath } from './util.js';
 
 export interface CreateDtsCodeOptions {
   resolver: Resolver;
