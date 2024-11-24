@@ -1,4 +1,3 @@
-import { ResolveError } from './error.js';
 import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 import { getPosixRelativePath } from './util.js';
@@ -37,17 +36,13 @@ export function createDtsCode(
   options: CreateDtsCodeOptions,
 ): string {
   // Resolve and filter external files
-  const tokenImporters = _tokenImporters
-    .map((tokenImporter) => {
-      let resolved: string;
-      try {
-        resolved = options.resolver(tokenImporter.specifier, { request: filename });
-      } catch (error) {
-        throw new ResolveError(tokenImporter.specifier, error);
-      }
-      return { ...tokenImporter, specifier: getPosixRelativePath(filename, resolved) };
-    })
-    .filter((tokenImporter) => !options.isExternalFile(tokenImporter.specifier));
+  const tokenImporters: CSSModuleFile['tokenImporters'] = [];
+  for (const tokenImporter of _tokenImporters) {
+    const resolved = options.resolver(tokenImporter.specifier, { request: filename });
+    if (resolved !== undefined && !options.isExternalFile(resolved)) {
+      tokenImporters.push({ ...tokenImporter, specifier: resolved });
+    }
+  }
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
@@ -59,10 +54,11 @@ export function createDtsCode(
     result += `  & { ${token.name}: string }\n`;
   }
   for (const tokenImporter of tokenImporters) {
+    const specifier = getPosixRelativePath(filename, tokenImporter.specifier);
     if (tokenImporter.type === 'import') {
-      result += `  & (typeof import('${tokenImporter.specifier}'))['default']\n`;
+      result += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
-      result += `  & { ${tokenImporter.localName}: (typeof import('${tokenImporter.specifier}'))['default']['${tokenImporter.importedName}'] }\n`;
+      result += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.importedName}'] }\n`;
     }
   }
   result += '>;\nexport default styles;\n';

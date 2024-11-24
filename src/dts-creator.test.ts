@@ -133,4 +133,21 @@ describe('createDtsCode', () => {
       "
     `);
   });
+  test('does not create types for unresolved files', () => {
+    const resolver = (_specifier: string) => undefined;
+    expect(
+      createDtsCode(
+        {
+          filename: '/src/test.module.css',
+          localTokens: [],
+          tokenImporters: [{ type: 'import', specifier: '@/a.module.css' }],
+        },
+        { ...options, resolver },
+      ),
+    ).toMatchInlineSnapshot(`
+      "declare const styles: Readonly<{}>;
+      export default styles;
+      "
+    `);
+  });
 });

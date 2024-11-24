@@ -8,3 +8,7 @@ export function getPosixRelativePath(fromFilePath: string, toFilePath: string): 
     return `./${resolved}`;
   }
 }
+
+export function isPosixRelativePath(path: string): boolean {
+  return path.startsWith(`./`) || path.startsWith(`../`);
+}
