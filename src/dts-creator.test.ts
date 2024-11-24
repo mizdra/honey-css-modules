@@ -8,9 +8,9 @@ const options: CreateDtsCodeOptions = {
 };
 
 describe('createDtsCode', () => {
-  test('creates d.ts file if css module file has no tokens', async () => {
+  test('creates d.ts file if css module file has no tokens', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [],
@@ -24,9 +24,9 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('creates d.ts file with local tokens', async () => {
+  test('creates d.ts file with local tokens', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [
@@ -46,9 +46,9 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('creates d.ts file with token importers', async () => {
+  test('creates d.ts file with token importers', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [],
@@ -70,9 +70,9 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('creates types in the order of local tokens and token importers', async () => {
+  test('creates types in the order of local tokens and token importers', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [{ name: 'local1', loc: undefined }],
@@ -89,10 +89,10 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('resolves specifiers', async () => {
+  test('resolves specifiers', () => {
     const resolver = (specifier: string) => specifier.replace('@', '/src');
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/src/test.module.css',
           localTokens: [],
@@ -114,9 +114,9 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('does not create types for external files', async () => {
+  test('does not create types for external files', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [],

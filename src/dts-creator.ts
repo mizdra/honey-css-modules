@@ -41,24 +41,22 @@ export interface CreateDtsCodeOptions {
  *
  * @throws {ResolveError} When the resolver throws an error.
  */
-export async function createDtsCode(
+export function createDtsCode(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsCodeOptions,
-): Promise<string> {
+): string {
   // Resolve and filter external files
-  const tokenImporters = await Promise.all(
-    _tokenImporters.map(async (tokenImporter) => {
+  const tokenImporters = _tokenImporters
+    .map((tokenImporter) => {
       let resolved: string;
       try {
-        resolved = await options.resolver(tokenImporter.specifier, { request: filename });
+        resolved = options.resolver(tokenImporter.specifier, { request: filename });
       } catch (error) {
         throw new ResolveError(tokenImporter.specifier, error);
       }
       return { ...tokenImporter, specifier: getRelativePath(filename, resolved) };
-    }),
-  ).then((tokenImporters) =>
-    tokenImporters.filter((tokenImporter) => !options.isExternalFile(tokenImporter.specifier)),
-  );
+    })
+    .filter((tokenImporter) => !options.isExternalFile(tokenImporter.specifier));
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
