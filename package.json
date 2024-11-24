@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "dev": "npm run build && node bin/example-command.js",
+    "dev": "npm run build && node bin/hcm.js",
     "lint": "run-s -c lint:*",
     "lint:tsc": "tsc",
     "lint:eslint": "eslint --cache --cache-strategy content .",
@@ -47,9 +47,12 @@
     "registry": "https://registry.npmjs.org/"
   },
   "bin": {
-    "example-command": "bin/example-command.js"
+    "hcm": "bin/hcm.js"
   },
-  "keywords": [],
+  "keywords": [
+    "css-modules",
+    "typescript"
+  ],
   "files": [
     "bin",
     "src",
