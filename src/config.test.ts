@@ -79,10 +79,6 @@ test('assertConfig', () => {
     `[Error: \`dtsOutDir\` must be a string.]`,
   );
   expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str' })).not.toThrow();
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', resolver: {} })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`resolver\` must be a function.]`,
-  );
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', resolver: () => {} })).not.toThrow();
   expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', alias: 1 })).toThrowErrorMatchingInlineSnapshot(
     `[Error: \`alias\` must be an object.]`,
   );
