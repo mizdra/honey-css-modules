@@ -1,7 +1,5 @@
-import { dirname, relative } from 'node:path';
-import { ResolveError } from './error.js';
+import { dirname, relative, resolve } from 'node:path';
 import type { CSSModuleFile } from './parser/css-module-parser.js';
-import type { Resolver } from './resolver.js';
 
 function getRelativePath(fromFilePath: string, toFilePath: string): string {
   const resolved = relative(dirname(fromFilePath), toFilePath);
@@ -13,7 +11,6 @@ function getRelativePath(fromFilePath: string, toFilePath: string): string {
 }
 
 export interface CreateDtsCodeOptions {
-  resolver: Resolver;
   isExternalFile: (filename: string) => boolean;
 }
 
@@ -41,24 +38,18 @@ export interface CreateDtsCodeOptions {
  *
  * @throws {ResolveError} When the resolver throws an error.
  */
-export async function createDtsCode(
+export function createDtsCode(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsCodeOptions,
-): Promise<string> {
+): string {
   // Resolve and filter external files
-  const tokenImporters = await Promise.all(
-    _tokenImporters.map(async (tokenImporter) => {
-      let resolved: string;
-      try {
-        resolved = await options.resolver(tokenImporter.specifier, { request: filename });
-      } catch (error) {
-        throw new ResolveError(tokenImporter.specifier, error);
-      }
-      return { ...tokenImporter, specifier: getRelativePath(filename, resolved) };
-    }),
-  ).then((tokenImporters) =>
-    tokenImporters.filter((tokenImporter) => !options.isExternalFile(tokenImporter.specifier)),
-  );
+  const tokenImporters = _tokenImporters.filter((tokenImporter) => {
+    // Exclude non-relative paths such as `@import ‘bootstrap’`.
+    if (!tokenImporter.specifier.startsWith('.')) return false;
+    const absolutePath = resolve(dirname(filename), tokenImporter.specifier);
+    // Exclude external files (files do not match `pattern` in the first argument of `hcm` command)
+    return !options.isExternalFile(absolutePath);
+  });
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {

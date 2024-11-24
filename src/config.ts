@@ -1,7 +1,6 @@
 import { access } from 'node:fs/promises';
 import { join } from 'node:path';
 import { ConfigImportError, ConfigNotFoundError, ConfigValidationError } from './error.js';
-import type { Resolver } from './resolver.js';
 
 // TODO: Support `ts`, `mts` and `cts` extensions
 const ALLOWED_CONFIG_FILE_EXTENSIONS = ['js', 'mjs', 'cjs'];
@@ -9,7 +8,6 @@ const ALLOWED_CONFIG_FILE_EXTENSIONS = ['js', 'mjs', 'cjs'];
 export interface HCMConfig {
   pattern: string;
   dtsOutDir: string;
-  resolver?: Resolver | undefined;
   alias?: Record<string, string> | undefined;
   arbitraryExtensions?: boolean | undefined;
   dashedIdents?: boolean | undefined;
@@ -19,12 +17,6 @@ export interface HCMConfig {
 
 export function defineConfig(config: HCMConfig): HCMConfig {
   return config;
-}
-
-function assertResolver(resolver: unknown): asserts resolver is Resolver {
-  if (typeof resolver !== 'function') {
-    throw new ConfigValidationError('`resolver` must be a function.');
-  }
 }
 
 function assertAlias(alias: unknown): asserts alias is Record<string, string> {
@@ -53,7 +45,6 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
   if (typeof config.pattern !== 'string') throw new ConfigValidationError('`pattern` must be a string.');
   if (!('dtsOutDir' in config)) throw new ConfigValidationError('`dtsOutDir` is required.');
   if (typeof config.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
-  if ('resolver' in config) assertResolver(config.resolver);
   if ('alias' in config) assertAlias(config.alias);
   if ('arbitraryExtensions' in config && typeof config.arbitraryExtensions !== 'boolean') {
     throw new ConfigValidationError('`arbitraryExtensions` must be a boolean.');

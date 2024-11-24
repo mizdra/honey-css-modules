@@ -1,16 +1,14 @@
-import { dirname, resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { createDtsCode, type CreateDtsCodeOptions } from './dts-creator.js';
 
 const options: CreateDtsCodeOptions = {
-  resolver: (specifier, { request }) => resolve(dirname(request), specifier),
   isExternalFile: () => false,
 };
 
 describe('createDtsCode', () => {
-  test('creates d.ts file if css module file has no tokens', async () => {
+  test('creates d.ts file if css module file has no tokens', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [],
@@ -24,9 +22,9 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('creates d.ts file with local tokens', async () => {
+  test('creates d.ts file with local tokens', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [
@@ -46,16 +44,17 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('creates d.ts file with token importers', async () => {
+  test('creates d.ts file with token importers', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [],
           tokenImporters: [
             { type: 'import', specifier: './a.module.css' },
-            { type: 'value', specifier: './b.module.css', importedName: 'imported1', localName: 'imported1' },
-            { type: 'value', specifier: './c.module.css', importedName: 'imported2', localName: 'aliasedImported2' },
+            { type: 'import', specifier: './dir/b.module.css' },
+            { type: 'value', specifier: './c.module.css', importedName: 'imported1', localName: 'imported1' },
+            { type: 'value', specifier: './d.module.css', importedName: 'imported2', localName: 'aliasedImported2' },
           ],
         },
         options,
@@ -63,16 +62,17 @@ describe('createDtsCode', () => {
     ).toMatchInlineSnapshot(`
       "declare const styles: Readonly<
         & (typeof import('./a.module.css'))['default']
-        & { imported1: (typeof import('./b.module.css'))['default']['imported1'] }
-        & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
+        & (typeof import('./dir/b.module.css'))['default']
+        & { imported1: (typeof import('./c.module.css'))['default']['imported1'] }
+        & { aliasedImported2: (typeof import('./d.module.css'))['default']['imported2'] }
       >;
       export default styles;
       "
     `);
   });
-  test('creates types in the order of local tokens and token importers', async () => {
+  test('creates types in the order of local tokens and token importers', () => {
     expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [{ name: 'local1', loc: undefined }],
@@ -89,34 +89,9 @@ describe('createDtsCode', () => {
       "
     `);
   });
-  test('resolves specifiers', async () => {
-    const resolver = (specifier: string) => specifier.replace('@', '/src');
+  test('does not create types for external files', () => {
     expect(
-      await createDtsCode(
-        {
-          filename: '/src/test.module.css',
-          localTokens: [],
-          tokenImporters: [
-            { type: 'import', specifier: '@/a.module.css' },
-            { type: 'value', specifier: '@/b.module.css', importedName: 'imported1', localName: 'imported1' },
-            { type: 'value', specifier: '@/c.module.css', importedName: 'imported2', localName: 'aliasedImported2' },
-          ],
-        },
-        { ...options, resolver },
-      ),
-    ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
-        & (typeof import('./a.module.css'))['default']
-        & { imported1: (typeof import('./b.module.css'))['default']['imported1'] }
-        & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
-      >;
-      export default styles;
-      "
-    `);
-  });
-  test('does not create types for external files', async () => {
-    expect(
-      await createDtsCode(
+      createDtsCode(
         {
           filename: '/test.module.css',
           localTokens: [],
@@ -125,7 +100,7 @@ describe('createDtsCode', () => {
             { type: 'value', specifier: 'external.css', importedName: 'imported', localName: 'imported' },
           ],
         },
-        { ...options, isExternalFile: () => true },
+        { ...options, isExternalFile: (specifier) => specifier === 'external.css' },
       ),
     ).toMatchInlineSnapshot(`
       "declare const styles: Readonly<{}>;
