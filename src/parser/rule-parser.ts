@@ -1,6 +1,5 @@
 import type { Rule } from 'postcss';
 import selectorParser from 'postcss-selector-parser';
-import { isClassName, isContainer, isPseudo } from 'postcss-selector-parser';
 import { ScopeError } from '../error.js';
 
 /**
@@ -18,7 +17,7 @@ function collectLocalClassNames(root: selectorParser.Root): selectorParser.Class
     node: selectorParser.Node,
     wrappedBy: ':local(...)' | ':global(...)' | undefined,
   ): selectorParser.ClassName[] {
-    if (isClassName(node)) {
+    if (selectorParser.isClassName(node)) {
       switch (wrappedBy) {
         // If the class name is wrapped by `:local(...)` or `:global(...)`,
         // the scope is determined by the wrapper.
@@ -32,7 +31,7 @@ function collectLocalClassNames(root: selectorParser.Root): selectorParser.Class
           // Mode is customizable in css-loader, but we don't support it for simplicity. We fix the mode to 'local'.
           return [node];
       }
-    } else if (isPseudo(node) && (node.value === ':local' || node.value === ':global')) {
+    } else if (selectorParser.isPseudo(node) && (node.value === ':local' || node.value === ':global')) {
       if (node.nodes.length === 0) {
         // `node` is `:local` or `:global` (without any arguments)
         // We don't support `:local` and `:global` (without any arguments) because they are complex.
@@ -48,7 +47,7 @@ function collectLocalClassNames(root: selectorParser.Root): selectorParser.Class
           visitNode(child, node.value === ':local' ? ':local(...)' : ':global(...)'),
         );
       }
-    } else if (isContainer(node)) {
+    } else if (selectorParser.isContainer(node)) {
       return node.nodes.flatMap((child) => visitNode(child, wrappedBy));
     }
     return [];
