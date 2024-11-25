@@ -76,8 +76,8 @@ export async function readConfigFile(cwd: string): Promise<HCMConfig> {
     let module: object;
     try {
       // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
-      // However, `import(...)` does not accept a path like `C:/path/to/hcm.config.js`.
-      // Therefore, we use `pathToFileURL` to convert it into a URL with the `file://` scheme before importing.
+      // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
+      // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
       // TODO: Fix problem with a old config file being read from import cache.
       // eslint-disable-next-line no-await-in-loop
       module = await import(pathToFileURL(path).href);
