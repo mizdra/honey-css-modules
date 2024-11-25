@@ -9,6 +9,7 @@ import { ScopeError } from '../error.js';
  * @see https://github.com/css-modules/postcss-modules-local-by-default/blob/38119276608ef14821797cfc0242b3c7dead69af/src/index.js
  * @see https://github.com/css-modules/postcss-modules-local-by-default/blob/38119276608ef14821797cfc0242b3c7dead69af/test/index.test.js
  * @example `.local1 :global(.global1) .local2 :local(.local3)` => `[".local1", ".local2", ".local3"]`
+ * @throws {ScopeError}
  */
 function collectLocalClassNames(root: selectorParser.Root): selectorParser.ClassName[] {
   return visitNode(root, undefined);
@@ -54,6 +55,10 @@ function collectLocalClassNames(root: selectorParser.Root): selectorParser.Class
   }
 }
 
+/**
+ * Parse a rule and collect local class names.
+ * @throws {ScopeError}
+ */
 export function parseRule(rule: Rule): selectorParser.ClassName[] {
   const root = selectorParser().astSync(rule);
   return collectLocalClassNames(root);

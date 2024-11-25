@@ -25,6 +25,7 @@ function isRuleNode(node: Node): node is Rule {
 /**
  * Collect tokens from the AST.
  * @throws {AtValueInvalidError}
+ * @throws {ScopeError}
  */
 function collectTokens(ast: Root) {
   const localTokens: Token[] = [];
@@ -134,6 +135,7 @@ export interface ParseCSSModuleCodeOptions {
 /**
  * @throws {CSSModuleParseError}
  * @throws {AtValueInvalidError}
+ * @throws {ScopeError}
  */
 export function parseCSSModuleCode(code: string, { filename }: ParseCSSModuleCodeOptions): CSSModuleFile {
   let ast: Root;

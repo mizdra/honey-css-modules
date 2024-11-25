@@ -11,6 +11,11 @@ import { createResolver, type Resolver } from './resolver.js';
 
 /**
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
+ * @throws {CSSModuleParseError}
+ * @throws {AtValueInvalidError}
+ * @throws {ScopeError}
+ * @throws {ResolveError}
+ * @throws {WriteDtsFileError}
  */
 async function processFile(
   filename: string,
@@ -37,6 +42,11 @@ async function processFile(
  * Run honey-css-modules .d.ts generation.
  * @param config Configuration object.
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
+ * @throws {CSSModuleParseError}
+ * @throws {AtValueInvalidError}
+ * @throws {ScopeError}
+ * @throws {ResolveError}
+ * @throws {WriteDtsFileError}
  */
 export async function runHCM(config: HCMConfig): Promise<void> {
   const resolvedConfig = resolveConfig(config);
