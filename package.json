@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/honey-css-modules"
+    "packages/honey-css-modules",
+    "packages/ts-honey-css-modules-plugin"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
