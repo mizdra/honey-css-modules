@@ -1,34 +1,21 @@
 {
-  "name": "honey-css-modules",
-  "description": "The tool to make CSS Modules into first-class modules.",
-  "version": "0.0.0",
+  "name": "honey-css-modules-monorepo",
   "type": "module",
-  "sideEffects": false,
   "repository": "https://github.com/mizdra/honey-css-modules.git",
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,
-  "exports": {
-    ".": {
-      "default": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
-    }
-  },
+  "workspaces": [
+    "packages/honey-css-modules"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "build-watch": "npm run build -- --watch --preserveWatchOutput",
-    "dev": "npm run build && node bin/hcm.js",
+    "build": "npm run build --workspaces --if-present",
     "lint": "run-s -c lint:*",
-    "lint:tsc": "tsc",
+    "lint:tsc": "tsc -b",
     "lint:eslint": "eslint --cache --cache-strategy content .",
     "lint:prettier": "prettier --cache --check .",
-    "test": "vitest --project unit",
-    "e2e": "run-s -c e2e:build e2e:vitest",
-    "e2e:build": "npm run build",
-    "e2e:vitest": "vitest --project e2e",
-    "e2e-watch": "run-p build-watch 'e2e:vitest -- --clearScreen=false'"
+    "test": "npm run test --workspaces --if-present",
+    "e2e": "npm run e2e --workspaces --if-present"
   },
   "prettier": "@mizdra/prettier-config-mizdra",
   "devDependencies": {
@@ -46,29 +33,5 @@
   },
   "engines": {
     "node": ">=22.0.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "bin": {
-    "hcm": "bin/hcm.js"
-  },
-  "keywords": [
-    "css-modules",
-    "typescript"
-  ],
-  "files": [
-    "bin",
-    "src",
-    "!src/**/*.test.ts",
-    "!src/**/__snapshots__",
-    "!src/test",
-    "dist"
-  ],
-  "dependencies": {
-    "postcss": "^8.4.49",
-    "postcss-selector-parser": "^7.0.0",
-    "postcss-value-parser": "^4.2.0"
   }
 }
