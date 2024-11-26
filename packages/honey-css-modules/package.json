@@ -1,10 +1,14 @@
 {
   "name": "honey-css-modules",
-  "description": "The tool to make CSS Modules into first-class modules.",
+  "description": "Generate .d.ts files from .module.css",
   "version": "0.0.0",
   "type": "module",
   "sideEffects": false,
-  "repository": "https://github.com/mizdra/honey-css-modules.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mizdra/honey-css-modules.git",
+    "directory": "packages/honey-css-modules"
+  },
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,

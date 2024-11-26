@@ -3,6 +3,9 @@
   "references": [
     {
       "path": "packages/honey-css-modules"
+    },
+    {
+      "path": "packages/ts-honey-css-modules-plugin"
     }
   ]
 }
