@@ -35,6 +35,9 @@ export default [
           message: 'Use Uint8Array instead.',
         },
       ],
+      // Disable because it does not work in the workspace
+      // ref: https://github.com/eslint-community/eslint-plugin-n/issues/209
+      'n/no-extraneous-import': 'off',
     },
   },
   mizdra.prettierConfig,
