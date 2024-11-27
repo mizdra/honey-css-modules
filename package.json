@@ -7,7 +7,8 @@
   "private": true,
   "workspaces": [
     "packages/honey-css-modules",
-    "packages/ts-honey-css-modules-plugin"
+    "packages/ts-honey-css-modules-plugin",
+    "packages/vscode-honey-css-modules"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
@@ -25,14 +26,12 @@
     "@mizdra/prettier-config-mizdra": "^2.0.0",
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.9.0",
+    "@types/vscode": "^1.95.0",
     "dedent": "^1.5.3",
     "eslint": "^9.14.0",
     "npm-run-all2": "^7.0.1",
     "prettier": "^3.3.3",
     "typescript": "^5.6.3",
     "vitest": "^2.1.5"
-  },
-  "engines": {
-    "node": ">=22.0.0"
   }
 }

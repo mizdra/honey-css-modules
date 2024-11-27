@@ -6,6 +6,9 @@
     },
     {
       "path": "packages/ts-honey-css-modules-plugin"
+    },
+    {
+      "path": "packages/vscode-honey-css-modules"
     }
   ]
 }

@@ -2,12 +2,23 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "dev",
+      "name": "cli: dev",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"]
+      "runtimeArgs": ["-w", "honey-css-modules", "run", "dev"]
+    },
+    {
+      "name": "vscode: dev",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-honey-css-modules"],
+      "outFiles": [
+        "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.js",
+        "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.cjs",
+        "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.mjs"
+      ]
     }
   ]
 }
