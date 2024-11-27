@@ -13,7 +13,10 @@
       "name": "vscode: dev",
       "type": "extensionHost",
       "request": "launch",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-honey-css-modules"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-honey-css-modules",
+        "${workspaceFolder}/example"
+      ],
       "outFiles": [
         "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.js",
         "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.cjs",
