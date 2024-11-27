@@ -2,7 +2,7 @@ import mizdra from '@mizdra/eslint-config-mizdra';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  { ignores: ['**/dist'] },
+  { ignores: ['**/dist', 'example'] },
   ...mizdra.baseConfigs,
   ...mizdra.typescriptConfigs,
   ...mizdra.nodeConfigs,
