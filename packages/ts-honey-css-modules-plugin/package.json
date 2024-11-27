@@ -12,14 +12,7 @@
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,
-  "exports": {
-    ".": {
-      "default": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
-    }
-  },
+  "main": "./dist/index.cjs",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build-watch": "npm run build -- --watch --preserveWatchOutput"

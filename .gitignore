@@ -133,4 +133,4 @@ dist
 .pnp.*
 
 # User
-/dist
+/example/generated
