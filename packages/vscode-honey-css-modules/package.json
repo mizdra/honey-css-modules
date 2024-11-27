@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/mizdra/honey-css-modules.git",
-    "directory": "packages/ts-honey-css-modules-plugin"
+    "directory": "packages/vscode-honey-css-modules"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
   "publisher": "mizdra",
@@ -30,11 +30,21 @@
   ],
   "activationEvents": [],
   "contributes": {
+    "typescriptServerPlugins": [
+      {
+        "name": "ts-honey-css-modules-plugin",
+        "enableForWorkspaceTypeScriptVersions": true,
+        "configNamespace": "typescript"
+      }
+    ],
     "commands": [
       {
         "command": "vscode-honey-css-modules.helloWorld",
         "title": "Hello World"
       }
     ]
+  },
+  "dependencies": {
+    "ts-honey-css-modules-plugin": "../ts-honey-css-modules-plugin"
   }
 }
