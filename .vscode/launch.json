@@ -15,13 +15,15 @@
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-honey-css-modules",
+        "--profile-temp",
         "${workspaceFolder}/example"
       ],
       "outFiles": [
         "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.js",
         "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.cjs",
         "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.mjs"
-      ]
+      ],
+      "preLaunchTask": "npm: build"
     }
   ]
 }
