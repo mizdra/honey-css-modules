@@ -1,5 +1,5 @@
 export { runHCM } from './runner.js';
-export { defineConfig, type HCMConfig, readConfigFile } from './config.js';
+export { defineConfig, type HCMConfig, readConfigFile, resolveConfig, type ResolvedHCMConfig } from './config.js';
 export {
   ConfigNotFoundError,
   ConfigImportError,
@@ -22,3 +22,4 @@ export {
 } from './parser/css-module-parser.js';
 export { type Location, type Position } from './parser/location.js';
 export { type CreateDtsCodeOptions, createDtsCode } from './dts-creator.js';
+export { createResolver, type Resolver } from './resolver.js';
