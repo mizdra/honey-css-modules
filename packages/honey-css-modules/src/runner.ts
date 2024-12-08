@@ -1,7 +1,7 @@
-// eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable glob API
-import { glob, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 // eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable matchesGlob API
 import { join, matchesGlob } from 'node:path';
+import { globIterate } from 'glob';
 import { type HCMConfig, resolveConfig, type ResolvedHCMConfig } from './config.js';
 import { createDtsCode } from './dts-creator.js';
 import { writeDtsFile } from './dts-writer.js';
@@ -59,7 +59,7 @@ export async function runHCM(config: HCMConfig): Promise<void> {
     );
 
   const promises: Promise<void>[] = [];
-  for await (const filename of glob(pattern, { cwd })) {
+  for await (const filename of globIterate(pattern, { cwd })) {
     promises.push(
       processFile(
         join(cwd, filename), // `filename` is 'src/a.module.css', so convert it to '/project/src/a.module.css'

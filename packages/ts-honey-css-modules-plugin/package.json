@@ -36,6 +36,11 @@
     "!src/test",
     "dist"
   ],
+  "dependencies": {
+    "@volar/language-core": "^2.4.10",
+    "@volar/typescript": "^2.4.10",
+    "honey-css-modules": "../honey-css-modules"
+  },
   "peerDependencies": {
     "typescript": ">=5.6.3"
   }

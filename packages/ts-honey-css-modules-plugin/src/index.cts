@@ -1,29 +1,52 @@
-import type * as ts from 'typescript/lib/tsserverlibrary';
+/* eslint-disable @typescript-eslint/no-require-imports */
+import quickstartModule = require('@volar/typescript/lib/quickstart/createAsyncLanguageServicePlugin.js');
+import path = require('path');
+import ts = require('typescript/lib/tsserverlibrary');
 
-const init: ts.server.PluginModuleFactory = (modules) => {
-  const ts = modules.typescript;
-  function create(info: ts.server.PluginCreateInfo) {
-    // Set up decorator object
-    const proxy: ts.LanguageService = Object.create(null);
-
-    for (const k of Object.keys(info.languageService) as (keyof ts.LanguageService)[]) {
-      const x = info.languageService[k]!;
-      // @ts-expect-error - JS runtime trickery which is tricky to type tersely
-      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      proxy[k] = (...args: {}[]) => x.apply(info.languageService, args);
-    }
-    proxy.getCompletionsAtPosition = (fileName, position, options) => {
-      const prior = info.languageService.getCompletionsAtPosition(fileName, position, options)!;
-      prior.entries.push({
-        name: 'Hello',
-        kind: ts.ScriptElementKind.keyword,
-        sortText: '0',
-      });
-      return prior;
+const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.ScriptKind.TS, async (ts, info) => {
+  if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
+    info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] tsconfig.json not found`);
+    return {
+      languagePlugins: [],
     };
-    return proxy;
   }
-  return { create };
-};
+  const { readConfigFile, createResolver, resolveConfig } = await import('honey-css-modules');
+  const { createCSSModuleLanguagePlugin } = await import('./language-plugin.js');
+  // const { proxyLanguageService } = await import('./language-service.js');
+  const resolvedConfig = resolveConfig(info.config);
+  const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
+  const isExternalFile = (filename: string) =>
+    !path.matchesGlob(
+      filename,
+      path.join(cwd, resolvedConfig.pattern), // `pattern` is 'src/**/*.module.css', so convert it to '/project/src/**/*.module.css'
+    );
+
+  const cwd = info.project.getCurrentDirectory();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let config: any;
+  try {
+    config = await readConfigFile(cwd);
+    // log
+    info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
+  } catch (_error) {
+    info.project.projectService.logger.info(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      `[ts-honey-css-modules-plugin] Config file not found: ${(_error as any).message}`,
+    );
+    // TODO: Error handling
+    return {
+      languagePlugins: [],
+    };
+  }
+
+  return {
+    languagePlugins: [createCSSModuleLanguagePlugin(config, resolver, isExternalFile)],
+    // TODO: Support language service for CSS modules
+    // setup: (language) => {
+    //   info.languageService = proxyLanguageService(ts, language, info.languageService);
+    // },
+  };
+});
 
 export = init;
