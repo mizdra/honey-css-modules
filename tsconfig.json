@@ -1,5 +1,8 @@
 {
   "files": [],
+  "compilerOptions": {
+    "noEmit": true
+  },
   "references": [
     {
       "path": "packages/honey-css-modules"
