@@ -22,7 +22,7 @@
   "prettier": "@mizdra/prettier-config-mizdra",
   "devDependencies": {
     "@mizdra/eslint-config-mizdra": "^6.0.0",
-    "@mizdra/inline-fixture-files": "^1.1.0",
+    "@mizdra/inline-fixture-files": "^2.0.0",
     "@mizdra/prettier-config-mizdra": "^2.0.0",
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.9.0",
