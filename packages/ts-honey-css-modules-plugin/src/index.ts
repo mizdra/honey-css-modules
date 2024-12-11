@@ -26,7 +26,7 @@ const init = createAsyncLanguageServicePlugin(['.css'], ts.ScriptKind.TS, async 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let config: any;
   try {
-    config = await readConfigFile(cwd);
+    config = readConfigFile(cwd);
     // log
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
   } catch (_error) {
