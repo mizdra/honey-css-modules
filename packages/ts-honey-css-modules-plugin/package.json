@@ -2,7 +2,7 @@
   "name": "ts-honey-css-modules-plugin",
   "description": "TypeScript Language Service Plugin for CSS Modules",
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build-watch": "npm run build -- --watch --preserveWatchOutput"

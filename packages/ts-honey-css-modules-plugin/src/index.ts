@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-import quickstartModule = require('@volar/typescript/lib/quickstart/createAsyncLanguageServicePlugin.js');
-import path = require('path');
-import ts = require('typescript/lib/tsserverlibrary');
+import path from 'node:path';
+import { createAsyncLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createAsyncLanguageServicePlugin.js';
+import ts from 'typescript/lib/tsserverlibrary.js';
 
-const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.ScriptKind.TS, async (ts, info) => {
+const init = createAsyncLanguageServicePlugin(['.css'], ts.ScriptKind.TS, async (ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] tsconfig.json not found`);
     return {
@@ -16,6 +15,7 @@ const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.Scri
   const resolvedConfig = resolveConfig(info.config);
   const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
   const isExternalFile = (filename: string) =>
+    // eslint-disable-next-line n/no-unsupported-features/node-builtins
     !path.matchesGlob(
       filename,
       path.join(cwd, resolvedConfig.pattern), // `pattern` is 'src/**/*.module.css', so convert it to '/project/src/**/*.module.css'
@@ -49,4 +49,4 @@ const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.Scri
   };
 });
 
-export = init;
+export default init;
