@@ -1,16 +1,15 @@
 import path from 'node:path';
-import { createAsyncLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createAsyncLanguageServicePlugin.js';
-import ts from 'typescript/lib/tsserverlibrary.js';
+import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
+import { createResolver, readConfigFile, resolveConfig } from 'honey-css-modules';
+import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 
-const init = createAsyncLanguageServicePlugin(['.css'], ts.ScriptKind.TS, async (ts, info) => {
+const init = createLanguageServicePlugin((ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] tsconfig.json not found`);
     return {
       languagePlugins: [],
     };
   }
-  const { readConfigFile, createResolver, resolveConfig } = await import('honey-css-modules');
-  const { createCSSModuleLanguagePlugin } = await import('./language-plugin.js');
   // const { proxyLanguageService } = await import('./language-service.js');
   const resolvedConfig = resolveConfig(info.config);
   const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
@@ -49,4 +48,4 @@ const init = createAsyncLanguageServicePlugin(['.css'], ts.ScriptKind.TS, async 
   };
 });
 
-export default init;
+module.exports = init;
