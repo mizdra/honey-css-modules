@@ -2,7 +2,7 @@
   "name": "honey-css-modules",
   "description": "Generate .d.ts files from .module.css",
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -38,7 +38,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "bin": {
-    "hcm": "bin/hcm.js"
+    "hcm": "bin/hcm.mjs"
   },
   "keywords": [
     "css-modules",
