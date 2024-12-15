@@ -30,7 +30,7 @@
     "dedent": "^1.5.3",
     "eslint": "^9.14.0",
     "npm-run-all2": "^7.0.1",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.2",
     "typescript": "^5.6.3",
     "vitest": "^2.1.5"
   }
