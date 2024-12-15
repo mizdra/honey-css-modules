@@ -14,7 +14,7 @@ describe('readConfigFile', () => {
         };
       `,
     });
-    expect(readConfigFile(iff.rootDir)).toEqual({
+    expect(await readConfigFile(iff.rootDir)).toEqual({
       pattern: 'src/**/*.module.css',
       dtsOutDir: 'generated/hcm',
     });
@@ -28,7 +28,7 @@ describe('readConfigFile', () => {
         };
       `,
     });
-    expect(readConfigFile(iff.rootDir)).toEqual({
+    expect(await readConfigFile(iff.rootDir)).toEqual({
       pattern: 'src/**/*.module.css',
       dtsOutDir: 'generated/hcm',
     });
@@ -40,14 +40,14 @@ describe('readConfigFile', () => {
         };
       `,
     });
-    expect(readConfigFile(iff.rootDir)).toEqual({
+    expect(await readConfigFile(iff.rootDir)).toEqual({
       pattern: 'src/**/*.module.css',
       dtsOutDir: 'generated/hcm',
     });
   });
   test('throws a ConfigNotFoundError if no config file is found', async () => {
     const iff = await createIFF({});
-    expect(() => readConfigFile(iff.rootDir)).toThrow(ConfigNotFoundError);
+    await expect(readConfigFile(iff.rootDir)).rejects.toThrow(ConfigNotFoundError);
   });
   test('throws error if config file has syntax errors', async () => {
     const iff = await createIFF({
@@ -55,13 +55,15 @@ describe('readConfigFile', () => {
         export SYNTAX_ERROR;
       `,
     });
-    expect(() => readConfigFile(iff.rootDir)).toThrow(ConfigImportError);
+    await expect(readConfigFile(iff.rootDir)).rejects.toThrow(ConfigImportError);
   });
   test('throws error if config file has no default export', async () => {
     const iff = await createIFF({
       'hcm.config.js': 'export const config = {};',
     });
-    expect(() => readConfigFile(iff.rootDir)).toThrow(ConfigImportError);
+    await expect(readConfigFile(iff.rootDir)).rejects.toThrowErrorMatchingInlineSnapshot(
+      `[Error: Config must be a default export.]`,
+    );
   });
 });
 

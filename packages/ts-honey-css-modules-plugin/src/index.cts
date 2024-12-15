@@ -1,20 +1,21 @@
-import path from 'node:path';
-import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
-import { createResolver, readConfigFile, resolveConfig } from 'honey-css-modules';
-import { createCSSModuleLanguagePlugin } from './language-plugin.js';
+/* eslint-disable @typescript-eslint/no-require-imports */
+import quickstartModule = require('@volar/typescript/lib/quickstart/createAsyncLanguageServicePlugin.js');
+import path = require('path');
+import ts = require('typescript/lib/tsserverlibrary');
 
-const init = createLanguageServicePlugin((ts, info) => {
+const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.ScriptKind.TS, async (ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] tsconfig.json not found`);
     return {
       languagePlugins: [],
     };
   }
+  const { readConfigFile, createResolver, resolveConfig } = await import('honey-css-modules');
+  const { createCSSModuleLanguagePlugin } = await import('./language-plugin.js');
   // const { proxyLanguageService } = await import('./language-service.js');
   const resolvedConfig = resolveConfig(info.config);
   const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
   const isExternalFile = (filename: string) =>
-    // eslint-disable-next-line n/no-unsupported-features/node-builtins
     !path.matchesGlob(
       filename,
       path.join(cwd, resolvedConfig.pattern), // `pattern` is 'src/**/*.module.css', so convert it to '/project/src/**/*.module.css'
@@ -25,7 +26,7 @@ const init = createLanguageServicePlugin((ts, info) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let config: any;
   try {
-    config = readConfigFile(cwd);
+    config = await readConfigFile(cwd);
     // log
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
   } catch (_error) {
@@ -48,4 +49,4 @@ const init = createLanguageServicePlugin((ts, info) => {
   };
 });
 
-module.exports = init;
+export = init;

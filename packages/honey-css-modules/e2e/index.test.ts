@@ -5,7 +5,7 @@ import dedent from 'dedent';
 import { expect, test } from 'vitest';
 import { createIFF } from '../src/test/fixture.js';
 
-const binPath = join(__dirname, '../bin/hcm.mjs');
+const binPath = join(import.meta.dirname, '../bin/hcm.js');
 
 test('generates .d.ts', async () => {
   const iff = await createIFF({

@@ -11,7 +11,6 @@
     /* Modules */
     "module": "NodeNext" /* Specify what module code is generated. */,
     // If --module=NodeNext, --moduleResolution=NodeNext can be omitted. However, it is set just in case.
-    "moduleResolution": "NodeNext" /* Specify how TypeScript looks up a file from a given module specifier. */,
-    "verbatimModuleSyntax": false /* Preserve the full syntactic structure of the module input file. */
+    "moduleResolution": "NodeNext" /* Specify how TypeScript looks up a file from a given module specifier. */
   }
 }
