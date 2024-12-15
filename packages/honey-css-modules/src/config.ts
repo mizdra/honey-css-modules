@@ -68,22 +68,19 @@ export async function readConfigFile(cwd: string): Promise<HCMConfig> {
   for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
     const path = join(cwd, `hcm.config.${ext}`);
     try {
+      console.log(path);
       // eslint-disable-next-line no-await-in-loop
       await access(path); // check if the file exists before importing
     } catch {
       continue;
     }
-    let module: object;
-    try {
-      // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
-      // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
-      // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
-      // TODO: Fix problem with a old config file being read from import cache.
-      // eslint-disable-next-line no-await-in-loop
-      module = await import(pathToFileURL(path).href);
-    } catch (error) {
-      throw new ConfigImportError(path, error);
-    }
+    console.log(pathToFileURL(path).href);
+    // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
+    // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
+    // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
+    // TODO: Fix problem with a old config file being read from import cache.
+    // eslint-disable-next-line no-await-in-loop
+    const module = await import(pathToFileURL(path).href);
     if (!('default' in module)) throw new ConfigValidationError('Config must be a default export.');
     assertConfig(module.default);
     return module.default;
