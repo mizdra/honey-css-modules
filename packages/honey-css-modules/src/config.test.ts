@@ -5,7 +5,7 @@ import { ConfigImportError, ConfigNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
 describe('readConfigFile', () => {
-  test('returns a config object', async () => {
+  test.only('returns a config object', async () => {
     const iff = await createIFF({
       'hcm.config.js': dedent`
         export default {
