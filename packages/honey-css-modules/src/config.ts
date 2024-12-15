@@ -1,5 +1,4 @@
-import { execFileSync } from 'node:child_process';
-import { accessSync } from 'node:fs';
+import { access } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ConfigImportError, ConfigNotFoundError, ConfigValidationError } from './error.js';
@@ -65,30 +64,29 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
  * @throws {ConfigImportError}
  * @throws {ConfigValidationError}
  */
-export function readConfigFile(cwd: string): HCMConfig {
+export async function readConfigFile(cwd: string): Promise<HCMConfig> {
   for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
     const path = join(cwd, `hcm.config.${ext}`);
     try {
-      accessSync(path); // check if the file exists before importing
+      // eslint-disable-next-line no-await-in-loop
+      await access(path); // check if the file exists before importing
     } catch {
       continue;
     }
-    let config: object;
+    let module: object;
     try {
-      config = JSON.parse(
-        execFileSync('node', [
-          '-e',
-          // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
-          // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
-          // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
-          `import('${pathToFileURL(path).href}').then(m => process.stdout.write(JSON.stringify(m.default)))`,
-        ]).toString(),
-      );
+      // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
+      // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
+      // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
+      // TODO: Fix problem with a old config file being read from import cache.
+      // eslint-disable-next-line no-await-in-loop
+      module = await import(pathToFileURL(path).href);
     } catch (error) {
       throw new ConfigImportError(path, error);
     }
-    assertConfig(config);
-    return config;
+    if (!('default' in module)) throw new ConfigValidationError('Config must be a default export.');
+    assertConfig(module.default);
+    return module.default;
   }
   throw new ConfigNotFoundError();
 }
