@@ -68,11 +68,13 @@ export async function readConfigFile(cwd: string): Promise<HCMConfig> {
   for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
     const path = join(cwd, `hcm.config.${ext}`);
     try {
+      console.log(path);
       // eslint-disable-next-line no-await-in-loop
       await access(path); // check if the file exists before importing
     } catch {
       continue;
     }
+    console.log(pathToFileURL(path).href);
     // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
     // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
     // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
