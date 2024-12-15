@@ -13,6 +13,7 @@ describe('readConfigFile', () => {
           dtsOutDir: 'generated/hcm',
         };
       `,
+      'package.json': '{ "type": "module" }',
     });
     expect(await readConfigFile(iff.rootDir)).toEqual({
       pattern: 'src/**/*.module.css',
@@ -51,7 +52,7 @@ describe('readConfigFile', () => {
   });
   test('throws error if config file has syntax errors', async () => {
     const iff = await createIFF({
-      'hcm.config.js': dedent`
+      'hcm.config.mjs': dedent`
         export SYNTAX_ERROR;
       `,
     });
@@ -59,7 +60,7 @@ describe('readConfigFile', () => {
   });
   test('throws error if config file has no default export', async () => {
     const iff = await createIFF({
-      'hcm.config.js': 'export const config = {};',
+      'hcm.config.mjs': 'export const config = {};',
     });
     await expect(readConfigFile(iff.rootDir)).rejects.toThrowErrorMatchingInlineSnapshot(
       `[Error: Config must be a default export.]`,
