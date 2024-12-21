@@ -1,7 +1,6 @@
-import path from 'node:path';
 import type { createAsyncLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createAsyncLanguageServicePlugin.js';
 import type { HCMConfig } from 'honey-css-modules';
-import { createResolver, readConfigFile, resolveConfig } from 'honey-css-modules';
+import { createIsExternalFile, createResolver, readConfigFile, resolveConfig } from 'honey-css-modules';
 import { ConfigNotFoundError } from 'honey-css-modules';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 
@@ -30,12 +29,7 @@ const create: Create = async (ts, info) => {
   // const { proxyLanguageService } = await import('./language-service.js');
   const resolvedConfig = resolveConfig(config);
   const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
-  const isExternalFile = (filename: string) =>
-    // eslint-disable-next-line n/no-unsupported-features/node-builtins
-    !path.matchesGlob(
-      filename,
-      path.join(cwd, resolvedConfig.pattern), // `pattern` is 'src/**/*.module.css', so convert it to '/project/src/**/*.module.css'
-    );
+  const isExternalFile = createIsExternalFile(resolvedConfig);
 
   return {
     languagePlugins: [createCSSModuleLanguagePlugin(resolvedConfig, resolver, isExternalFile)],
