@@ -1,16 +1,18 @@
 import { dirname, resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
-import { createDtsCode, type CreateDtsCodeOptions } from './dts-creator.js';
+import { createDts, type CreateDtsOptions } from './dts-creator.js';
 
-const options: CreateDtsCodeOptions = {
+const options: CreateDtsOptions = {
   resolver: (specifier, { request }) => resolve(dirname(request), specifier),
   isExternalFile: () => false,
 };
 
-describe('createDtsCode', () => {
+const dummyPos = { line: 1, column: 1, offset: 0 };
+
+describe('createDts', () => {
   test('creates d.ts file if css module file has no tokens', () => {
     expect(
-      createDtsCode(
+      createDts(
         {
           filename: '/test.module.css',
           localTokens: [],
@@ -19,14 +21,21 @@ describe('createDtsCode', () => {
         options,
       ),
     ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<{}>;
+      {
+        "code": "declare const styles: Readonly<{}>;
       export default styles;
-      "
+      ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
     `);
   });
   test('creates d.ts file with local tokens', () => {
     expect(
-      createDtsCode(
+      createDts(
         {
           filename: '/test.module.css',
           localTokens: [
@@ -38,17 +47,65 @@ describe('createDtsCode', () => {
         options,
       ),
     ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
+      {
+        "code": "declare const styles: Readonly<
         & { local1: string }
         & { local2: string }
       >;
       export default styles;
-      "
+      ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
+    `);
+  });
+  test('includes mapping if the token has location information', () => {
+    expect(
+      createDts(
+        {
+          filename: '/test.module.css',
+          localTokens: [
+            {
+              name: 'local1',
+              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+            },
+            { name: 'local2', loc: { start: { line: 2, column: 1, offset: 10 }, end: dummyPos } },
+          ],
+          tokenImporters: [],
+        },
+        options,
+      ),
+    ).toMatchInlineSnapshot(`
+      {
+        "code": "declare const styles: Readonly<
+        & { local1: string }
+        & { local2: string }
+      >;
+      export default styles;
+      ",
+        "mapping": {
+          "generatedOffsets": [
+            38,
+            61,
+          ],
+          "lengths": [
+            6,
+            6,
+          ],
+          "sourceOffsets": [
+            0,
+            10,
+          ],
+        },
+      }
     `);
   });
   test('creates d.ts file with token importers', () => {
     expect(
-      createDtsCode(
+      createDts(
         {
           filename: '/test.module.css',
           localTokens: [],
@@ -61,18 +118,25 @@ describe('createDtsCode', () => {
         options,
       ),
     ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
+      {
+        "code": "declare const styles: Readonly<
         & (typeof import('./a.module.css'))['default']
         & { imported1: (typeof import('./b.module.css'))['default']['imported1'] }
         & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
       >;
       export default styles;
-      "
+      ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
     `);
   });
   test('creates types in the order of local tokens and token importers', () => {
     expect(
-      createDtsCode(
+      createDts(
         {
           filename: '/test.module.css',
           localTokens: [{ name: 'local1', loc: undefined }],
@@ -81,18 +145,25 @@ describe('createDtsCode', () => {
         options,
       ),
     ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
+      {
+        "code": "declare const styles: Readonly<
         & { local1: string }
         & (typeof import('./a.module.css'))['default']
       >;
       export default styles;
-      "
+      ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
     `);
   });
   test('resolves specifiers', () => {
     const resolver = (specifier: string) => specifier.replace('@', '/src');
     expect(
-      createDtsCode(
+      createDts(
         {
           filename: '/src/test.module.css',
           localTokens: [],
@@ -105,18 +176,25 @@ describe('createDtsCode', () => {
         { ...options, resolver },
       ),
     ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
+      {
+        "code": "declare const styles: Readonly<
         & (typeof import('./a.module.css'))['default']
         & { imported1: (typeof import('./b.module.css'))['default']['imported1'] }
         & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
       >;
       export default styles;
-      "
+      ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
     `);
   });
   test('does not create types for external files', () => {
     expect(
-      createDtsCode(
+      createDts(
         {
           filename: '/test.module.css',
           localTokens: [],
@@ -128,15 +206,22 @@ describe('createDtsCode', () => {
         { ...options, isExternalFile: () => true },
       ),
     ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<{}>;
+      {
+        "code": "declare const styles: Readonly<{}>;
       export default styles;
-      "
+      ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
     `);
   });
   test('does not create types for unresolved files', () => {
     const resolver = (_specifier: string) => undefined;
     expect(
-      createDtsCode(
+      createDts(
         {
           filename: '/src/test.module.css',
           localTokens: [],
@@ -145,9 +230,16 @@ describe('createDtsCode', () => {
         { ...options, resolver },
       ),
     ).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<{}>;
+      {
+        "code": "declare const styles: Readonly<{}>;
       export default styles;
-      "
+      ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
     `);
   });
 });

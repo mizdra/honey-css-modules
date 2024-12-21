@@ -1,7 +1,7 @@
 import type { LanguagePlugin, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
 import type { ResolvedHCMConfig } from 'honey-css-modules';
-import { createDtsCode, parseCSSModuleCode, type Resolver } from 'honey-css-modules';
+import { createDts, parseCSSModuleCode, type Resolver } from 'honey-css-modules';
 import ts from 'typescript';
 
 const LANGUAGE_ID = 'css-module';
@@ -23,7 +23,7 @@ export function createCSSModuleLanguagePlugin(
       const length = snapshot.getLength();
       const cssModule = snapshot.getText(0, length);
       const cssModuleFile = parseCSSModuleCode(cssModule, { filename: scriptId, dashedIdents: config.dashedIdents });
-      const dtsCode = createDtsCode(cssModuleFile, { resolver, isExternalFile });
+      const { code: dtsCode, mapping } = createDts(cssModuleFile, { resolver, isExternalFile });
       return {
         id: 'main',
         languageId: LANGUAGE_ID,
@@ -32,7 +32,8 @@ export function createCSSModuleLanguagePlugin(
           getLength: () => dtsCode.length,
           getChangeRange: () => undefined,
         },
-        mappings: [],
+        // `mappings` are required to support "Go to definitions" and renaming
+        mappings: [{ ...mapping, data: { navigation: true } }],
       };
     },
     typescript: {

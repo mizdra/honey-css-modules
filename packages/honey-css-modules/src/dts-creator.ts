@@ -2,9 +2,18 @@ import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 import { getPosixRelativePath } from './util.js';
 
-export interface CreateDtsCodeOptions {
+export interface CreateDtsOptions {
   resolver: Resolver;
   isExternalFile: (filename: string) => boolean;
+}
+
+interface Mapping {
+  /** The source offsets of the tokens in the *.module.css file. */
+  sourceOffsets: number[];
+  /** The generated offsets of the tokens in the *.d.ts file. */
+  generatedOffsets: number[];
+  /** The lengths of the tokens in the *.module.css file. */
+  lengths: number[];
 }
 
 /**
@@ -31,10 +40,10 @@ export interface CreateDtsCodeOptions {
  *
  * @throws {ResolveError} When the resolver throws an error.
  */
-export function createDtsCode(
+export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
-  options: CreateDtsCodeOptions,
-): string {
+  options: CreateDtsOptions,
+): { code: string; mapping: Mapping } {
   // Resolve and filter external files
   const tokenImporters: CSSModuleFile['tokenImporters'] = [];
   for (const tokenImporter of _tokenImporters) {
@@ -46,21 +55,30 @@ export function createDtsCode(
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
-    return `declare const styles: Readonly<{}>;\nexport default styles;\n`;
+    return {
+      code: `declare const styles: Readonly<{}>;\nexport default styles;\n`,
+      mapping: { generatedOffsets: [], sourceOffsets: [], lengths: [] },
+    };
   }
 
-  let result = 'declare const styles: Readonly<\n';
+  let code = 'declare const styles: Readonly<\n';
+  const mapping: Mapping = { generatedOffsets: [], sourceOffsets: [], lengths: [] };
   for (const token of localTokens) {
-    result += `  & { ${token.name}: string }\n`;
+    if (token.loc) {
+      mapping.sourceOffsets.push(token.loc.start.offset);
+      mapping.generatedOffsets.push(code.length + 6);
+      mapping.lengths.push(token.name.length);
+    }
+    code += `  & { ${token.name}: string }\n`;
   }
   for (const tokenImporter of tokenImporters) {
     const specifier = getPosixRelativePath(filename, tokenImporter.specifier);
     if (tokenImporter.type === 'import') {
-      result += `  & (typeof import('${specifier}'))['default']\n`;
+      code += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
-      result += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.importedName}'] }\n`;
+      code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.importedName}'] }\n`;
     }
   }
-  result += '>;\nexport default styles;\n';
-  return result;
+  code += '>;\nexport default styles;\n';
+  return { code, mapping };
 }
