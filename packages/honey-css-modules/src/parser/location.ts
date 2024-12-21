@@ -6,6 +6,8 @@ export interface Position {
   line: number;
   /** The column number in the source file. It is 1-based (compatible with postcss). */
   column: number;
+  /** The offset in the source file. It is 0-based. */
+  offset: number;
 }
 
 export interface Location {
@@ -25,10 +27,12 @@ export function getTokenLocationOfAtValue(atValue: AtRule, name: string): Locati
   const start = {
     line: atValue.source!.start!.line,
     column: atValue.source!.start!.column + atValue.toString().indexOf(name, 7),
+    offset: atValue.source!.start!.offset + atValue.toString().indexOf(name, 7),
   };
   const end = {
     line: start.line,
     column: start.column + name.length - 1,
+    offset: start.offset + name.length - 1,
   };
   return { start, end };
 }
@@ -50,12 +54,14 @@ export function getTokenLocationOfClassSelector(rule: Rule, classSelector: Class
   const start = {
     line: rule.source!.start!.line + classSelector.source!.start!.line - 1,
     column: rule.source!.start!.column + classSelector.source!.start!.column,
+    offset: rule.source!.start!.offset + classSelector.sourceIndex + 1,
   };
   const end = {
     // The end line is always the same as the start line, as a class selector cannot break in the middle.
     line: start.line,
     // The end column is the start column plus the length of the class selector.
     column: start.column + classSelector.value.length - 1,
+    offset: start.offset + classSelector.value.length - 1,
   };
   return { start, end };
 }

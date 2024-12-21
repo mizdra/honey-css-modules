@@ -15,10 +15,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 6,
           "line": 1,
+          "offset": 5,
         },
         "start": {
           "column": 2,
           "line": 1,
+          "offset": 1,
         },
       }
     `);
@@ -36,10 +38,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 10,
           "line": 1,
+          "offset": 9,
         },
         "start": {
           "column": 2,
           "line": 1,
+          "offset": 1,
         },
       }
     `);
@@ -48,10 +52,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 10,
           "line": 2,
+          "offset": 23,
         },
         "start": {
           "column": 2,
           "line": 2,
+          "offset": 15,
         },
       }
     `);
@@ -70,10 +76,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 15,
           "line": 1,
+          "offset": 14,
         },
         "start": {
           "column": 2,
           "line": 1,
+          "offset": 1,
         },
       }
     `);
@@ -82,10 +90,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 15,
           "line": 2,
+          "offset": 33,
         },
         "start": {
           "column": 2,
           "line": 2,
+          "offset": 20,
         },
       }
     `);
@@ -94,10 +104,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 20,
           "line": 3,
+          "offset": 63,
         },
         "start": {
           "column": 7,
           "line": 3,
+          "offset": 50,
         },
       }
     `);
@@ -115,10 +127,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 20,
             "line": 1,
+            "offset": 19,
           },
           "start": {
             "column": 2,
             "line": 1,
+            "offset": 1,
           },
         }
       `);
@@ -128,10 +142,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 40,
             "line": 1,
+            "offset": 39,
           },
           "start": {
             "column": 22,
             "line": 1,
+            "offset": 21,
           },
         }
       `);
@@ -149,10 +165,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 13,
           "line": 1,
+          "offset": 12,
         },
         "start": {
           "column": 2,
           "line": 1,
+          "offset": 1,
         },
       }
     `);
@@ -161,10 +179,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 29,
           "line": 1,
+          "offset": 28,
         },
         "start": {
           "column": 18,
           "line": 1,
+          "offset": 17,
         },
       }
     `);
@@ -185,10 +205,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 12,
           "line": 3,
+          "offset": 80,
         },
         "start": {
           "column": 6,
           "line": 3,
+          "offset": 74,
         },
       }
     `);
@@ -206,10 +228,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 16,
             "line": 1,
+            "offset": 15,
           },
           "start": {
             "column": 2,
             "line": 1,
+            "offset": 1,
           },
         }
       `);
@@ -219,10 +243,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 34,
             "line": 1,
+            "offset": 33,
           },
           "start": {
             "column": 20,
             "line": 1,
+            "offset": 19,
           },
         }
       `);
@@ -245,10 +271,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 26,
             "line": 1,
+            "offset": 25,
           },
           "start": {
             "column": 9,
             "line": 1,
+            "offset": 8,
           },
         }
       `);
@@ -258,10 +286,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 21,
             "line": 3,
+            "offset": 59,
           },
           "start": {
             "column": 4,
             "line": 3,
+            "offset": 42,
           },
         }
       `);
@@ -271,10 +301,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 21,
             "line": 4,
+            "offset": 84,
           },
           "start": {
             "column": 4,
             "line": 4,
+            "offset": 67,
           },
         }
       `);
@@ -284,10 +316,12 @@ describe('getTokenLocationOfClassSelector', () => {
           "end": {
             "column": 26,
             "line": 6,
+            "offset": 116,
           },
           "start": {
             "column": 9,
             "line": 6,
+            "offset": 99,
           },
         }
       `);
@@ -306,10 +340,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 15,
           "line": 1,
+          "offset": 14,
         },
         "start": {
           "column": 2,
           "line": 1,
+          "offset": 1,
         },
       }
     `);
@@ -318,10 +354,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 15,
           "line": 2,
+          "offset": 31,
         },
         "start": {
           "column": 2,
           "line": 2,
+          "offset": 18,
         },
       }
     `);
@@ -330,10 +368,12 @@ describe('getTokenLocationOfClassSelector', () => {
         "end": {
           "column": 19,
           "line": 3,
+          "offset": 51,
         },
         "start": {
           "column": 6,
           "line": 3,
+          "offset": 38,
         },
       }
     `);
@@ -351,10 +391,12 @@ test('getTokenLocationOfAtValue', () => {
       "end": {
         "column": 12,
         "line": 1,
+        "offset": 11,
       },
       "start": {
         "column": 8,
         "line": 1,
+        "offset": 7,
       },
     }
   `);

@@ -36,10 +36,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 6,
                 "line": 1,
+                "offset": 5,
               },
               "start": {
                 "column": 2,
                 "line": 1,
+                "offset": 1,
               },
             },
             "name": "basic",
@@ -49,10 +51,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 10,
                 "line": 2,
+                "offset": 19,
               },
               "start": {
                 "column": 2,
                 "line": 2,
+                "offset": 11,
               },
             },
             "name": "cascading",
@@ -62,10 +66,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 10,
                 "line": 3,
+                "offset": 33,
               },
               "start": {
                 "column": 2,
                 "line": 3,
+                "offset": 25,
               },
             },
             "name": "cascading",
@@ -75,10 +81,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 15,
                 "line": 4,
+                "offset": 52,
               },
               "start": {
                 "column": 2,
                 "line": 4,
+                "offset": 39,
               },
             },
             "name": "pseudo_class_1",
@@ -88,10 +96,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 15,
                 "line": 5,
+                "offset": 71,
               },
               "start": {
                 "column": 2,
                 "line": 5,
+                "offset": 58,
               },
             },
             "name": "pseudo_class_2",
@@ -101,10 +111,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 20,
                 "line": 6,
+                "offset": 101,
               },
               "start": {
                 "column": 7,
                 "line": 6,
+                "offset": 88,
               },
             },
             "name": "pseudo_class_3",
@@ -114,10 +126,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 20,
                 "line": 7,
+                "offset": 126,
               },
               "start": {
                 "column": 2,
                 "line": 7,
+                "offset": 108,
               },
             },
             "name": "multiple_selector_1",
@@ -127,10 +141,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 40,
                 "line": 7,
+                "offset": 146,
               },
               "start": {
                 "column": 22,
                 "line": 7,
+                "offset": 128,
               },
             },
             "name": "multiple_selector_2",
@@ -140,10 +156,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 13,
                 "line": 8,
+                "offset": 163,
               },
               "start": {
                 "column": 2,
                 "line": 8,
+                "offset": 152,
               },
             },
             "name": "combinator_1",
@@ -153,10 +171,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 29,
                 "line": 8,
+                "offset": 179,
               },
               "start": {
                 "column": 18,
                 "line": 8,
+                "offset": 168,
               },
             },
             "name": "combinator_2",
@@ -166,10 +186,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 12,
                 "line": 11,
+                "offset": 264,
               },
               "start": {
                 "column": 6,
                 "line": 11,
+                "offset": 258,
               },
             },
             "name": "at_rule",
@@ -179,10 +201,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 16,
                 "line": 14,
+                "offset": 290,
               },
               "start": {
                 "column": 2,
                 "line": 14,
+                "offset": 276,
               },
             },
             "name": "selector_list_1",
@@ -192,10 +216,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 34,
                 "line": 14,
+                "offset": 308,
               },
               "start": {
                 "column": 20,
                 "line": 14,
+                "offset": 294,
               },
             },
             "name": "selector_list_2",
@@ -205,10 +231,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 15,
                 "line": 15,
+                "offset": 327,
               },
               "start": {
                 "column": 9,
                 "line": 15,
+                "offset": 321,
               },
             },
             "name": "local_1",
@@ -218,10 +246,12 @@ describe('parseCSSModuleCode', () => {
               "end": {
                 "column": 12,
                 "line": 16,
+                "offset": 344,
               },
               "start": {
                 "column": 8,
                 "line": 16,
+                "offset": 340,
               },
             },
             "name": "value",
