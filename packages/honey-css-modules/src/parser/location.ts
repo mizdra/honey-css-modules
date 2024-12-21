@@ -3,8 +3,10 @@ import type { ClassName } from 'postcss-selector-parser';
 
 export interface Position {
   /** The line number in the source file. It is 1-based (compatible with postcss). */
+  // TODO: Maybe it should be deleted since it is not used
   line: number;
   /** The column number in the source file. It is 1-based (compatible with postcss). */
+  // TODO: Maybe it should be deleted since it is not used
   column: number;
   /** The offset in the source file. It is 0-based. */
   offset: number;
@@ -14,6 +16,7 @@ export interface Location {
   /** The starting position of the node. It is inclusive (compatible with postcss). */
   start: Position;
   /** The ending position of the node. It is inclusive (compatible with postcss). */
+  // TODO: Maybe it should be deleted since it is not used
   end: Position;
 }
 
