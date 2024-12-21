@@ -7,6 +7,15 @@ export interface CreateDtsOptions {
   isExternalFile: (filename: string) => boolean;
 }
 
+interface Mapping {
+  /** The source offsets of the tokens in the *.module.css file. */
+  sourceOffsets: number[];
+  /** The generated offsets of the tokens in the *.d.ts file. */
+  generatedOffsets: number[];
+  /** The lengths of the tokens in the *.module.css file. */
+  lengths: number[];
+}
+
 /**
  * Create a d.ts file from a CSS module file.
  * @example
@@ -34,7 +43,7 @@ export interface CreateDtsOptions {
 export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsOptions,
-): { code: string } {
+): { code: string; mapping: Mapping } {
   // Resolve and filter external files
   const tokenImporters: CSSModuleFile['tokenImporters'] = [];
   for (const tokenImporter of _tokenImporters) {
@@ -46,11 +55,20 @@ export function createDts(
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
-    return { code: `declare const styles: Readonly<{}>;\nexport default styles;\n` };
+    return {
+      code: `declare const styles: Readonly<{}>;\nexport default styles;\n`,
+      mapping: { generatedOffsets: [], sourceOffsets: [], lengths: [] },
+    };
   }
 
   let code = 'declare const styles: Readonly<\n';
+  const mapping: Mapping = { generatedOffsets: [], sourceOffsets: [], lengths: [] };
   for (const token of localTokens) {
+    if (token.loc) {
+      mapping.sourceOffsets.push(token.loc.start.offset);
+      mapping.generatedOffsets.push(code.length + 6);
+      mapping.lengths.push(token.name.length);
+    }
     code += `  & { ${token.name}: string }\n`;
   }
   for (const tokenImporter of tokenImporters) {
@@ -62,5 +80,5 @@ export function createDts(
     }
   }
   code += '>;\nexport default styles;\n';
-  return { code };
+  return { code, mapping };
 }

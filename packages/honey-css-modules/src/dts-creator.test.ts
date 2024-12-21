@@ -7,6 +7,8 @@ const options: CreateDtsOptions = {
   isExternalFile: () => false,
 };
 
+const dummyPos = { line: 1, column: 1, offset: 0 };
+
 describe('createDts', () => {
   test('creates d.ts file if css module file has no tokens', () => {
     expect(
@@ -23,6 +25,11 @@ describe('createDts', () => {
         "code": "declare const styles: Readonly<{}>;
       export default styles;
       ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
       }
     `);
   });
@@ -47,6 +54,52 @@ describe('createDts', () => {
       >;
       export default styles;
       ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
+      }
+    `);
+  });
+  test('includes mapping if the token has location information', () => {
+    expect(
+      createDts(
+        {
+          filename: '/test.module.css',
+          localTokens: [
+            {
+              name: 'local1',
+              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+            },
+            { name: 'local2', loc: { start: { line: 2, column: 1, offset: 10 }, end: dummyPos } },
+          ],
+          tokenImporters: [],
+        },
+        options,
+      ),
+    ).toMatchInlineSnapshot(`
+      {
+        "code": "declare const styles: Readonly<
+        & { local1: string }
+        & { local2: string }
+      >;
+      export default styles;
+      ",
+        "mapping": {
+          "generatedOffsets": [
+            38,
+            61,
+          ],
+          "lengths": [
+            6,
+            6,
+          ],
+          "sourceOffsets": [
+            0,
+            10,
+          ],
+        },
       }
     `);
   });
@@ -73,6 +126,11 @@ describe('createDts', () => {
       >;
       export default styles;
       ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
       }
     `);
   });
@@ -94,6 +152,11 @@ describe('createDts', () => {
       >;
       export default styles;
       ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
       }
     `);
   });
@@ -121,6 +184,11 @@ describe('createDts', () => {
       >;
       export default styles;
       ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
       }
     `);
   });
@@ -142,6 +210,11 @@ describe('createDts', () => {
         "code": "declare const styles: Readonly<{}>;
       export default styles;
       ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
       }
     `);
   });
@@ -161,6 +234,11 @@ describe('createDts', () => {
         "code": "declare const styles: Readonly<{}>;
       export default styles;
       ",
+        "mapping": {
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
       }
     `);
   });
