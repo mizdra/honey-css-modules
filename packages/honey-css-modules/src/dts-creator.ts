@@ -2,7 +2,7 @@ import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 import { getPosixRelativePath } from './util.js';
 
-export interface CreateDtsCodeOptions {
+export interface CreateDtsOptions {
   resolver: Resolver;
   isExternalFile: (filename: string) => boolean;
 }
@@ -31,10 +31,10 @@ export interface CreateDtsCodeOptions {
  *
  * @throws {ResolveError} When the resolver throws an error.
  */
-export function createDtsCode(
+export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
-  options: CreateDtsCodeOptions,
-): string {
+  options: CreateDtsOptions,
+): { code: string } {
   // Resolve and filter external files
   const tokenImporters: CSSModuleFile['tokenImporters'] = [];
   for (const tokenImporter of _tokenImporters) {
@@ -46,21 +46,21 @@ export function createDtsCode(
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
-    return `declare const styles: Readonly<{}>;\nexport default styles;\n`;
+    return { code: `declare const styles: Readonly<{}>;\nexport default styles;\n` };
   }
 
-  let result = 'declare const styles: Readonly<\n';
+  let code = 'declare const styles: Readonly<\n';
   for (const token of localTokens) {
-    result += `  & { ${token.name}: string }\n`;
+    code += `  & { ${token.name}: string }\n`;
   }
   for (const tokenImporter of tokenImporters) {
     const specifier = getPosixRelativePath(filename, tokenImporter.specifier);
     if (tokenImporter.type === 'import') {
-      result += `  & (typeof import('${specifier}'))['default']\n`;
+      code += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
-      result += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.importedName}'] }\n`;
+      code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.importedName}'] }\n`;
     }
   }
-  result += '>;\nexport default styles;\n';
-  return result;
+  code += '>;\nexport default styles;\n';
+  return { code };
 }

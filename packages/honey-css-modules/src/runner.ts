@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { globIterate } from 'glob';
 import { type HCMConfig, resolveConfig, type ResolvedHCMConfig } from './config.js';
-import { createDtsCode } from './dts-creator.js';
+import { createDts } from './dts-creator.js';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import { createIsExternalFile } from './external-file.js';
@@ -30,7 +30,7 @@ async function processFile(
     throw new ReadCSSModuleFileError(filename, error);
   }
   const cssModuleFile = parseCSSModuleCode(code, { filename, dashedIdents });
-  const dtsCode = createDtsCode(cssModuleFile, { resolver, isExternalFile });
+  const { code: dtsCode } = createDts(cssModuleFile, { resolver, isExternalFile });
   await writeDtsFile(dtsCode, filename, {
     outDir: dtsOutDir,
     cwd,
