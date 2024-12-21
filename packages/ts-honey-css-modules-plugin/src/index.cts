@@ -11,7 +11,7 @@ const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.Scri
     };
   }
   const cwd = info.project.getCurrentDirectory();
-  const { readConfigFile, createResolver, resolveConfig } = await import('honey-css-modules');
+  const { readConfigFile, createResolver, resolveConfig, ConfigNotFoundError } = await import('honey-css-modules');
   const { createCSSModuleLanguagePlugin } = await import('./language-plugin.js');
 
   // prettier-ignore
@@ -20,15 +20,12 @@ const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.Scri
   try {
     config = await readConfigFile(cwd);
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
-  } catch (_error) {
-    info.project.projectService.logger.info(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      `[ts-honey-css-modules-plugin] Config file not found: ${(_error as any).message}`,
-    );
-    // TODO: Error handling
-    return {
-      languagePlugins: [],
-    };
+  } catch (error) {
+    // If the config file is not found, disable the plugin.
+    if (error instanceof ConfigNotFoundError) {
+      return { languagePlugins: [] };
+    }
+    throw error;
   }
 
   // const { proxyLanguageService } = await import('./language-service.js');
