@@ -23,3 +23,4 @@ export {
 export { type Location, type Position } from './parser/location.js';
 export { type CreateDtsCodeOptions, createDtsCode } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
+export { createIsExternalFile } from './external-file.js';

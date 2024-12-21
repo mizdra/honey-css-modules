@@ -1,11 +1,11 @@
 import { readFile } from 'node:fs/promises';
-// eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable matchesGlob API
-import { join, matchesGlob } from 'node:path';
+import { join } from 'node:path';
 import { globIterate } from 'glob';
 import { type HCMConfig, resolveConfig, type ResolvedHCMConfig } from './config.js';
 import { createDtsCode } from './dts-creator.js';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
+import { createIsExternalFile } from './external-file.js';
 import { parseCSSModuleCode } from './parser/css-module-parser.js';
 import { createResolver, type Resolver } from './resolver.js';
 
@@ -52,11 +52,7 @@ export async function runHCM(config: HCMConfig): Promise<void> {
   const resolvedConfig = resolveConfig(config);
   const { pattern, alias, cwd } = resolvedConfig;
   const resolver = createResolver(alias, cwd);
-  const isExternalFile = (filename: string) =>
-    !matchesGlob(
-      filename,
-      join(cwd, pattern), // `pattern` is 'src/**/*.module.css', so convert it to '/project/src/**/*.module.css'
-    );
+  const isExternalFile = createIsExternalFile(resolvedConfig);
 
   const promises: Promise<void>[] = [];
   for await (const filename of globIterate(pattern, { cwd })) {
