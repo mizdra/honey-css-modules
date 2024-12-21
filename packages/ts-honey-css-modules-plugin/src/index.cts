@@ -10,24 +10,15 @@ const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.Scri
       languagePlugins: [],
     };
   }
+  const cwd = info.project.getCurrentDirectory();
   const { readConfigFile, createResolver, resolveConfig } = await import('honey-css-modules');
   const { createCSSModuleLanguagePlugin } = await import('./language-plugin.js');
-  // const { proxyLanguageService } = await import('./language-service.js');
-  const resolvedConfig = resolveConfig(info.config);
-  const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
-  const isExternalFile = (filename: string) =>
-    !path.matchesGlob(
-      filename,
-      path.join(cwd, resolvedConfig.pattern), // `pattern` is 'src/**/*.module.css', so convert it to '/project/src/**/*.module.css'
-    );
 
-  const cwd = info.project.getCurrentDirectory();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let config: any;
+  // prettier-ignore
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  let config: import('honey-css-modules', { with: { "resolution-mode": "import" }}).HCMConfig;
   try {
     config = await readConfigFile(cwd);
-    // log
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
   } catch (_error) {
     info.project.projectService.logger.info(
@@ -40,8 +31,17 @@ const init = quickstartModule.createAsyncLanguageServicePlugin(['.css'], ts.Scri
     };
   }
 
+  // const { proxyLanguageService } = await import('./language-service.js');
+  const resolvedConfig = resolveConfig(config);
+  const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
+  const isExternalFile = (filename: string) =>
+    !path.matchesGlob(
+      filename,
+      path.join(cwd, resolvedConfig.pattern), // `pattern` is 'src/**/*.module.css', so convert it to '/project/src/**/*.module.css'
+    );
+
   return {
-    languagePlugins: [createCSSModuleLanguagePlugin(config, resolver, isExternalFile)],
+    languagePlugins: [createCSSModuleLanguagePlugin(resolvedConfig, resolver, isExternalFile)],
     // TODO: Support language service for CSS modules
     // setup: (language) => {
     //   info.languageService = proxyLanguageService(ts, language, info.languageService);
