@@ -28,13 +28,17 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:css"
+  ],
   "contributes": {
     "typescriptServerPlugins": [
       {
         "name": "ts-honey-css-modules-plugin",
-        "enableForWorkspaceTypeScriptVersions": true,
-        "configNamespace": "typescript"
+        "configNamespace": "typescript",
+        "languages": [
+          "css"
+        ]
       }
     ],
     "commands": [

@@ -16,6 +16,7 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-honey-css-modules",
         "--profile-temp",
+        "--disable-extension=vscode.css-language-features",
         "${workspaceFolder}/example"
       ],
       "outFiles": [
