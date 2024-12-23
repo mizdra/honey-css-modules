@@ -28,21 +28,31 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:css"
+  ],
   "contributes": {
     "typescriptServerPlugins": [
       {
         "name": "ts-honey-css-modules-plugin",
-        "enableForWorkspaceTypeScriptVersions": true,
-        "configNamespace": "typescript"
+        "configNamespace": "typescript",
+        "languages": [
+          "css"
+        ]
       }
     ],
-    "commands": [
-      {
-        "command": "vscode-honey-css-modules.helloWorld",
-        "title": "Hello World"
-      }
-    ]
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "typescript.openTsServerLog",
+          "when": "editorLangId == css"
+        },
+        {
+          "command": "typescript.restartTsServer",
+          "when": "editorLangId == css"
+        }
+      ]
+    }
   },
   "dependencies": {
     "ts-honey-css-modules-plugin": "../ts-honey-css-modules-plugin"
