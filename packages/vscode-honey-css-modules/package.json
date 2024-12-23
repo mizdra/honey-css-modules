@@ -41,12 +41,18 @@
         ]
       }
     ],
-    "commands": [
-      {
-        "command": "vscode-honey-css-modules.helloWorld",
-        "title": "Hello World"
-      }
-    ]
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "typescript.openTsServerLog",
+          "when": "editorLangId == css"
+        },
+        {
+          "command": "typescript.restartTsServer",
+          "when": "editorLangId == css"
+        }
+      ]
+    }
   },
   "dependencies": {
     "ts-honey-css-modules-plugin": "../ts-honey-css-modules-plugin"
