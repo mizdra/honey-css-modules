@@ -17,7 +17,9 @@
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-honey-css-modules",
         "--profile-temp",
         "--disable-extension=vscode.css-language-features",
-        "${workspaceFolder}/example"
+        "--skip-welcome",
+        "--folder-uri=${workspaceFolder}/example",
+        "${workspaceFolder}/example/src/a.ts"
       ],
       "outFiles": [
         "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.js",
