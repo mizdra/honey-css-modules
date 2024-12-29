@@ -1,4 +1,5 @@
-import { access } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { accessSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ConfigImportError, ConfigNotFoundError, ConfigValidationError } from './error.js';
@@ -64,12 +65,11 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
  * @throws {ConfigImportError}
  * @throws {ConfigValidationError}
  */
-export async function readConfigFile(cwd: string): Promise<HCMConfig> {
+export function readConfigFile(cwd: string): HCMConfig {
   for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
     const path = join(cwd, `hcm.config.${ext}`);
     try {
-      // eslint-disable-next-line no-await-in-loop
-      await access(path); // check if the file exists before importing
+      accessSync(path); // check if the file exists before importing
     } catch {
       continue;
     }
@@ -78,9 +78,19 @@ export async function readConfigFile(cwd: string): Promise<HCMConfig> {
       // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
       // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
       // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
+      const resolvedPath = pathToFileURL(path).href;
       // TODO: Fix problem with a old config file being read from import cache.
-      // eslint-disable-next-line no-await-in-loop
-      module = await import(pathToFileURL(path).href);
+      module = JSON.parse(
+        execFileSync('node', [
+          '-e',
+          `import('${resolvedPath}')
+            .then(m => process.stdout.write(
+              JSON.stringify({
+                default: m.default,
+              }),
+            ))`,
+        ]).toString(),
+      );
     } catch (error) {
       throw new ConfigImportError(path, error);
     }

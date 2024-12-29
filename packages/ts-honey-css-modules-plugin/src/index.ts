@@ -16,6 +16,7 @@ const create: Create = async (ts, info) => {
 
   let config: HCMConfig;
   try {
+    // eslint-disable-next-line @typescript-eslint/await-thenable -- TODO: remove await
     config = await readConfigFile(cwd);
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
   } catch (error) {
