@@ -27,6 +27,7 @@
     "@types/eslint": "^9.6.1",
     "@types/node": "^22.10.2",
     "@types/vscode": "^1.96.0",
+    "@typescript/server-harness": "^0.3.5",
     "dedent": "^1.5.3",
     "eslint": "^9.17.0",
     "npm-run-all2": "^7.0.2",
