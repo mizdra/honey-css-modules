@@ -10,7 +10,7 @@
     "noEmit": true /* Disable emitting files from a compilation. */,
 
     /* Interop Constraints */
-    "verbatimModuleSyntax": true /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */,
+    "verbatimModuleSyntax": false /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */,
     // If --module=NodeNext, --esModuleInterop can be omitted. However, it is set just in case.
     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
     "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,

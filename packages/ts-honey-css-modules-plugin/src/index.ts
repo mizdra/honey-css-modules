@@ -1,11 +1,10 @@
-import type { createAsyncLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createAsyncLanguageServicePlugin.js';
+import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
 import type { HCMConfig } from 'honey-css-modules';
 import { createIsExternalFile, createResolver, readConfigFile, resolveConfig } from 'honey-css-modules';
 import { ConfigNotFoundError } from 'honey-css-modules';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 
-type Create = Parameters<typeof createAsyncLanguageServicePlugin>[2];
-const create: Create = async (ts, info) => {
+const plugin = createLanguageServicePlugin((ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] tsconfig.json not found`);
     return {
@@ -16,8 +15,7 @@ const create: Create = async (ts, info) => {
 
   let config: HCMConfig;
   try {
-    // eslint-disable-next-line @typescript-eslint/await-thenable -- TODO: remove await
-    config = await readConfigFile(cwd);
+    config = readConfigFile(cwd);
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
   } catch (error) {
     // If the config file is not found, disable the plugin.
@@ -39,6 +37,6 @@ const create: Create = async (ts, info) => {
     //   info.languageService = proxyLanguageService(ts, language, info.languageService);
     // },
   };
-};
+});
 
-export default create;
+export = plugin;
