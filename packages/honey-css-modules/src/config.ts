@@ -79,10 +79,11 @@ export function readConfigFile(cwd: string): HCMConfig {
       // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
       // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
       const resolvedPath = pathToFileURL(path).href;
-      // TODO: Fix problem with a old config file being read from import cache.
       module = JSON.parse(
         execFileSync('node', [
           '-e',
+          // NOTE: The module loaded by `import` is cached by Node.js runtime. So the user can't change the config file without restarting the process.
+          // This is an intentional limitation to simplify implementation.
           `import('${resolvedPath}')
             .then(m => process.stdout.write(
               JSON.stringify({
