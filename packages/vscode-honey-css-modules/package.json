@@ -3,7 +3,7 @@
   "displayName": "vscode-honey-css-modules",
   "description": "The VS Code extension for CSS Modules",
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "repository": {
     "type": "git",
     "url": "https://github.com/mizdra/honey-css-modules.git",
@@ -13,7 +13,7 @@
   "publisher": "mizdra",
   "license": "MIT",
   "private": true,
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build-watch": "npm run build -- --watch --preserveWatchOutput"
