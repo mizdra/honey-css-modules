@@ -81,25 +81,25 @@ describe('Go to Definition', async () => {
         { file: formatPath(iff.paths['a.module.css']), start: { line: 6, offset: 8 }, end: { line: 6, offset: 11 } },
       ],
     },
+    {
+      name: 'b_1',
+      file: iff.paths['a.ts'],
+      line: 5,
+      offset: 8,
+      expected: [
+        { file: formatPath(iff.paths['b.module.css']), start: { line: 1, offset: 2 }, end: { line: 1, offset: 5 } },
+      ],
+    },
+    {
+      name: 'b_2',
+      file: iff.paths['a.ts'],
+      line: 6,
+      offset: 8,
+      expected: [
+        { file: formatPath(iff.paths['b.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      ],
+    },
     // TODO: Pass this test cases
-    // {
-    //   name: 'b_1',
-    //   file: iff.paths['a.ts'],
-    //   line: 5,
-    //   offset: 8,
-    //   expected: [
-    //     { file: formatPath(iff.paths['b.module.css']), start: { line: 1, offset: 2 }, end: { line: 1, offset: 5 } },
-    //   ],
-    // },
-    // {
-    //   name: 'b_2',
-    //   file: iff.paths['a.ts'],
-    //   line: 6,
-    //   offset: 8,
-    //   expected: [
-    //     { file: formatPath(iff.paths['b.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
-    //   ],
-    // },
     // {
     //   name: 'c_1',
     //   file: iff.paths['a.ts'],

@@ -14,7 +14,6 @@ export interface HCMConfig {
   arbitraryExtensions?: boolean | undefined;
   dashedIdents?: boolean | undefined;
   logLevel?: 'debug' | 'info' | 'silent' | undefined;
-  cwd?: string | undefined;
 }
 
 export function defineConfig(config: HCMConfig): HCMConfig {
@@ -112,13 +111,13 @@ export interface ResolvedHCMConfig {
   cwd: string;
 }
 
-export function resolveConfig(config: HCMConfig): ResolvedHCMConfig {
+export function resolveConfig(config: HCMConfig, cwd: string): ResolvedHCMConfig {
   return {
     ...config,
     alias: config.alias ?? {},
     arbitraryExtensions: config.arbitraryExtensions ?? false,
     dashedIdents: config.dashedIdents ?? false,
     logLevel: config.logLevel ?? 'info',
-    cwd: config.cwd ?? process.cwd(),
+    cwd,
   };
 }
