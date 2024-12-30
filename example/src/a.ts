@@ -1,5 +1,8 @@
 import styles from './a.module.css';
-
-styles.a_1; // OK
-styles.a_2; // OK
-styles.a_3; // OK in editor, but NG in `tsc`
+styles.a_1;
+styles.a_2;
+styles.a_3;
+styles.b_1;
+styles.b_2;
+styles.c_1;
+styles.c_alias;

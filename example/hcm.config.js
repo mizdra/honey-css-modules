@@ -1,7 +1,5 @@
-// @ts-check
-import { defineConfig } from 'honey-css-modules';
-
-export default defineConfig({
+// Define config without `defineConfig` to simplify tsserver.log
+export default {
   pattern: 'src/**/*.module.css',
   dtsOutDir: 'generated',
-});
+};
