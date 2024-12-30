@@ -1,7 +1,8 @@
 {
   "files": [],
   "compilerOptions": {
-    "noEmit": true
+    /* Emit */
+    "noEmit": true /* Disable emitting files from a compilation. */
   },
   "references": [
     {

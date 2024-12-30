@@ -2,6 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "exclude": ["node_modules", "dist", "bin"],
   "compilerOptions": {
+    /* Projects */
+    "composite": true /* Enable constraints that allow a TypeScript project to be used with project references. */,
+
     /* Language and Environment */
     "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "lib": [
@@ -12,5 +15,10 @@
     "module": "NodeNext" /* Specify what module code is generated. */,
     // If --module=NodeNext, --moduleResolution=NodeNext can be omitted. However, it is set just in case.
     "moduleResolution": "NodeNext" /* Specify how TypeScript looks up a file from a given module specifier. */
-  }
+  },
+  "references": [
+    {
+      "path": "../ts-honey-css-modules-plugin/tsconfig.json"
+    }
+  ]
 }
