@@ -15,11 +15,9 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "build-watch": "npm run build -- --watch --preserveWatchOutput",
     "e2e": "run-s -c e2e:build e2e:vitest",
     "e2e:build": "npm run build",
-    "e2e:vitest": "vitest --project e2e",
-    "e2e-watch": "run-p build-watch 'e2e:vitest -- --clearScreen=false'"
+    "e2e:vitest": "vitest --project e2e"
   },
   "engines": {
     "node": ">=22.0.0"
