@@ -74,7 +74,11 @@ export function createDts(
     if (tokenImporter.type === 'import') {
       code += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
-      code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.name}'] }\n`;
+      if (tokenImporter.localName === undefined) {
+        code += `  & Pick<(typeof import('${specifier}'))['default'], '${tokenImporter.name}'>\n`;
+      } else {
+        code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.name}'] }\n`;
+      }
     }
   }
   code += '>;\nexport default styles;\n';

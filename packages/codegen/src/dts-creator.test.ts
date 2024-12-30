@@ -82,7 +82,7 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: './a.module.css' },
-            { type: 'value', from: './b.module.css', name: 'imported1', localName: 'imported1' },
+            { type: 'value', from: './b.module.css', name: 'imported1' },
             { type: 'value', from: './c.module.css', name: 'imported2', localName: 'aliasedImported2' },
           ],
         },
@@ -92,7 +92,7 @@ describe('createDts', () => {
       {
         "code": "declare const styles: Readonly<
         & (typeof import('./a.module.css'))['default']
-        & { imported1: (typeof import('./b.module.css'))['default']['imported1'] }
+        & Pick<(typeof import('./b.module.css'))['default'], 'imported1'>
         & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
       >;
       export default styles;
@@ -146,7 +146,7 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: '@/a.module.css' },
-            { type: 'value', from: '@/b.module.css', name: 'imported1', localName: 'imported1' },
+            { type: 'value', from: '@/b.module.css', name: 'imported1' },
             { type: 'value', from: '@/c.module.css', name: 'imported2', localName: 'aliasedImported2' },
           ],
         },
@@ -156,7 +156,7 @@ describe('createDts', () => {
       {
         "code": "declare const styles: Readonly<
         & (typeof import('./a.module.css'))['default']
-        & { imported1: (typeof import('./b.module.css'))['default']['imported1'] }
+        & Pick<(typeof import('./b.module.css'))['default'], 'imported1'>
         & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
       >;
       export default styles;
