@@ -48,9 +48,9 @@ async function processFile(
  * @throws {ResolveError}
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(config: HCMConfig): Promise<void> {
-  const resolvedConfig = resolveConfig(config);
-  const { pattern, alias, cwd } = resolvedConfig;
+export async function runHCM(config: HCMConfig, cwd: string): Promise<void> {
+  const resolvedConfig = resolveConfig(config, cwd);
+  const { pattern, alias } = resolvedConfig;
   const resolver = createResolver(alias, cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 

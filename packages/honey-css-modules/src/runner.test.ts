@@ -10,11 +10,7 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.module.css': '.b1 { color: blue; }',
     });
-    await runHCM({
-      pattern: 'src/**/*.module.css',
-      dtsOutDir: 'generated',
-      cwd: iff.rootDir,
-    });
+    await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir);
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles: Readonly<
         & { a1: string }
@@ -35,11 +31,7 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM({
-      pattern: 'src/**/*.module.css',
-      dtsOutDir: 'generated',
-      cwd: iff.rootDir,
-    });
+    await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir);
     await expect(access(iff.join('generated/src/a.module.css.d.ts'))).resolves.not.toThrow();
     await expect(access(iff.join('generated/src/b.css.d.ts'))).rejects.toThrow();
   });
@@ -49,11 +41,7 @@ describe('runHCM', () => {
       'src/b.module.css': '.b1 { color: blue; }',
       'src/c.css': '.c1 { color: red; }',
     });
-    await runHCM({
-      pattern: 'src/**/*.module.css',
-      dtsOutDir: 'generated',
-      cwd: iff.rootDir,
-    });
+    await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir);
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles: Readonly<
         & (typeof import('./b.module.css'))['default']
@@ -67,24 +55,16 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 { color: red; }',
     });
     await chmod(iff.paths['src/a.module.css'], 0o200); // Remove read permission
-    await expect(
-      runHCM({
-        pattern: 'src/**/*.module.css',
-        dtsOutDir: 'generated',
-        cwd: iff.rootDir,
-      }),
-    ).rejects.toThrow(ReadCSSModuleFileError);
+    await expect(runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir)).rejects.toThrow(
+      ReadCSSModuleFileError,
+    );
   });
   test('support ./ in `pattern`', async () => {
     const iff = await createIFF({
       'src/a.module.css': `@import './b.css'; .a1 { color: red; }`,
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM({
-      pattern: './src/**/*.module.css',
-      dtsOutDir: 'generated',
-      cwd: iff.rootDir,
-    });
+    await runHCM({ pattern: './src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir);
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles: Readonly<
         & { a1: string }

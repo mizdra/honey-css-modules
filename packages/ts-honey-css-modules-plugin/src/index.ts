@@ -26,7 +26,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   }
 
   // const { proxyLanguageService } = await import('./language-service.js');
-  const resolvedConfig = resolveConfig(config);
+  const resolvedConfig = resolveConfig(config, cwd);
   const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
