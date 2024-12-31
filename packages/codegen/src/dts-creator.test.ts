@@ -93,7 +93,7 @@ describe('createDts', () => {
         "code": "declare const styles: Readonly<
         & (typeof import('./a.module.css'))['default']
         & Pick<(typeof import('./b.module.css'))['default'], 'imported1'>
-        & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
+        & Pick<(typeof import('./c.module.css'))['default'], 'imported2'>
       >;
       export default styles;
       ",
@@ -147,7 +147,13 @@ describe('createDts', () => {
           tokenImporters: [
             { type: 'import', from: '@/a.module.css' },
             { type: 'value', from: '@/b.module.css', name: 'imported1' },
-            { type: 'value', from: '@/c.module.css', name: 'imported2', localName: 'aliasedImported2' },
+            {
+              type: 'value',
+              from: '@/c.module.css',
+              name: 'imported2',
+              localName: 'aliasedImported2',
+              localLoc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+            },
           ],
         },
         { ...options, resolver },
@@ -162,9 +168,15 @@ describe('createDts', () => {
       export default styles;
       ",
         "mapping": {
-          "generatedOffsets": [],
-          "lengths": [],
-          "sourceOffsets": [],
+          "generatedOffsets": [
+            155,
+          ],
+          "lengths": [
+            16,
+          ],
+          "sourceOffsets": [
+            0,
+          ],
         },
       }
     `);

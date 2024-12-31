@@ -74,9 +74,12 @@ export function createDts(
     if (tokenImporter.type === 'import') {
       code += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
-      if (tokenImporter.localName === undefined) {
+      if (tokenImporter.localName === undefined || tokenImporter.localLoc === undefined) {
         code += `  & Pick<(typeof import('${specifier}'))['default'], '${tokenImporter.name}'>\n`;
       } else {
+        mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
+        mapping.generatedOffsets.push(code.length + 6);
+        mapping.lengths.push(tokenImporter.localName.length);
         code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.name}'] }\n`;
       }
     }

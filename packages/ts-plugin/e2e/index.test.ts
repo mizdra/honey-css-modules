@@ -108,16 +108,15 @@ describe('Go to Definition', async () => {
         { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
       ],
     },
-    // TODO: Pass this test cases
-    // {
-    //   name: 'c_alias',
-    //   file: iff.paths['a.ts'],
-    //   line: 8,
-    //   offset: 8,
-    //   expected: [
-    //     { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
-    //   ],
-    // },
+    {
+      name: 'c_alias',
+      file: iff.paths['a.ts'],
+      line: 8,
+      offset: 8,
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 20 }, end: { line: 2, offset: 27 } },
+      ],
+    },
   ])('Go to definition of $name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendDefinitionAndBoundSpan({
       file,
