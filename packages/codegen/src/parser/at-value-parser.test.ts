@@ -128,6 +128,18 @@ describe('parseAtValue', () => {
           "type": "valueImportDeclaration",
           "values": [
             {
+              "localLoc": {
+                "end": {
+                  "column": 25,
+                  "line": 8,
+                  "offset": 223,
+                },
+                "start": {
+                  "column": 19,
+                  "line": 8,
+                  "offset": 217,
+                },
+              },
               "localName": "alias1",
               "name": "import3",
             },
@@ -157,6 +169,18 @@ describe('parseAtValue', () => {
               "name": "withSpace2",
             },
             {
+              "localLoc": {
+                "end": {
+                  "column": 46,
+                  "line": 10,
+                  "offset": 315,
+                },
+                "start": {
+                  "column": 40,
+                  "line": 10,
+                  "offset": 309,
+                },
+              },
               "localName": "alias2",
               "name": "withSpace3",
             },

@@ -104,6 +104,11 @@ export interface ValueTokenImporter {
    * @example `@value a as b from './a.module.css'` would have `localName` as `'b'`.
    */
   localName?: string;
+  /**
+   * The location of the `localName` in the source file.
+   * This is `undefined` when `localName` is `undefined`.
+   */
+  localLoc?: Location;
 }
 
 export type TokenImporter = ImportTokenImporter | ValueTokenImporter;
