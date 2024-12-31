@@ -11,7 +11,11 @@ interface ValueDeclaration {
 
 interface ValueImportDeclaration {
   type: 'valueImportDeclaration';
-  values: { name: string; localName?: string }[];
+  values: {
+    name: string;
+    localName?: string;
+    localLoc?: Location;
+  }[];
   from: string;
 }
 
@@ -19,7 +23,7 @@ type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
 
 const VALUE_IMPORT_PATTERN = /^(.+?)\s+from\s+("[^"]*"|'[^']*')$/du;
 const VALUE_DEFINITION_PATTERN = /(?:\s+|^)([\w-]+):?(.*?)$/du;
-const IMPORTED_ITEM_PATTERN = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
+const IMPORTED_ITEM_PATTERN = /^([\w-]+)(?:\s+as\s+([\w-]+))?/du;
 
 /**
  * Parse the `@value` rule.
@@ -46,12 +50,40 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
   if (matchesForValueImport) {
     const [, importedItems, from] = matchesForValueImport as [string, string, string];
 
+    let lastItemIndex = 0;
     const values = importedItems.split(/\s*,\s*/u).map((alias) => {
+      const currentItemIndex = importedItems.indexOf(alias, lastItemIndex);
+      lastItemIndex = currentItemIndex;
       const matchesForImportedItem = alias.match(IMPORTED_ITEM_PATTERN);
 
       if (matchesForImportedItem) {
         const [, name, localName] = matchesForImportedItem as [string, string, string | undefined];
-        return localName === undefined ? { name } : { name, localName };
+        if (localName === undefined) {
+          return { name };
+        } else {
+          const localNameIndex = matchesForImportedItem.indices![2]![0];
+          const start = {
+            line: atValue.source!.start!.line,
+            column:
+              atValue.source!.start!.column +
+              6 +
+              (atValue.raws.afterName?.length ?? 0) +
+              currentItemIndex +
+              localNameIndex,
+            offset:
+              atValue.source!.start!.offset +
+              6 +
+              (atValue.raws.afterName?.length ?? 0) +
+              currentItemIndex +
+              localNameIndex,
+          };
+          const end = {
+            line: start.line,
+            column: start.column + localName.length,
+            offset: start.offset + localName.length,
+          };
+          return { name, localName, localLoc: { start, end } };
+        }
       } else {
         throw new AtValueInvalidError(atValue);
       }

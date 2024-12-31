@@ -285,6 +285,18 @@ describe('parseCSSModuleCode', () => {
           },
           {
             "from": "./a.module.css",
+            "localLoc": {
+              "end": {
+                "column": 21,
+                "line": 2,
+                "offset": 46,
+              },
+              "start": {
+                "column": 16,
+                "line": 2,
+                "offset": 41,
+              },
+            },
             "localName": "alias",
             "name": "b",
             "type": "value",
