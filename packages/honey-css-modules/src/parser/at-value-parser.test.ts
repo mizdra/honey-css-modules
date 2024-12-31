@@ -15,6 +15,7 @@ describe('parseAtValue', () => {
         @value import from "test.css";
         @value import1, import2 from "test.css";
         @value import as alias from "test.css";
+        @value  withSpace: #000;
         /* NOTE: \`@value d, e from moduleName;\` is not supported. */
       `),
     );
@@ -143,6 +144,24 @@ describe('parseAtValue', () => {
             "name": "import",
           },
         ],
+      }
+    `);
+    expect(parseAtValue(atValues[8]!)).toMatchInlineSnapshot(`
+      {
+        "loc": {
+          "end": {
+            "column": 18,
+            "line": 9,
+            "offset": 256,
+          },
+          "start": {
+            "column": 9,
+            "line": 9,
+            "offset": 247,
+          },
+        },
+        "name": "withSpace",
+        "type": "valueDeclaration",
       }
     `);
   });
