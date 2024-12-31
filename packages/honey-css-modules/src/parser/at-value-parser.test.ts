@@ -20,30 +20,90 @@ describe('parseAtValue', () => {
     );
     expect(parseAtValue(atValues[0]!)).toMatchInlineSnapshot(`
       {
+        "loc": {
+          "end": {
+            "column": 13,
+            "line": 1,
+            "offset": 12,
+          },
+          "start": {
+            "column": 8,
+            "line": 1,
+            "offset": 7,
+          },
+        },
         "name": "basic",
         "type": "valueDeclaration",
       }
     `);
     expect(parseAtValue(atValues[1]!)).toMatchInlineSnapshot(`
       {
+        "loc": {
+          "end": {
+            "column": 20,
+            "line": 2,
+            "offset": 39,
+          },
+          "start": {
+            "column": 8,
+            "line": 2,
+            "offset": 27,
+          },
+        },
         "name": "withoutColon",
         "type": "valueDeclaration",
       }
     `);
     expect(parseAtValue(atValues[2]!)).toMatchInlineSnapshot(`
       {
+        "loc": {
+          "end": {
+            "column": 13,
+            "line": 3,
+            "offset": 58,
+          },
+          "start": {
+            "column": 8,
+            "line": 3,
+            "offset": 53,
+          },
+        },
         "name": "empty",
         "type": "valueDeclaration",
       }
     `);
     expect(parseAtValue(atValues[3]!)).toMatchInlineSnapshot(`
       {
+        "loc": {
+          "end": {
+            "column": 15,
+            "line": 4,
+            "offset": 75,
+          },
+          "start": {
+            "column": 8,
+            "line": 4,
+            "offset": 68,
+          },
+        },
         "name": "comment",
         "type": "valueDeclaration",
       }
     `);
     expect(parseAtValue(atValues[4]!)).toMatchInlineSnapshot(`
       {
+        "loc": {
+          "end": {
+            "column": 15,
+            "line": 5,
+            "offset": 105,
+          },
+          "start": {
+            "column": 8,
+            "line": 5,
+            "offset": 98,
+          },
+        },
         "name": "complex",
         "type": "valueDeclaration",
       }

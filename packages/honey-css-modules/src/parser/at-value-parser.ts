@@ -1,10 +1,12 @@
 import type { AtRule } from 'postcss';
 import { AtValueInvalidError } from '../error.js';
+import type { Location } from './location.js';
 
 interface ValueDeclaration {
   type: 'valueDeclaration';
   name: string;
   // value: string; // unused
+  loc: Location;
 }
 
 interface ValueImportDeclaration {
@@ -69,7 +71,17 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
   if (matchesForValueDefinitions) {
     const [, name, _value] = matchesForValueDefinitions;
     if (name === undefined) throw new Error(`unreachable`);
-    return { type: 'valueDeclaration', name };
+    const start = {
+      line: atValue.source!.start!.line,
+      column: atValue.source!.start!.column + atValue.toString().indexOf(name, 7),
+      offset: atValue.source!.start!.offset + atValue.toString().indexOf(name, 7),
+    };
+    const end = {
+      line: start.line,
+      column: start.column + name.length,
+      offset: start.offset + name.length,
+    };
+    return { type: 'valueDeclaration', name, loc: { start, end } };
   }
   throw new AtValueInvalidError(atValue);
 }

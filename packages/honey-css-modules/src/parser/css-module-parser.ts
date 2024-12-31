@@ -3,7 +3,7 @@ import { parse } from 'postcss';
 import { CSSModuleParseError } from '../error.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
-import { getTokenLocationOfAtValue, getTokenLocationOfClassSelector, type Location } from './location.js';
+import { getTokenLocationOfClassSelector, type Location } from './location.js';
 import { parseRule } from './rule-parser.js';
 
 type AtImport = AtRule & { name: 'import' };
@@ -42,7 +42,7 @@ function collectTokens(ast: Root) {
     } else if (isAtValueNode(node)) {
       const parsedAtValue = parseAtValue(node);
       if (parsedAtValue.type === 'valueDeclaration') {
-        localTokens.push({ name: parsedAtValue.name, loc: getTokenLocationOfAtValue(node, parsedAtValue.name) });
+        localTokens.push({ name: parsedAtValue.name, loc: parsedAtValue.loc });
       } else if (parsedAtValue.type === 'valueImportDeclaration') {
         for (const value of parsedAtValue.values) {
           tokenImporters.push({
