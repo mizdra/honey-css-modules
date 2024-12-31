@@ -4,7 +4,7 @@ import { parseRule as _parseRule } from './rule-parser.js';
 
 function parseRule(ruleStr: string): string[] {
   const [rule] = createRules(createRoot(ruleStr));
-  return _parseRule(rule!).map((className) => className.value);
+  return _parseRule(rule!).map((classSelector) => classSelector.name);
 }
 
 describe('parseRule', () => {
