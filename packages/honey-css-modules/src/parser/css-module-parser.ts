@@ -91,10 +91,10 @@ export interface ValueTokenImporter {
   specifier: string;
   /**
    * The name of the token in the file from which it is imported.
-   * @example `@value a from './a.module.css'` would have `importedName` as `'a'`.
-   * @example `@value a as b from './a.module.css'` would have `importedName` as `'a'`.
+   * @example `@value a from './a.module.css'` would have `name` as `'a'`.
+   * @example `@value a as b from './a.module.css'` would have `name` as `'a'`.
    */
-  importedName: string;
+  name: string;
   /**
    * The name of the token in the current file.
    * @example `@value a from './a.module.css'` would not have `localName`.

@@ -82,8 +82,8 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', specifier: './a.module.css' },
-            { type: 'value', specifier: './b.module.css', importedName: 'imported1', localName: 'imported1' },
-            { type: 'value', specifier: './c.module.css', importedName: 'imported2', localName: 'aliasedImported2' },
+            { type: 'value', specifier: './b.module.css', name: 'imported1', localName: 'imported1' },
+            { type: 'value', specifier: './c.module.css', name: 'imported2', localName: 'aliasedImported2' },
           ],
         },
         options,
@@ -146,8 +146,8 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', specifier: '@/a.module.css' },
-            { type: 'value', specifier: '@/b.module.css', importedName: 'imported1', localName: 'imported1' },
-            { type: 'value', specifier: '@/c.module.css', importedName: 'imported2', localName: 'aliasedImported2' },
+            { type: 'value', specifier: '@/b.module.css', name: 'imported1', localName: 'imported1' },
+            { type: 'value', specifier: '@/c.module.css', name: 'imported2', localName: 'aliasedImported2' },
           ],
         },
         { ...options, resolver },
@@ -177,7 +177,7 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', specifier: 'external.css' },
-            { type: 'value', specifier: 'external.css', importedName: 'imported', localName: 'imported' },
+            { type: 'value', specifier: 'external.css', name: 'imported', localName: 'imported' },
           ],
         },
         { ...options, isExternalFile: () => true },

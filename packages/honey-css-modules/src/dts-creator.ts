@@ -74,7 +74,7 @@ export function createDts(
     if (tokenImporter.type === 'import') {
       code += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
-      code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.importedName}'] }\n`;
+      code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.name}'] }\n`;
     }
   }
   code += '>;\nexport default styles;\n';
