@@ -16,7 +16,6 @@ describe('parseAtValue', () => {
         @value import1, import2 from "test.css";
         @value import as alias from "test.css";
         @value  withSpace: #000;
-        /* NOTE: \`@value d, e from moduleName;\` is not supported. */
       `),
     );
     const result = atValues.map(parseAtValue);

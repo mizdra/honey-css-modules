@@ -17,7 +17,7 @@ interface ValueImportDeclaration {
 
 type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
 
-const matchImports = /^(.+?)\s+from\s+("[^"]*"|'[^']*'|[\w-]+)$/du;
+const matchImports = /^(.+?)\s+from\s+("[^"]*"|'[^']*')$/du;
 const matchValueDefinition = /(?:\s+|^)([\w-]+):?(.*?)$/du;
 const matchImport = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
 
@@ -40,6 +40,7 @@ const matchImport = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
  * THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 // MEMO: honey-css-modules does not support `@value` with parentheses (e.g., `@value (a, b) from ',,,';`) to simplify the implementation.
+// MEMO: honey-css-modules does not support `@value` with variable module name (e.g., `@value a from moduleName;`) to simplify the implementation.
 export function parseAtValue(atValue: AtRule): ParsedAtValue {
   const matchesForImports = atValue.params.match(matchImports);
   if (matchesForImports) {
