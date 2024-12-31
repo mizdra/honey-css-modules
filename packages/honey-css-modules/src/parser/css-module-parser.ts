@@ -65,7 +65,7 @@ export interface Token {
   /** The token name. */
   name: string;
   /** The location of the token in the source file. */
-  loc: Location | undefined;
+  loc: Location;
 }
 
 /**
