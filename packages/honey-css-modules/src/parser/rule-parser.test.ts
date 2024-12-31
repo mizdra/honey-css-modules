@@ -1,3 +1,4 @@
+import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { createRoot, createRules } from '../test/ast.js';
 import { parseRule as _parseRule } from './rule-parser.js';
@@ -8,8 +9,313 @@ function parseRule(ruleStr: string): string[] {
 }
 
 describe('parseRule', () => {
-  test('The default mode is local and the class names are local by default', () => {
-    expect(parseRule('.local1 {}')).toStrictEqual(['local1']);
+  test('collect local class selectors', () => {
+    const rules = createRules(
+      createRoot(dedent`
+        .basic {}
+        .cascading {}
+        .cascading {}
+        .pseudo_class_1 {}
+        .pseudo_class_2:hover {}
+        :not(.pseudo_class_3) {}
+        .multiple_selector_1.multiple_selector_2 {}
+        .combinator_1 + .combinator_2 {}
+        @supports (display: flex) {
+          @media screen and (min-width: 900px) {
+            .at_rule {}
+          }
+        }
+        .selector_list_1, .selector_list_2 {}
+        :local(.local_class_name_1) {}
+        .with_newline_1,
+        .with_newline_2
+          + .with_newline_3, {}
+      `),
+    );
+    const result = rules.map(_parseRule);
+    expect(result).toMatchInlineSnapshot(`
+      [
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 7,
+                "line": 1,
+                "offset": 6,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+                "offset": 1,
+              },
+            },
+            "name": "basic",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 11,
+                "line": 2,
+                "offset": 20,
+              },
+              "start": {
+                "column": 2,
+                "line": 2,
+                "offset": 11,
+              },
+            },
+            "name": "cascading",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 11,
+                "line": 3,
+                "offset": 34,
+              },
+              "start": {
+                "column": 2,
+                "line": 3,
+                "offset": 25,
+              },
+            },
+            "name": "cascading",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 16,
+                "line": 4,
+                "offset": 53,
+              },
+              "start": {
+                "column": 2,
+                "line": 4,
+                "offset": 39,
+              },
+            },
+            "name": "pseudo_class_1",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 16,
+                "line": 5,
+                "offset": 72,
+              },
+              "start": {
+                "column": 2,
+                "line": 5,
+                "offset": 58,
+              },
+            },
+            "name": "pseudo_class_2",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 21,
+                "line": 6,
+                "offset": 102,
+              },
+              "start": {
+                "column": 7,
+                "line": 6,
+                "offset": 88,
+              },
+            },
+            "name": "pseudo_class_3",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 21,
+                "line": 7,
+                "offset": 127,
+              },
+              "start": {
+                "column": 2,
+                "line": 7,
+                "offset": 108,
+              },
+            },
+            "name": "multiple_selector_1",
+          },
+          {
+            "loc": {
+              "end": {
+                "column": 41,
+                "line": 7,
+                "offset": 147,
+              },
+              "start": {
+                "column": 22,
+                "line": 7,
+                "offset": 128,
+              },
+            },
+            "name": "multiple_selector_2",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 14,
+                "line": 8,
+                "offset": 164,
+              },
+              "start": {
+                "column": 2,
+                "line": 8,
+                "offset": 152,
+              },
+            },
+            "name": "combinator_1",
+          },
+          {
+            "loc": {
+              "end": {
+                "column": 30,
+                "line": 8,
+                "offset": 180,
+              },
+              "start": {
+                "column": 18,
+                "line": 8,
+                "offset": 168,
+              },
+            },
+            "name": "combinator_2",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 13,
+                "line": 11,
+                "offset": 265,
+              },
+              "start": {
+                "column": 6,
+                "line": 11,
+                "offset": 258,
+              },
+            },
+            "name": "at_rule",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 17,
+                "line": 14,
+                "offset": 291,
+              },
+              "start": {
+                "column": 2,
+                "line": 14,
+                "offset": 276,
+              },
+            },
+            "name": "selector_list_1",
+          },
+          {
+            "loc": {
+              "end": {
+                "column": 35,
+                "line": 14,
+                "offset": 309,
+              },
+              "start": {
+                "column": 20,
+                "line": 14,
+                "offset": 294,
+              },
+            },
+            "name": "selector_list_2",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 27,
+                "line": 15,
+                "offset": 339,
+              },
+              "start": {
+                "column": 9,
+                "line": 15,
+                "offset": 321,
+              },
+            },
+            "name": "local_class_name_1",
+          },
+        ],
+        [
+          {
+            "loc": {
+              "end": {
+                "column": 16,
+                "line": 16,
+                "offset": 359,
+              },
+              "start": {
+                "column": 2,
+                "line": 16,
+                "offset": 345,
+              },
+            },
+            "name": "with_newline_1",
+          },
+          {
+            "loc": {
+              "end": {
+                "column": 16,
+                "line": 17,
+                "offset": 376,
+              },
+              "start": {
+                "column": 2,
+                "line": 17,
+                "offset": 362,
+              },
+            },
+            "name": "with_newline_2",
+          },
+          {
+            "loc": {
+              "end": {
+                "column": 20,
+                "line": 18,
+                "offset": 396,
+              },
+              "start": {
+                "column": 6,
+                "line": 18,
+                "offset": 382,
+              },
+            },
+            "name": "with_newline_3",
+          },
+        ],
+      ]
+    `);
   });
   describe('`:local(...)` and `:global(...)`', () => {
     test('The class names wrapped by `:global(...)` is global', () => {
