@@ -18,26 +18,73 @@ describe('parseAtValue', () => {
         /* NOTE: \`@value d, e from moduleName;\` is not supported. */
       `),
     );
-    expect(parseAtValue(atValues[0]!)).toStrictEqual({ type: 'valueDeclaration', name: 'basic' });
-    expect(parseAtValue(atValues[1]!)).toStrictEqual({ type: 'valueDeclaration', name: 'withoutColon' });
-    expect(parseAtValue(atValues[2]!)).toStrictEqual({ type: 'valueDeclaration', name: 'empty' });
-    expect(parseAtValue(atValues[3]!)).toStrictEqual({ type: 'valueDeclaration', name: 'comment' });
-    expect(parseAtValue(atValues[4]!)).toStrictEqual({ type: 'valueDeclaration', name: 'complex' });
-    expect(parseAtValue(atValues[5]!)).toStrictEqual({
-      type: 'valueImportDeclaration',
-      values: [{ name: 'import' }],
-      from: 'test.css',
-    });
-    expect(parseAtValue(atValues[6]!)).toStrictEqual({
-      type: 'valueImportDeclaration',
-      values: [{ name: 'import1' }, { name: 'import2' }],
-      from: 'test.css',
-    });
-    expect(parseAtValue(atValues[7]!)).toStrictEqual({
-      type: 'valueImportDeclaration',
-      values: [{ name: 'import', localName: 'alias' }],
-      from: 'test.css',
-    });
+    expect(parseAtValue(atValues[0]!)).toMatchInlineSnapshot(`
+      {
+        "name": "basic",
+        "type": "valueDeclaration",
+      }
+    `);
+    expect(parseAtValue(atValues[1]!)).toMatchInlineSnapshot(`
+      {
+        "name": "withoutColon",
+        "type": "valueDeclaration",
+      }
+    `);
+    expect(parseAtValue(atValues[2]!)).toMatchInlineSnapshot(`
+      {
+        "name": "empty",
+        "type": "valueDeclaration",
+      }
+    `);
+    expect(parseAtValue(atValues[3]!)).toMatchInlineSnapshot(`
+      {
+        "name": "comment",
+        "type": "valueDeclaration",
+      }
+    `);
+    expect(parseAtValue(atValues[4]!)).toMatchInlineSnapshot(`
+      {
+        "name": "complex",
+        "type": "valueDeclaration",
+      }
+    `);
+    expect(parseAtValue(atValues[5]!)).toMatchInlineSnapshot(`
+      {
+        "from": "test.css",
+        "type": "valueImportDeclaration",
+        "values": [
+          {
+            "name": "import",
+          },
+        ],
+      }
+    `);
+    expect(parseAtValue(atValues[6]!)).toMatchInlineSnapshot(`
+      {
+        "from": "test.css",
+        "type": "valueImportDeclaration",
+        "values": [
+          {
+            "name": "import1",
+          },
+          {
+            "name": "import2",
+          },
+        ],
+      }
+    `);
+    expect(parseAtValue(atValues[7]!)).toMatchInlineSnapshot(`
+      {
+        "from": "test.css",
+        "type": "valueImportDeclaration",
+        "values": [
+          {
+            "localName": "alias",
+            "name": "import",
+          },
+        ],
+      }
+    `);
   });
   test('invalid', () => {
     const [atValue1, atValue2] = createAtValues(
