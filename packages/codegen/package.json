@@ -22,11 +22,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "dev": "npm run build && cd ../../example && node ../packages/codegen/bin/hcm.mjs",
-    "test": "vitest --project unit",
-    "e2e": "run-s -c e2e:build e2e:vitest",
-    "e2e:build": "npm run build",
-    "e2e:vitest": "vitest --project e2e"
+    "dev": "npm run build && cd ../../example && node ../packages/codegen/bin/hcm.mjs"
   },
   "engines": {
     "node": ">=22.0.0"

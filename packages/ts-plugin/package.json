@@ -14,10 +14,7 @@
   "private": true,
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "e2e": "run-s -c e2e:build e2e:vitest",
-    "e2e:build": "npm run build",
-    "e2e:vitest": "vitest --project e2e"
+    "build": "tsc -p tsconfig.build.json"
   },
   "engines": {
     "node": ">=22.0.0"
