@@ -39,35 +39,6 @@ describe('createDts', () => {
         {
           filename: '/test.module.css',
           localTokens: [
-            { name: 'local1', loc: undefined },
-            { name: 'local2', loc: undefined },
-          ],
-          tokenImporters: [],
-        },
-        options,
-      ),
-    ).toMatchInlineSnapshot(`
-      {
-        "code": "declare const styles: Readonly<
-        & { local1: string }
-        & { local2: string }
-      >;
-      export default styles;
-      ",
-        "mapping": {
-          "generatedOffsets": [],
-          "lengths": [],
-          "sourceOffsets": [],
-        },
-      }
-    `);
-  });
-  test('includes mapping if the token has location information', () => {
-    expect(
-      createDts(
-        {
-          filename: '/test.module.css',
-          localTokens: [
             {
               name: 'local1',
               loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
@@ -139,7 +110,7 @@ describe('createDts', () => {
       createDts(
         {
           filename: '/test.module.css',
-          localTokens: [{ name: 'local1', loc: undefined }],
+          localTokens: [{ name: 'local1', loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos } }],
           tokenImporters: [{ type: 'import', specifier: './a.module.css' }],
         },
         options,
@@ -153,9 +124,15 @@ describe('createDts', () => {
       export default styles;
       ",
         "mapping": {
-          "generatedOffsets": [],
-          "lengths": [],
-          "sourceOffsets": [],
+          "generatedOffsets": [
+            38,
+          ],
+          "lengths": [
+            6,
+          ],
+          "sourceOffsets": [
+            0,
+          ],
         },
       }
     `);

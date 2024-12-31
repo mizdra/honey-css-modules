@@ -64,11 +64,9 @@ export function createDts(
   let code = 'declare const styles: Readonly<\n';
   const mapping: Mapping = { generatedOffsets: [], sourceOffsets: [], lengths: [] };
   for (const token of localTokens) {
-    if (token.loc) {
-      mapping.sourceOffsets.push(token.loc.start.offset);
-      mapping.generatedOffsets.push(code.length + 6);
-      mapping.lengths.push(token.name.length);
-    }
+    mapping.sourceOffsets.push(token.loc.start.offset);
+    mapping.generatedOffsets.push(code.length + 6);
+    mapping.lengths.push(token.name.length);
     code += `  & { ${token.name}: string }\n`;
   }
   for (const tokenImporter of tokenImporters) {

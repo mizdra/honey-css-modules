@@ -25,7 +25,7 @@ export interface Location {
  * @returns The location of the `@value` rule.
  * @example If `@value a from './a.module.css'`, it returns `{ start: { line: 1, column: 8 }, end: { line: 1, column: 9 } }`.
  */
-export function getTokenLocationOfAtValue(atValue: AtRule, name: string): Location | undefined {
+export function getTokenLocationOfAtValue(atValue: AtRule, name: string): Location {
   // The node derived from `postcss.parse` always has location information.
   const start = {
     line: atValue.source!.start!.line,
