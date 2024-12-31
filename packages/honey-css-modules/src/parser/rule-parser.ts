@@ -1,6 +1,7 @@
 import type { Rule } from 'postcss';
 import selectorParser from 'postcss-selector-parser';
 import { ScopeError } from '../error.js';
+import { type Location } from './location.js';
 
 /**
  * Collect local class names from the AST.
@@ -55,11 +56,37 @@ function collectLocalClassNames(root: selectorParser.Root): selectorParser.Class
   }
 }
 
+interface ClassSelector {
+  /** The class name. It does not include the leading dot. */
+  name: string;
+  /** The location of the class selector. */
+  loc: Location;
+}
+
 /**
- * Parse a rule and collect local class names.
+ * Parse a rule and collect local class selectors.
  * @throws {ScopeError}
  */
-export function parseRule(rule: Rule): selectorParser.ClassName[] {
+export function parseRule(rule: Rule): ClassSelector[] {
   const root = selectorParser().astSync(rule);
-  return collectLocalClassNames(root);
+  return collectLocalClassNames(root).map((className) => {
+    // If `rule` is `.a, .b { color: red; }` and `className` is `.b`,
+    // `rule.source` is `{ start: { line: 1, column: 1 }, end: { line: 1, column: 22 } }`
+    // And `className.source` is `{ start: { line: 1, column: 5 }, end: { line: 1, column: 6 } }`.
+    const start = {
+      line: rule.source!.start!.line + className.source!.start!.line - 1,
+      column: rule.source!.start!.column + className.source!.start!.column,
+      offset: rule.source!.start!.offset + className.sourceIndex + 1,
+    };
+    const end = {
+      // The end line is always the same as the start line, as a class selector cannot break in the middle.
+      line: start.line,
+      column: start.column + className.value.length,
+      offset: start.offset + className.value.length,
+    };
+    return {
+      name: className.value,
+      loc: { start, end },
+    };
+  });
 }

@@ -3,7 +3,7 @@ import { parse } from 'postcss';
 import { CSSModuleParseError } from '../error.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
-import { getTokenLocationOfClassSelector, type Location } from './location.js';
+import { type Location } from './location.js';
 import { parseRule } from './rule-parser.js';
 
 type AtImport = AtRule & { name: 'import' };
@@ -53,9 +53,9 @@ function collectTokens(ast: Root) {
         }
       }
     } else if (isRuleNode(node)) {
-      const localClassNames = parseRule(node);
-      for (const localClassName of localClassNames) {
-        localTokens.push({ name: localClassName.value, loc: getTokenLocationOfClassSelector(node, localClassName) });
+      const classSelectors = parseRule(node);
+      for (const classSelector of classSelectors) {
+        localTokens.push(classSelector);
       }
     }
   });
