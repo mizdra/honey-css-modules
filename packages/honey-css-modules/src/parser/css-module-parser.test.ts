@@ -281,7 +281,6 @@ describe('parseCSSModuleCode', () => {
           },
           {
             "importedName": "c",
-            "localName": "c",
             "specifier": "./a.module.css",
             "type": "value",
           },

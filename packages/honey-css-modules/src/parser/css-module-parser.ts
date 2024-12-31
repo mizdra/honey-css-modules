@@ -45,8 +45,7 @@ function collectTokens(ast: Root) {
           tokenImporters.push({
             type: 'value',
             specifier: parsedAtValue.from,
-            importedName: value.importedName,
-            localName: value.localName,
+            ...value,
           });
         }
       }
@@ -98,10 +97,10 @@ export interface ValueTokenImporter {
   importedName: string;
   /**
    * The name of the token in the current file.
-   * @example `@value a from './a.module.css'` would have `localName` as `'a'`.
+   * @example `@value a from './a.module.css'` would not have `localName`.
    * @example `@value a as b from './a.module.css'` would have `localName` as `'b'`.
    */
-  localName: string;
+  localName?: string;
 }
 
 export type TokenImporter = ImportTokenImporter | ValueTokenImporter;

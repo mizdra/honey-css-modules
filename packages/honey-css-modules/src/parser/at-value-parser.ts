@@ -9,7 +9,7 @@ interface ValueDeclaration {
 
 interface ValueImportDeclaration {
   type: 'valueImportDeclaration';
-  values: { importedName: string; localName: string }[];
+  values: { importedName: string; localName?: string }[];
   from: string;
 }
 
@@ -53,7 +53,7 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
         if (tokens) {
           const [, importedName, localName] = tokens;
           if (importedName === undefined) throw new Error('unreachable: `importedName` is undefined');
-          return { importedName, localName: localName ?? importedName };
+          return localName === undefined ? { importedName } : { importedName, localName };
         } else {
           throw new AtValueInvalidError(atValue);
         }
