@@ -6,15 +6,18 @@ import { parseAtValue } from './at-value-parser.js';
 import { getTokenLocationOfAtValue, getTokenLocationOfClassSelector, type Location } from './location.js';
 import { parseRule } from './rule-parser.js';
 
+type AtImport = AtRule & { name: 'import' };
+type AtValue = AtRule & { name: 'value' };
+
 function isAtRuleNode(node: Node): node is AtRule {
   return node.type === 'atrule';
 }
 
-function isAtImportNode(node: Node): node is AtRule {
+function isAtImportNode(node: Node): node is AtImport {
   return isAtRuleNode(node) && node.name === 'import';
 }
 
-function isAtValueNode(node: Node): node is AtRule {
+function isAtValueNode(node: Node): node is AtValue {
   return isAtRuleNode(node) && node.name === 'value';
 }
 
