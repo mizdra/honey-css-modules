@@ -1,4 +1,4 @@
-import type { AtRule, Rule } from 'postcss';
+import type { Rule } from 'postcss';
 import type { ClassName } from 'postcss-selector-parser';
 
 export interface Position {
@@ -30,26 +30,6 @@ export interface Location {
    */
   // TODO: Maybe it should be deleted since it is not used
   end: Position;
-}
-
-/**
- * Get the location of the token defined by `@value`.
- * @returns The location of the `@value` rule.
- * @example If `@value a from './a.module.css'`, it returns `{ start: { line: 1, column: 8 }, end: { line: 1, column: 9 } }`.
- */
-export function getTokenLocationOfAtValue(atValue: AtRule, name: string): Location {
-  // The node derived from `postcss.parse` always has location information.
-  const start = {
-    line: atValue.source!.start!.line,
-    column: atValue.source!.start!.column + atValue.toString().indexOf(name, 7),
-    offset: atValue.source!.start!.offset + atValue.toString().indexOf(name, 7),
-  };
-  const end = {
-    line: start.line,
-    column: start.column + name.length,
-    offset: start.offset + name.length,
-  };
-  return { start, end };
 }
 
 /**

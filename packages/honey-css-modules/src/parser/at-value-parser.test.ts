@@ -15,29 +15,142 @@ describe('parseAtValue', () => {
         @value import from "test.css";
         @value import1, import2 from "test.css";
         @value import as alias from "test.css";
+        @value  withSpace: #000;
         /* NOTE: \`@value d, e from moduleName;\` is not supported. */
       `),
     );
-    expect(parseAtValue(atValues[0]!)).toStrictEqual({ type: 'valueDeclaration', name: 'basic' });
-    expect(parseAtValue(atValues[1]!)).toStrictEqual({ type: 'valueDeclaration', name: 'withoutColon' });
-    expect(parseAtValue(atValues[2]!)).toStrictEqual({ type: 'valueDeclaration', name: 'empty' });
-    expect(parseAtValue(atValues[3]!)).toStrictEqual({ type: 'valueDeclaration', name: 'comment' });
-    expect(parseAtValue(atValues[4]!)).toStrictEqual({ type: 'valueDeclaration', name: 'complex' });
-    expect(parseAtValue(atValues[5]!)).toStrictEqual({
-      type: 'valueImportDeclaration',
-      values: [{ name: 'import' }],
-      from: 'test.css',
-    });
-    expect(parseAtValue(atValues[6]!)).toStrictEqual({
-      type: 'valueImportDeclaration',
-      values: [{ name: 'import1' }, { name: 'import2' }],
-      from: 'test.css',
-    });
-    expect(parseAtValue(atValues[7]!)).toStrictEqual({
-      type: 'valueImportDeclaration',
-      values: [{ name: 'import', localName: 'alias' }],
-      from: 'test.css',
-    });
+    const result = atValues.map(parseAtValue);
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "loc": {
+            "end": {
+              "column": 13,
+              "line": 1,
+              "offset": 12,
+            },
+            "start": {
+              "column": 8,
+              "line": 1,
+              "offset": 7,
+            },
+          },
+          "name": "basic",
+          "type": "valueDeclaration",
+        },
+        {
+          "loc": {
+            "end": {
+              "column": 20,
+              "line": 2,
+              "offset": 39,
+            },
+            "start": {
+              "column": 8,
+              "line": 2,
+              "offset": 27,
+            },
+          },
+          "name": "withoutColon",
+          "type": "valueDeclaration",
+        },
+        {
+          "loc": {
+            "end": {
+              "column": 13,
+              "line": 3,
+              "offset": 58,
+            },
+            "start": {
+              "column": 8,
+              "line": 3,
+              "offset": 53,
+            },
+          },
+          "name": "empty",
+          "type": "valueDeclaration",
+        },
+        {
+          "loc": {
+            "end": {
+              "column": 15,
+              "line": 4,
+              "offset": 75,
+            },
+            "start": {
+              "column": 8,
+              "line": 4,
+              "offset": 68,
+            },
+          },
+          "name": "comment",
+          "type": "valueDeclaration",
+        },
+        {
+          "loc": {
+            "end": {
+              "column": 15,
+              "line": 5,
+              "offset": 105,
+            },
+            "start": {
+              "column": 8,
+              "line": 5,
+              "offset": 98,
+            },
+          },
+          "name": "complex",
+          "type": "valueDeclaration",
+        },
+        {
+          "from": "test.css",
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "name": "import",
+            },
+          ],
+        },
+        {
+          "from": "test.css",
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "name": "import1",
+            },
+            {
+              "name": "import2",
+            },
+          ],
+        },
+        {
+          "from": "test.css",
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "localName": "alias",
+              "name": "import",
+            },
+          ],
+        },
+        {
+          "loc": {
+            "end": {
+              "column": 18,
+              "line": 9,
+              "offset": 256,
+            },
+            "start": {
+              "column": 9,
+              "line": 9,
+              "offset": 247,
+            },
+          },
+          "name": "withSpace",
+          "type": "valueDeclaration",
+        },
+      ]
+    `);
   });
   test('invalid', () => {
     const [atValue1, atValue2] = createAtValues(

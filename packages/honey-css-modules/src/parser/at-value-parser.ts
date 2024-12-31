@@ -1,10 +1,12 @@
 import type { AtRule } from 'postcss';
 import { AtValueInvalidError } from '../error.js';
+import type { Location } from './location.js';
 
 interface ValueDeclaration {
   type: 'valueDeclaration';
   name: string;
   // value: string; // unused
+  loc: Location;
 }
 
 interface ValueImportDeclaration {
@@ -16,7 +18,7 @@ interface ValueImportDeclaration {
 type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
 
 const matchImports = /^(.+?|\([\s\S]+?\))\s+from\s+("[^"]*"|'[^']*'|[\w-]+)$/u;
-const matchValueDefinition = /(?:\s+|^)([\w-]+):?(.*?)$/u;
+const matchValueDefinition = /(?:\s+|^)([\w-]+):?(.*?)$/du;
 const matchImport = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
 
 /**
@@ -69,7 +71,19 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
   if (matchesForValueDefinitions) {
     const [, name, _value] = matchesForValueDefinitions;
     if (name === undefined) throw new Error(`unreachable`);
-    return { type: 'valueDeclaration', name };
+    /** The index of the `<name>` in `@value <name>: <value>;`. */
+    const nameIndex = 6 + (atValue.raws.afterName?.length ?? 0) + matchesForValueDefinitions.indices![1]![0];
+    const start = {
+      line: atValue.source!.start!.line,
+      column: atValue.source!.start!.column + nameIndex,
+      offset: atValue.source!.start!.offset + nameIndex,
+    };
+    const end = {
+      line: start.line,
+      column: start.column + name.length,
+      offset: start.offset + name.length,
+    };
+    return { type: 'valueDeclaration', name, loc: { start, end } };
   }
   throw new AtValueInvalidError(atValue);
 }

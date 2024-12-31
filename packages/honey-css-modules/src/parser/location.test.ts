@@ -1,7 +1,7 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
-import { createAtValues, createClassSelectors, createRoot } from '../test/ast.js';
-import { getTokenLocationOfAtValue, getTokenLocationOfClassSelector } from './location.js';
+import { createClassSelectors, createRoot } from '../test/ast.js';
+import { getTokenLocationOfClassSelector } from './location.js';
 
 describe('getTokenLocationOfClassSelector', () => {
   test('basic', () => {
@@ -378,26 +378,4 @@ describe('getTokenLocationOfClassSelector', () => {
       }
     `);
   });
-});
-
-test('getTokenLocationOfAtValue', () => {
-  const [basic] = createAtValues(
-    createRoot(dedent`
-    @value basic: #000;
-    `),
-  );
-  expect(getTokenLocationOfAtValue(basic!, 'basic')).toMatchInlineSnapshot(`
-    {
-      "end": {
-        "column": 13,
-        "line": 1,
-        "offset": 12,
-      },
-      "start": {
-        "column": 8,
-        "line": 1,
-        "offset": 7,
-      },
-    }
-  `);
 });
