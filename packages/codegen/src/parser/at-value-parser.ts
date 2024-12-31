@@ -17,7 +17,7 @@ interface ValueImportDeclaration {
 
 type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
 
-const matchImports = /^(.+?|\([\s\S]+?\))\s+from\s+("[^"]*"|'[^']*'|[\w-]+)$/u;
+const matchImports = /^(.+?)\s+from\s+("[^"]*"|'[^']*'|[\w-]+)$/du;
 const matchValueDefinition = /(?:\s+|^)([\w-]+):?(.*?)$/du;
 const matchImport = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
 
@@ -39,6 +39,7 @@ const matchImport = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
  * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH
  * THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+// MEMO: honey-css-modules does not support `@value` with parentheses (e.g., `@value (a, b) from ',,,';`) to simplify the implementation.
 export function parseAtValue(atValue: AtRule): ParsedAtValue {
   const matchesForImports = atValue.params.match(matchImports);
   if (matchesForImports) {
@@ -46,20 +47,17 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
 
     if (aliases === undefined || path === undefined) throw new Error('unreachable: `aliases` or `path` is undefined');
 
-    const values = aliases
-      .replace(/^\(\s*([\s\S]+)\s*\)$/u, '$1')
-      .split(/\s*,\s*/u)
-      .map((alias) => {
-        const tokens = matchImport.exec(alias);
+    const values = aliases.split(/\s*,\s*/u).map((alias) => {
+      const tokens = matchImport.exec(alias);
 
-        if (tokens) {
-          const [, name, localName] = tokens;
-          if (name === undefined) throw new Error('unreachable: `name` is undefined');
-          return localName === undefined ? { name } : { name, localName };
-        } else {
-          throw new AtValueInvalidError(atValue);
-        }
-      });
+      if (tokens) {
+        const [, name, localName] = tokens;
+        if (name === undefined) throw new Error('unreachable: `name` is undefined');
+        return localName === undefined ? { name } : { name, localName };
+      } else {
+        throw new AtValueInvalidError(atValue);
+      }
+    });
 
     // Remove quotes from the path.
     const normalizedPath = path.replace(/^['"]|['"]$/gu, '');
