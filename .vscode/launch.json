@@ -14,7 +14,7 @@
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-honey-css-modules",
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode",
         "--profile-temp",
         "--disable-extension=vscode.css-language-features",
         "--skip-welcome",
@@ -22,9 +22,9 @@
         "${workspaceFolder}/example/src/a.ts"
       ],
       "outFiles": [
-        "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.js",
-        "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.cjs",
-        "${workspaceFolder}/packages/vscode-honey-css-modules/dist/**/*.mjs"
+        "${workspaceFolder}/packages/vscode/dist/**/*.js",
+        "${workspaceFolder}/packages/vscode/dist/**/*.cjs",
+        "${workspaceFolder}/packages/vscode/dist/**/*.mjs"
       ],
       "preLaunchTask": "npm: build"
     }

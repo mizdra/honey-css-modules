@@ -8,7 +8,7 @@
   "workspaces": [
     "packages/codegen",
     "packages/ts-plugin",
-    "packages/vscode-honey-css-modules"
+    "packages/vscode"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
