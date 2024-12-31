@@ -51,9 +51,9 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
         const tokens = matchImport.exec(alias);
 
         if (tokens) {
-          const [, theirName, myName] = tokens;
-          if (theirName === undefined) throw new Error('unreachable: `theirName` is undefined');
-          return { importedName: theirName, localName: myName ?? theirName };
+          const [, importedName, localName] = tokens;
+          if (importedName === undefined) throw new Error('unreachable: `importedName` is undefined');
+          return { importedName, localName: localName ?? importedName };
         } else {
           throw new AtValueInvalidError(atValue);
         }
