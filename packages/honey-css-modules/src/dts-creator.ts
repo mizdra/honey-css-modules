@@ -47,9 +47,9 @@ export function createDts(
   // Resolve and filter external files
   const tokenImporters: CSSModuleFile['tokenImporters'] = [];
   for (const tokenImporter of _tokenImporters) {
-    const resolved = options.resolver(tokenImporter.specifier, { request: filename });
+    const resolved = options.resolver(tokenImporter.from, { request: filename });
     if (resolved !== undefined && !options.isExternalFile(resolved)) {
-      tokenImporters.push({ ...tokenImporter, specifier: resolved });
+      tokenImporters.push({ ...tokenImporter, from: resolved });
     }
   }
 
@@ -70,7 +70,7 @@ export function createDts(
     code += `  & { ${token.name}: string }\n`;
   }
   for (const tokenImporter of tokenImporters) {
-    const specifier = getPosixRelativePath(filename, tokenImporter.specifier);
+    const specifier = getPosixRelativePath(filename, tokenImporter.from);
     if (tokenImporter.type === 'import') {
       code += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
