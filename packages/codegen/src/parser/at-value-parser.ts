@@ -17,9 +17,9 @@ interface ValueImportDeclaration {
 
 type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
 
-const matchImports = /^(.+?|\([\s\S]+?\))\s+from\s+("[^"]*"|'[^']*'|[\w-]+)$/u;
-const matchValueDefinition = /(?:\s+|^)([\w-]+):?(.*?)$/du;
-const matchImport = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
+const VALUE_IMPORT_PATTERN = /^(.+?)\s+from\s+("[^"]*"|'[^']*')$/du;
+const VALUE_DEFINITION_PATTERN = /(?:\s+|^)([\w-]+):?(.*?)$/du;
+const IMPORTED_ITEM_PATTERN = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
 
 /**
  * Parse the `@value` rule.
@@ -39,40 +39,36 @@ const matchImport = /^([\w-]+)(?:\s+as\s+([\w-]+))?/u;
  * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH
  * THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+// MEMO: honey-css-modules does not support `@value` with parentheses (e.g., `@value (a, b) from '...';`) to simplify the implementation.
+// MEMO: honey-css-modules does not support `@value` with variable module name (e.g., `@value a from moduleName;`) to simplify the implementation.
 export function parseAtValue(atValue: AtRule): ParsedAtValue {
-  const matchesForImports = atValue.params.match(matchImports);
-  if (matchesForImports) {
-    const [, aliases, path] = matchesForImports;
+  const matchesForValueImport = atValue.params.match(VALUE_IMPORT_PATTERN);
+  if (matchesForValueImport) {
+    const [, importedItems, from] = matchesForValueImport as [string, string, string];
 
-    if (aliases === undefined || path === undefined) throw new Error('unreachable: `aliases` or `path` is undefined');
+    const values = importedItems.split(/\s*,\s*/u).map((alias) => {
+      const matchesForImportedItem = alias.match(IMPORTED_ITEM_PATTERN);
 
-    const values = aliases
-      .replace(/^\(\s*([\s\S]+)\s*\)$/u, '$1')
-      .split(/\s*,\s*/u)
-      .map((alias) => {
-        const tokens = matchImport.exec(alias);
+      if (matchesForImportedItem) {
+        const [, name, localName] = matchesForImportedItem as [string, string, string | undefined];
+        return localName === undefined ? { name } : { name, localName };
+      } else {
+        throw new AtValueInvalidError(atValue);
+      }
+    });
 
-        if (tokens) {
-          const [, name, localName] = tokens;
-          if (name === undefined) throw new Error('unreachable: `name` is undefined');
-          return localName === undefined ? { name } : { name, localName };
-        } else {
-          throw new AtValueInvalidError(atValue);
-        }
-      });
+    // `from` is surrounded by quotes (e.g., `"./test.module.css"`). So, remove the quotes.
+    const normalizedFrom = from.slice(1, -1);
 
-    // Remove quotes from the path.
-    const normalizedPath = path.replace(/^['"]|['"]$/gu, '');
-
-    return { type: 'valueImportDeclaration', values, from: normalizedPath };
+    return { type: 'valueImportDeclaration', values, from: normalizedFrom };
   }
 
-  const matchesForValueDefinitions = `${atValue.params}${atValue.raws.between!}`.match(matchValueDefinition);
-  if (matchesForValueDefinitions) {
-    const [, name, _value] = matchesForValueDefinitions;
+  const matchesForValueDefinition = `${atValue.params}${atValue.raws.between!}`.match(VALUE_DEFINITION_PATTERN);
+  if (matchesForValueDefinition) {
+    const [, name, _value] = matchesForValueDefinition;
     if (name === undefined) throw new Error(`unreachable`);
     /** The index of the `<name>` in `@value <name>: <value>;`. */
-    const nameIndex = 6 + (atValue.raws.afterName?.length ?? 0) + matchesForValueDefinitions.indices![1]![0];
+    const nameIndex = 6 + (atValue.raws.afterName?.length ?? 0) + matchesForValueDefinition.indices![1]![0];
     const start = {
       line: atValue.source!.start!.line,
       column: atValue.source!.start!.column + nameIndex,

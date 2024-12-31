@@ -265,8 +265,7 @@ describe('parseCSSModuleCode', () => {
     const parsed = parseCSSModuleCode(
       dedent`
         @import './a.module.css';
-        @import a, x as b from './a.module.css';
-        @value c, x as d from './a.module.css';
+        @value a, b as alias from './a.module.css';
       `,
       options,
     );
@@ -281,13 +280,13 @@ describe('parseCSSModuleCode', () => {
           },
           {
             "from": "./a.module.css",
-            "name": "c",
+            "name": "a",
             "type": "value",
           },
           {
             "from": "./a.module.css",
-            "localName": "d",
-            "name": "x",
+            "localName": "alias",
+            "name": "b",
             "type": "value",
           },
         ],

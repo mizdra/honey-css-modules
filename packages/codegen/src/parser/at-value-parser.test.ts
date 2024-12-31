@@ -14,9 +14,9 @@ describe('parseAtValue', () => {
         @value complex: (max-width: 599px);
         @value import from "test.css";
         @value import1, import2 from "test.css";
-        @value import as alias from "test.css";
-        @value  withSpace: #000;
-        /* NOTE: \`@value d, e from moduleName;\` is not supported. */
+        @value import3 as alias1 from "test.css";
+         @value  withSpace1 : #000 ;
+         @value  withSpace2 ,  withSpace3  as  alias2  from  "test.css" ;
       `),
     );
     const result = atValues.map(parseAtValue);
@@ -128,26 +128,39 @@ describe('parseAtValue', () => {
           "type": "valueImportDeclaration",
           "values": [
             {
-              "localName": "alias",
-              "name": "import",
+              "localName": "alias1",
+              "name": "import3",
             },
           ],
         },
         {
           "loc": {
             "end": {
-              "column": 18,
+              "column": 20,
               "line": 9,
-              "offset": 256,
+              "offset": 260,
             },
             "start": {
-              "column": 9,
+              "column": 10,
               "line": 9,
-              "offset": 247,
+              "offset": 250,
             },
           },
-          "name": "withSpace",
+          "name": "withSpace1",
           "type": "valueDeclaration",
+        },
+        {
+          "from": "test.css",
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "name": "withSpace2",
+            },
+            {
+              "localName": "alias2",
+              "name": "withSpace3",
+            },
+          ],
         },
       ]
     `);
