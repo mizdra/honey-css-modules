@@ -13,9 +13,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(basic!.rule, basic!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 6,
+          "column": 7,
           "line": 1,
-          "offset": 5,
+          "offset": 6,
         },
         "start": {
           "column": 2,
@@ -36,9 +36,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(cascading_1!.rule, cascading_1!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 10,
+          "column": 11,
           "line": 1,
-          "offset": 9,
+          "offset": 10,
         },
         "start": {
           "column": 2,
@@ -50,9 +50,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(cascading_2!.rule, cascading_2!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 10,
+          "column": 11,
           "line": 2,
-          "offset": 23,
+          "offset": 24,
         },
         "start": {
           "column": 2,
@@ -74,9 +74,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(pseudo_class_1!.rule, pseudo_class_1!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 15,
+          "column": 16,
           "line": 1,
-          "offset": 14,
+          "offset": 15,
         },
         "start": {
           "column": 2,
@@ -88,9 +88,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(pseudo_class_2!.rule, pseudo_class_2!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 15,
+          "column": 16,
           "line": 2,
-          "offset": 33,
+          "offset": 34,
         },
         "start": {
           "column": 2,
@@ -102,9 +102,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(pseudo_class_3!.rule, pseudo_class_3!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 20,
+          "column": 21,
           "line": 3,
-          "offset": 63,
+          "offset": 64,
         },
         "start": {
           "column": 7,
@@ -125,9 +125,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 20,
+            "column": 21,
             "line": 1,
-            "offset": 19,
+            "offset": 20,
           },
           "start": {
             "column": 2,
@@ -140,9 +140,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 40,
+            "column": 41,
             "line": 1,
-            "offset": 39,
+            "offset": 40,
           },
           "start": {
             "column": 22,
@@ -163,9 +163,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(combinator_1!.rule, combinator_1!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 13,
+          "column": 14,
           "line": 1,
-          "offset": 12,
+          "offset": 13,
         },
         "start": {
           "column": 2,
@@ -177,9 +177,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(combinator_2!.rule, combinator_2!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 29,
+          "column": 30,
           "line": 1,
-          "offset": 28,
+          "offset": 29,
         },
         "start": {
           "column": 18,
@@ -203,9 +203,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(at_rule!.rule, at_rule!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 12,
+          "column": 13,
           "line": 3,
-          "offset": 80,
+          "offset": 81,
         },
         "start": {
           "column": 6,
@@ -226,9 +226,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 16,
+            "column": 17,
             "line": 1,
-            "offset": 15,
+            "offset": 16,
           },
           "start": {
             "column": 2,
@@ -241,9 +241,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 34,
+            "column": 35,
             "line": 1,
-            "offset": 33,
+            "offset": 34,
           },
           "start": {
             "column": 20,
@@ -269,9 +269,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 26,
+            "column": 27,
             "line": 1,
-            "offset": 25,
+            "offset": 26,
           },
           "start": {
             "column": 9,
@@ -284,9 +284,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 21,
+            "column": 22,
             "line": 3,
-            "offset": 59,
+            "offset": 60,
           },
           "start": {
             "column": 4,
@@ -299,9 +299,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 21,
+            "column": 22,
             "line": 4,
-            "offset": 84,
+            "offset": 85,
           },
           "start": {
             "column": 4,
@@ -314,9 +314,9 @@ describe('getTokenLocationOfClassSelector', () => {
       .toMatchInlineSnapshot(`
         {
           "end": {
-            "column": 26,
+            "column": 27,
             "line": 6,
-            "offset": 116,
+            "offset": 117,
           },
           "start": {
             "column": 9,
@@ -338,9 +338,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(with_newline_1!.rule, with_newline_1!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 15,
+          "column": 16,
           "line": 1,
-          "offset": 14,
+          "offset": 15,
         },
         "start": {
           "column": 2,
@@ -352,9 +352,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(with_newline_2!.rule, with_newline_2!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 15,
+          "column": 16,
           "line": 2,
-          "offset": 31,
+          "offset": 32,
         },
         "start": {
           "column": 2,
@@ -366,9 +366,9 @@ describe('getTokenLocationOfClassSelector', () => {
     expect(getTokenLocationOfClassSelector(with_newline_3!.rule, with_newline_3!.classSelector)).toMatchInlineSnapshot(`
       {
         "end": {
-          "column": 19,
+          "column": 20,
           "line": 3,
-          "offset": 51,
+          "offset": 52,
         },
         "start": {
           "column": 6,
@@ -389,9 +389,9 @@ test('getTokenLocationOfAtValue', () => {
   expect(getTokenLocationOfAtValue(basic!, 'basic')).toMatchInlineSnapshot(`
     {
       "end": {
-        "column": 12,
+        "column": 13,
         "line": 1,
-        "offset": 11,
+        "offset": 12,
       },
       "start": {
         "column": 8,

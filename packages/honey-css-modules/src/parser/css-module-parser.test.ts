@@ -34,9 +34,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 6,
+                "column": 7,
                 "line": 1,
-                "offset": 5,
+                "offset": 6,
               },
               "start": {
                 "column": 2,
@@ -49,9 +49,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 10,
+                "column": 11,
                 "line": 2,
-                "offset": 19,
+                "offset": 20,
               },
               "start": {
                 "column": 2,
@@ -64,9 +64,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 10,
+                "column": 11,
                 "line": 3,
-                "offset": 33,
+                "offset": 34,
               },
               "start": {
                 "column": 2,
@@ -79,9 +79,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 15,
+                "column": 16,
                 "line": 4,
-                "offset": 52,
+                "offset": 53,
               },
               "start": {
                 "column": 2,
@@ -94,9 +94,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 15,
+                "column": 16,
                 "line": 5,
-                "offset": 71,
+                "offset": 72,
               },
               "start": {
                 "column": 2,
@@ -109,9 +109,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 20,
+                "column": 21,
                 "line": 6,
-                "offset": 101,
+                "offset": 102,
               },
               "start": {
                 "column": 7,
@@ -124,9 +124,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 20,
+                "column": 21,
                 "line": 7,
-                "offset": 126,
+                "offset": 127,
               },
               "start": {
                 "column": 2,
@@ -139,9 +139,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 40,
+                "column": 41,
                 "line": 7,
-                "offset": 146,
+                "offset": 147,
               },
               "start": {
                 "column": 22,
@@ -154,9 +154,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 13,
+                "column": 14,
                 "line": 8,
-                "offset": 163,
+                "offset": 164,
               },
               "start": {
                 "column": 2,
@@ -169,9 +169,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 29,
+                "column": 30,
                 "line": 8,
-                "offset": 179,
+                "offset": 180,
               },
               "start": {
                 "column": 18,
@@ -184,9 +184,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 12,
+                "column": 13,
                 "line": 11,
-                "offset": 264,
+                "offset": 265,
               },
               "start": {
                 "column": 6,
@@ -199,9 +199,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 16,
+                "column": 17,
                 "line": 14,
-                "offset": 290,
+                "offset": 291,
               },
               "start": {
                 "column": 2,
@@ -214,9 +214,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 34,
+                "column": 35,
                 "line": 14,
-                "offset": 308,
+                "offset": 309,
               },
               "start": {
                 "column": 20,
@@ -229,9 +229,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 15,
+                "column": 16,
                 "line": 15,
-                "offset": 327,
+                "offset": 328,
               },
               "start": {
                 "column": 9,
@@ -244,9 +244,9 @@ describe('parseCSSModuleCode', () => {
           {
             "loc": {
               "end": {
-                "column": 12,
+                "column": 13,
                 "line": 16,
-                "offset": 344,
+                "offset": 345,
               },
               "start": {
                 "column": 8,
