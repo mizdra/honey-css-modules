@@ -2,10 +2,16 @@ import type { AtRule, Rule } from 'postcss';
 import type { ClassName } from 'postcss-selector-parser';
 
 export interface Position {
-  /** The line number in the source file. It is 1-based (compatible with postcss). */
+  /**
+   * The line number in the source file. It is 1-based.
+   * This is compatible with postcss and tsserver.
+   */
   // TODO: Maybe it should be deleted since it is not used
   line: number;
-  /** The column number in the source file. It is 1-based (compatible with postcss). */
+  /**
+   * The column number in the source file. It is 1-based.
+   * This is compatible with postcss and tsserver.
+   */
   // TODO: Maybe it should be deleted since it is not used
   column: number;
   /** The offset in the source file. It is 0-based. */
@@ -13,9 +19,15 @@ export interface Position {
 }
 
 export interface Location {
-  /** The starting position of the node. It is inclusive (compatible with postcss). */
+  /**
+   * The starting position of the node. It is inclusive.
+   * This is compatible with postcss and tsserver.
+   */
   start: Position;
-  /** The ending position of the node. It is inclusive (compatible with postcss). */
+  /**
+   * The ending position of the node. It is exclusive.
+   * This is compatible with tsserver, but not postcss.
+   */
   // TODO: Maybe it should be deleted since it is not used
   end: Position;
 }
@@ -34,8 +46,8 @@ export function getTokenLocationOfAtValue(atValue: AtRule, name: string): Locati
   };
   const end = {
     line: start.line,
-    column: start.column + name.length - 1,
-    offset: start.offset + name.length - 1,
+    column: start.column + name.length,
+    offset: start.offset + name.length,
   };
   return { start, end };
 }
@@ -63,8 +75,8 @@ export function getTokenLocationOfClassSelector(rule: Rule, classSelector: Class
     // The end line is always the same as the start line, as a class selector cannot break in the middle.
     line: start.line,
     // The end column is the start column plus the length of the class selector.
-    column: start.column + classSelector.value.length - 1,
-    offset: start.offset + classSelector.value.length - 1,
+    column: start.column + classSelector.value.length,
+    offset: start.offset + classSelector.value.length,
   };
   return { start, end };
 }
