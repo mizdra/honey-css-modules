@@ -19,150 +19,137 @@ describe('parseAtValue', () => {
         /* NOTE: \`@value d, e from moduleName;\` is not supported. */
       `),
     );
-    expect(parseAtValue(atValues[0]!)).toMatchInlineSnapshot(`
-      {
-        "loc": {
-          "end": {
-            "column": 13,
-            "line": 1,
-            "offset": 12,
+    const result = atValues.map(parseAtValue);
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "loc": {
+            "end": {
+              "column": 13,
+              "line": 1,
+              "offset": 12,
+            },
+            "start": {
+              "column": 8,
+              "line": 1,
+              "offset": 7,
+            },
           },
-          "start": {
-            "column": 8,
-            "line": 1,
-            "offset": 7,
-          },
+          "name": "basic",
+          "type": "valueDeclaration",
         },
-        "name": "basic",
-        "type": "valueDeclaration",
-      }
-    `);
-    expect(parseAtValue(atValues[1]!)).toMatchInlineSnapshot(`
-      {
-        "loc": {
-          "end": {
-            "column": 20,
-            "line": 2,
-            "offset": 39,
+        {
+          "loc": {
+            "end": {
+              "column": 20,
+              "line": 2,
+              "offset": 39,
+            },
+            "start": {
+              "column": 8,
+              "line": 2,
+              "offset": 27,
+            },
           },
-          "start": {
-            "column": 8,
-            "line": 2,
-            "offset": 27,
-          },
+          "name": "withoutColon",
+          "type": "valueDeclaration",
         },
-        "name": "withoutColon",
-        "type": "valueDeclaration",
-      }
-    `);
-    expect(parseAtValue(atValues[2]!)).toMatchInlineSnapshot(`
-      {
-        "loc": {
-          "end": {
-            "column": 13,
-            "line": 3,
-            "offset": 58,
+        {
+          "loc": {
+            "end": {
+              "column": 13,
+              "line": 3,
+              "offset": 58,
+            },
+            "start": {
+              "column": 8,
+              "line": 3,
+              "offset": 53,
+            },
           },
-          "start": {
-            "column": 8,
-            "line": 3,
-            "offset": 53,
-          },
+          "name": "empty",
+          "type": "valueDeclaration",
         },
-        "name": "empty",
-        "type": "valueDeclaration",
-      }
-    `);
-    expect(parseAtValue(atValues[3]!)).toMatchInlineSnapshot(`
-      {
-        "loc": {
-          "end": {
-            "column": 15,
-            "line": 4,
-            "offset": 75,
+        {
+          "loc": {
+            "end": {
+              "column": 15,
+              "line": 4,
+              "offset": 75,
+            },
+            "start": {
+              "column": 8,
+              "line": 4,
+              "offset": 68,
+            },
           },
-          "start": {
-            "column": 8,
-            "line": 4,
-            "offset": 68,
-          },
+          "name": "comment",
+          "type": "valueDeclaration",
         },
-        "name": "comment",
-        "type": "valueDeclaration",
-      }
-    `);
-    expect(parseAtValue(atValues[4]!)).toMatchInlineSnapshot(`
-      {
-        "loc": {
-          "end": {
-            "column": 15,
-            "line": 5,
-            "offset": 105,
+        {
+          "loc": {
+            "end": {
+              "column": 15,
+              "line": 5,
+              "offset": 105,
+            },
+            "start": {
+              "column": 8,
+              "line": 5,
+              "offset": 98,
+            },
           },
-          "start": {
-            "column": 8,
-            "line": 5,
-            "offset": 98,
-          },
+          "name": "complex",
+          "type": "valueDeclaration",
         },
-        "name": "complex",
-        "type": "valueDeclaration",
-      }
-    `);
-    expect(parseAtValue(atValues[5]!)).toMatchInlineSnapshot(`
-      {
-        "from": "test.css",
-        "type": "valueImportDeclaration",
-        "values": [
-          {
-            "name": "import",
-          },
-        ],
-      }
-    `);
-    expect(parseAtValue(atValues[6]!)).toMatchInlineSnapshot(`
-      {
-        "from": "test.css",
-        "type": "valueImportDeclaration",
-        "values": [
-          {
-            "name": "import1",
-          },
-          {
-            "name": "import2",
-          },
-        ],
-      }
-    `);
-    expect(parseAtValue(atValues[7]!)).toMatchInlineSnapshot(`
-      {
-        "from": "test.css",
-        "type": "valueImportDeclaration",
-        "values": [
-          {
-            "localName": "alias",
-            "name": "import",
-          },
-        ],
-      }
-    `);
-    expect(parseAtValue(atValues[8]!)).toMatchInlineSnapshot(`
-      {
-        "loc": {
-          "end": {
-            "column": 18,
-            "line": 9,
-            "offset": 256,
-          },
-          "start": {
-            "column": 9,
-            "line": 9,
-            "offset": 247,
-          },
+        {
+          "from": "test.css",
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "name": "import",
+            },
+          ],
         },
-        "name": "withSpace",
-        "type": "valueDeclaration",
-      }
+        {
+          "from": "test.css",
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "name": "import1",
+            },
+            {
+              "name": "import2",
+            },
+          ],
+        },
+        {
+          "from": "test.css",
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "localName": "alias",
+              "name": "import",
+            },
+          ],
+        },
+        {
+          "loc": {
+            "end": {
+              "column": 18,
+              "line": 9,
+              "offset": 256,
+            },
+            "start": {
+              "column": 9,
+              "line": 9,
+              "offset": 247,
+            },
+          },
+          "name": "withSpace",
+          "type": "valueDeclaration",
+        },
+      ]
     `);
   });
   test('invalid', () => {
