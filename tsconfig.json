@@ -8,7 +8,7 @@
       "path": "packages/codegen"
     },
     {
-      "path": "packages/ts-honey-css-modules-plugin"
+      "path": "packages/ts-plugin"
     },
     {
       "path": "packages/vscode-honey-css-modules"

@@ -7,7 +7,7 @@
   "private": true,
   "workspaces": [
     "packages/codegen",
-    "packages/ts-honey-css-modules-plugin",
+    "packages/ts-plugin",
     "packages/vscode-honey-css-modules"
   ],
   "scripts": {

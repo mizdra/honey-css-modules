@@ -54,6 +54,6 @@
     }
   },
   "dependencies": {
-    "ts-honey-css-modules-plugin": "../ts-honey-css-modules-plugin"
+    "ts-honey-css-modules-plugin": "../ts-plugin"
   }
 }
