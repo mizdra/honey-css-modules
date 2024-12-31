@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/mizdra/honey-css-modules.git",
-    "directory": "packages/honey-css-modules"
+    "directory": "packages/codegen"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "dev": "npm run build && cd ../../example && node ../packages/honey-css-modules/bin/hcm.mjs",
+    "dev": "npm run build && cd ../../example && node ../packages/codegen/bin/hcm.mjs",
     "test": "vitest --project unit",
     "e2e": "run-s -c e2e:build e2e:vitest",
     "e2e:build": "npm run build",

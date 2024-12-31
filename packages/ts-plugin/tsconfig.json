@@ -14,7 +14,7 @@
     "moduleResolution": "NodeNext" /* Specify how TypeScript looks up a file from a given module specifier. */,
 
     "paths": {
-      "honey-css-modules": ["../honey-css-modules/src/index.ts"]
+      "honey-css-modules": ["../codegen/src/index.ts"]
     }
   }
 }

@@ -6,9 +6,9 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/honey-css-modules",
-    "packages/ts-honey-css-modules-plugin",
-    "packages/vscode-honey-css-modules"
+    "packages/codegen",
+    "packages/ts-plugin",
+    "packages/vscode"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

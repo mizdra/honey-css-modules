@@ -7,7 +7,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/mizdra/honey-css-modules.git",
-    "directory": "packages/vscode-honey-css-modules"
+    "directory": "packages/vscode"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
   "publisher": "mizdra",
@@ -54,6 +54,6 @@
     }
   },
   "dependencies": {
-    "ts-honey-css-modules-plugin": "../ts-honey-css-modules-plugin"
+    "ts-honey-css-modules-plugin": "../ts-plugin"
   }
 }
