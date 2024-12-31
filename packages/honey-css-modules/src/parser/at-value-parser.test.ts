@@ -25,20 +25,17 @@ describe('parseAtValue', () => {
     expect(parseAtValue(atValues[4]!)).toStrictEqual({ type: 'valueDeclaration', name: 'complex' });
     expect(parseAtValue(atValues[5]!)).toStrictEqual({
       type: 'valueImportDeclaration',
-      values: [{ importedName: 'import', localName: 'import' }],
+      values: [{ name: 'import' }],
       from: 'test.css',
     });
     expect(parseAtValue(atValues[6]!)).toStrictEqual({
       type: 'valueImportDeclaration',
-      values: [
-        { importedName: 'import1', localName: 'import1' },
-        { importedName: 'import2', localName: 'import2' },
-      ],
+      values: [{ name: 'import1' }, { name: 'import2' }],
       from: 'test.css',
     });
     expect(parseAtValue(atValues[7]!)).toStrictEqual({
       type: 'valueImportDeclaration',
-      values: [{ importedName: 'import', localName: 'alias' }],
+      values: [{ name: 'import', localName: 'alias' }],
       from: 'test.css',
     });
   });

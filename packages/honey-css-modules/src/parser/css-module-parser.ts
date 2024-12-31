@@ -32,9 +32,9 @@ function collectTokens(ast: Root) {
   const tokenImporters: TokenImporter[] = [];
   ast.walk((node) => {
     if (isAtImportNode(node)) {
-      const specifier = parseAtImport(node);
-      if (specifier !== undefined) {
-        tokenImporters.push({ type: 'import', specifier });
+      const from = parseAtImport(node);
+      if (from !== undefined) {
+        tokenImporters.push({ type: 'import', from });
       }
     } else if (isAtValueNode(node)) {
       const parsedAtValue = parseAtValue(node);
@@ -44,9 +44,8 @@ function collectTokens(ast: Root) {
         for (const value of parsedAtValue.values) {
           tokenImporters.push({
             type: 'value',
-            specifier: parsedAtValue.from,
-            importedName: value.importedName,
-            localName: value.localName,
+            from: parsedAtValue.from,
+            ...value,
           });
         }
       }
@@ -79,7 +78,7 @@ export interface ImportTokenImporter {
    * The specifier of the file from which the token is imported.
    * This is a string before being resolved.
    */
-  specifier: string;
+  from: string;
 }
 
 /** A token importer using `@value`. */
@@ -89,19 +88,19 @@ export interface ValueTokenImporter {
    * The specifier of the file from which the token is imported.
    * This is a string before being resolved.
    */
-  specifier: string;
+  from: string;
   /**
    * The name of the token in the file from which it is imported.
-   * @example `@value a from './a.module.css'` would have `importedName` as `'a'`.
-   * @example `@value a as b from './a.module.css'` would have `importedName` as `'a'`.
+   * @example `@value a from './a.module.css'` would have `name` as `'a'`.
+   * @example `@value a as b from './a.module.css'` would have `name` as `'a'`.
    */
-  importedName: string;
+  name: string;
   /**
    * The name of the token in the current file.
-   * @example `@value a from './a.module.css'` would have `localName` as `'a'`.
+   * @example `@value a from './a.module.css'` would not have `localName`.
    * @example `@value a as b from './a.module.css'` would have `localName` as `'b'`.
    */
-  localName: string;
+  localName?: string;
 }
 
 export type TokenImporter = ImportTokenImporter | ValueTokenImporter;

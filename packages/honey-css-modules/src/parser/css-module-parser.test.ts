@@ -276,19 +276,18 @@ describe('parseCSSModuleCode', () => {
         "localTokens": [],
         "tokenImporters": [
           {
-            "specifier": "./a.module.css",
+            "from": "./a.module.css",
             "type": "import",
           },
           {
-            "importedName": "c",
-            "localName": "c",
-            "specifier": "./a.module.css",
+            "from": "./a.module.css",
+            "name": "c",
             "type": "value",
           },
           {
-            "importedName": "x",
+            "from": "./a.module.css",
             "localName": "d",
-            "specifier": "./a.module.css",
+            "name": "x",
             "type": "value",
           },
         ],
