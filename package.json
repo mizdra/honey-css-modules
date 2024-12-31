@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/honey-css-modules",
+    "packages/codegen",
     "packages/ts-honey-css-modules-plugin",
     "packages/vscode-honey-css-modules"
   ],

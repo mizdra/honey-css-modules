@@ -14,7 +14,7 @@
   },
   "references": [
     {
-      "path": "../honey-css-modules/tsconfig.build.json"
+      "path": "../codegen/tsconfig.build.json"
     }
   ]
 }
