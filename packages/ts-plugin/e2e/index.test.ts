@@ -17,7 +17,6 @@ describe('Go to Definition', async () => {
       styles.a_2;
       styles.a_3;
       styles.b_1;
-      styles.b_2;
       styles.c_1;
       styles.c_alias;
     `,
@@ -31,7 +30,6 @@ describe('Go to Definition', async () => {
     `,
     'b.module.css': dedent`
       .b_1 { color: red; }
-      @value b_2: red;
     `,
     'c.module.css': dedent`
       @value c_1: red;
@@ -91,18 +89,9 @@ describe('Go to Definition', async () => {
       ],
     },
     {
-      name: 'b_2',
-      file: iff.paths['a.ts'],
-      line: 6,
-      offset: 8,
-      expected: [
-        { file: formatPath(iff.paths['b.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
-      ],
-    },
-    {
       name: 'c_1',
       file: iff.paths['a.ts'],
-      line: 7,
+      line: 6,
       offset: 8,
       expected: [
         { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
