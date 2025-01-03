@@ -11,7 +11,7 @@ function formatPath(path: string) {
 describe('Go to Definition', async () => {
   const tsserver = launchTsserver();
   const iff = await createIFF({
-    'a.ts': dedent`
+    'index.ts': dedent`
       import styles from './a.module.css';
       styles.a_1;
       styles.a_2;
@@ -48,12 +48,12 @@ describe('Go to Definition', async () => {
     `,
   });
   await tsserver.sendUpdateOpen({
-    openFiles: [{ file: iff.paths['a.ts'] }],
+    openFiles: [{ file: iff.paths['index.ts'] }],
   });
   test.each([
     {
-      name: 'a_1',
-      file: iff.paths['a.ts'],
+      name: 'a_1 in index.ts',
+      file: iff.paths['index.ts'],
       line: 2,
       offset: 8,
       expected: [
@@ -61,8 +61,8 @@ describe('Go to Definition', async () => {
       ],
     },
     {
-      name: 'a_2',
-      file: iff.paths['a.ts'],
+      name: 'a_2 in index.ts',
+      file: iff.paths['index.ts'],
       line: 3,
       offset: 8,
       expected: [
@@ -71,8 +71,8 @@ describe('Go to Definition', async () => {
       ],
     },
     {
-      name: 'a_3',
-      file: iff.paths['a.ts'],
+      name: 'a_3 in index.ts',
+      file: iff.paths['index.ts'],
       line: 4,
       offset: 8,
       expected: [
@@ -80,8 +80,8 @@ describe('Go to Definition', async () => {
       ],
     },
     {
-      name: 'b_1',
-      file: iff.paths['a.ts'],
+      name: 'b_1 in index.ts',
+      file: iff.paths['index.ts'],
       line: 5,
       offset: 8,
       expected: [
@@ -89,8 +89,8 @@ describe('Go to Definition', async () => {
       ],
     },
     {
-      name: 'c_1',
-      file: iff.paths['a.ts'],
+      name: 'c_1 in index.ts',
+      file: iff.paths['index.ts'],
       line: 6,
       offset: 8,
       expected: [
@@ -98,15 +98,15 @@ describe('Go to Definition', async () => {
       ],
     },
     {
-      name: 'c_alias',
-      file: iff.paths['a.ts'],
+      name: 'c_alias in index.ts',
+      file: iff.paths['index.ts'],
       line: 8,
       offset: 8,
       expected: [
         { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 20 }, end: { line: 2, offset: 27 } },
       ],
     },
-  ])('Go to definition of $name', async ({ file, line, offset, expected }) => {
+  ])('Go to definition for $name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendDefinitionAndBoundSpan({
       file,
       line,
