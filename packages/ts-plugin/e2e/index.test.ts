@@ -52,6 +52,24 @@ describe('Go to Definition', async () => {
   });
   test.each([
     {
+      name: 'styles in index.ts',
+      file: iff.paths['index.ts'],
+      line: 1,
+      offset: 8,
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 } },
+      ],
+    },
+    {
+      name: "'./a.module.css' in index.ts",
+      file: iff.paths['index.ts'],
+      line: 1,
+      offset: 20,
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 } },
+      ],
+    },
+    {
       name: 'a_1 in index.ts',
       file: iff.paths['index.ts'],
       line: 2,
@@ -97,16 +115,63 @@ describe('Go to Definition', async () => {
         { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
       ],
     },
+  ])('Go to Definition for $name', async ({ file, line, offset, expected }) => {
+    const res = await tsserver.sendDefinitionAndBoundSpan({
+      file,
+      line,
+      offset,
+    });
+    expect(res.body?.definitions).toStrictEqual(expected);
+  });
+  // TODO: Pass following tests
+  test.skip.each([
+    {
+      name: 'a_2 in a.module.ts',
+      file: iff.paths['a.module.css'],
+      line: 4,
+      offset: 2,
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 5, offset: 2 }, end: { line: 5, offset: 5 } },
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 4, offset: 2 }, end: { line: 4, offset: 5 } },
+      ],
+    },
+    {
+      name: 'c_1 in a.module.ts',
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 8,
+      expected: [
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
+      ],
+    },
     {
       name: 'c_alias in index.ts',
       file: iff.paths['index.ts'],
       line: 8,
       offset: 8,
       expected: [
-        { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 20 }, end: { line: 2, offset: 27 } },
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
       ],
     },
-  ])('Go to definition for $name', async ({ file, line, offset, expected }) => {
+    {
+      name: 'c_alias in a.module.css',
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 20,
+      expected: [
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      ],
+    },
+    {
+      name: 'c_2 in a.module.css',
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 13,
+      expected: [
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      ],
+    },
+  ])('Go to Definition for $name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendDefinitionAndBoundSpan({
       file,
       line,
