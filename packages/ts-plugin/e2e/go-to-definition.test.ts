@@ -166,6 +166,24 @@ describe('Go to Definition', async () => {
         { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
       ],
     },
+    {
+      name: "'./b.module.css' in a.module.css",
+      file: iff.paths['a.module.css'],
+      line: 1,
+      offset: 9,
+      expected: [
+        { file: formatPath(iff.paths['b.module.css']), start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 } },
+      ],
+    },
+    {
+      name: "'./c.module.css' in a.module.css",
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 33,
+      expected: [
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 } },
+      ],
+    },
   ])('Go to Definition for $name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendDefinitionAndBoundSpan({
       file,

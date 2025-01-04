@@ -11,6 +11,9 @@ interface Tsserver {
   sendSemanticDiagnosticsSync(
     args: server.protocol.SemanticDiagnosticsSyncRequest['arguments'],
   ): Promise<server.protocol.SemanticDiagnosticsSyncResponse>;
+  sendGetEditsForFileRename(
+    args: server.protocol.GetEditsForFileRenameRequest['arguments'],
+  ): Promise<server.protocol.GetEditsForFileRenameResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -49,6 +52,7 @@ export function launchTsserver(): Tsserver {
     sendReferences: async (args) => sendRequest('references', args),
     sendRename: async (args) => sendRequest('rename', args),
     sendSemanticDiagnosticsSync: async (args) => sendRequest('semanticDiagnosticsSync', args),
+    sendGetEditsForFileRename: async (args) => sendRequest('getEditsForFileRename', args),
   };
 }
 
