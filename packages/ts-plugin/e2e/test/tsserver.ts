@@ -45,3 +45,8 @@ export function launchTsserver(): Tsserver {
     sendReferences: async (args) => sendRequest('references', args),
   };
 }
+
+export function formatPath(path: string) {
+  // In windows, tsserver returns paths with '/' instead of '\\'.
+  return path.replaceAll('\\', '/');
+}
