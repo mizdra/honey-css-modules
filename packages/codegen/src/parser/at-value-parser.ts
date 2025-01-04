@@ -13,6 +13,7 @@ interface ValueImportDeclaration {
   type: 'valueImportDeclaration';
   values: {
     name: string;
+    loc: Location;
     localName?: string;
     localLoc?: Location;
   }[];
@@ -58,31 +59,35 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
 
       if (matchesForImportedItem) {
         const [, name, localName] = matchesForImportedItem as [string, string, string | undefined];
+        const nameIndex = matchesForImportedItem.indices![1]![0];
+        // The length of the `@value  ` part in `@value  import1 from '...'`
+        const baseLength = 6 + (atValue.raws.afterName?.length ?? 0);
+        const start = {
+          line: atValue.source!.start!.line,
+          column: atValue.source!.start!.column + baseLength + currentItemIndex + nameIndex,
+          offset: atValue.source!.start!.offset + baseLength + currentItemIndex + nameIndex,
+        };
+        const end = {
+          line: start.line,
+          column: start.column + name.length,
+          offset: start.offset + name.length,
+        };
+        const result = { name, loc: { start, end } };
         if (localName === undefined) {
-          return { name };
+          return result;
         } else {
           const localNameIndex = matchesForImportedItem.indices![2]![0];
           const start = {
             line: atValue.source!.start!.line,
-            column:
-              atValue.source!.start!.column +
-              6 +
-              (atValue.raws.afterName?.length ?? 0) +
-              currentItemIndex +
-              localNameIndex,
-            offset:
-              atValue.source!.start!.offset +
-              6 +
-              (atValue.raws.afterName?.length ?? 0) +
-              currentItemIndex +
-              localNameIndex,
+            column: atValue.source!.start!.column + baseLength + currentItemIndex + localNameIndex,
+            offset: atValue.source!.start!.offset + baseLength + currentItemIndex + localNameIndex,
           };
           const end = {
             line: start.line,
             column: start.column + localName.length,
             offset: start.offset + localName.length,
           };
-          return { name, localName, localLoc: { start, end } };
+          return { ...result, localName, localLoc: { start, end } };
         }
       } else {
         throw new AtValueInvalidError(atValue);

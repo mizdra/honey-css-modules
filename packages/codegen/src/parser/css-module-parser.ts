@@ -98,6 +98,8 @@ export interface ValueTokenImporter {
    * @example `@value a as b from './a.module.css'` would have `name` as `'a'`.
    */
   name: string;
+  /** The location of the `name` in the source file. */
+  loc: Location;
   /**
    * The name of the token in the current file.
    * @example `@value a from './a.module.css'` would not have `localName`.
