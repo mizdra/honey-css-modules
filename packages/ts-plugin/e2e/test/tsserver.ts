@@ -2,10 +2,11 @@ import serverHarness from '@typescript/server-harness';
 import type { server } from 'typescript';
 
 interface Tsserver {
-  sendUpdateOpen(args: server.protocol.UpdateOpenRequestArgs): Promise<server.protocol.Response>;
+  sendUpdateOpen(args: server.protocol.UpdateOpenRequest['arguments']): Promise<server.protocol.Response>;
   sendDefinitionAndBoundSpan(
     args: server.protocol.FileLocationRequestArgs,
   ): Promise<server.protocol.DefinitionInfoAndBoundSpanResponse>;
+  sendReferences(args: server.protocol.ReferencesRequest['arguments']): Promise<server.protocol.ReferencesResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -41,5 +42,6 @@ export function launchTsserver(): Tsserver {
   return {
     sendUpdateOpen: async (args) => sendRequest('updateOpen', args),
     sendDefinitionAndBoundSpan: async (args) => sendRequest('definitionAndBoundSpan', args),
+    sendReferences: async (args) => sendRequest('references', args),
   };
 }
