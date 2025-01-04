@@ -8,6 +8,9 @@ interface Tsserver {
   ): Promise<server.protocol.DefinitionInfoAndBoundSpanResponse>;
   sendReferences(args: server.protocol.ReferencesRequest['arguments']): Promise<server.protocol.ReferencesResponse>;
   sendRename(args: server.protocol.RenameRequest['arguments']): Promise<server.protocol.RenameResponse>;
+  sendSemanticDiagnosticsSync(
+    args: server.protocol.SemanticDiagnosticsSyncRequest['arguments'],
+  ): Promise<server.protocol.SemanticDiagnosticsSyncResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -45,6 +48,7 @@ export function launchTsserver(): Tsserver {
     sendDefinitionAndBoundSpan: async (args) => sendRequest('definitionAndBoundSpan', args),
     sendReferences: async (args) => sendRequest('references', args),
     sendRename: async (args) => sendRequest('rename', args),
+    sendSemanticDiagnosticsSync: async (args) => sendRequest('semanticDiagnosticsSync', args),
   };
 }
 
