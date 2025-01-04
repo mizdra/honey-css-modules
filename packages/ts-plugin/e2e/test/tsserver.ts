@@ -7,6 +7,7 @@ interface Tsserver {
     args: server.protocol.FileLocationRequestArgs,
   ): Promise<server.protocol.DefinitionInfoAndBoundSpanResponse>;
   sendReferences(args: server.protocol.ReferencesRequest['arguments']): Promise<server.protocol.ReferencesResponse>;
+  sendRename(args: server.protocol.RenameRequest['arguments']): Promise<server.protocol.RenameResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -43,6 +44,7 @@ export function launchTsserver(): Tsserver {
     sendUpdateOpen: async (args) => sendRequest('updateOpen', args),
     sendDefinitionAndBoundSpan: async (args) => sendRequest('definitionAndBoundSpan', args),
     sendReferences: async (args) => sendRequest('references', args),
+    sendRename: async (args) => sendRequest('rename', args),
   };
 }
 
