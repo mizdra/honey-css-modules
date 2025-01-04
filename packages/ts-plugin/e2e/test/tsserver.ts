@@ -7,6 +7,13 @@ interface Tsserver {
     args: server.protocol.FileLocationRequestArgs,
   ): Promise<server.protocol.DefinitionInfoAndBoundSpanResponse>;
   sendReferences(args: server.protocol.ReferencesRequest['arguments']): Promise<server.protocol.ReferencesResponse>;
+  sendRename(args: server.protocol.RenameRequest['arguments']): Promise<server.protocol.RenameResponse>;
+  sendSemanticDiagnosticsSync(
+    args: server.protocol.SemanticDiagnosticsSyncRequest['arguments'],
+  ): Promise<server.protocol.SemanticDiagnosticsSyncResponse>;
+  sendGetEditsForFileRename(
+    args: server.protocol.GetEditsForFileRenameRequest['arguments'],
+  ): Promise<server.protocol.GetEditsForFileRenameResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -43,5 +50,13 @@ export function launchTsserver(): Tsserver {
     sendUpdateOpen: async (args) => sendRequest('updateOpen', args),
     sendDefinitionAndBoundSpan: async (args) => sendRequest('definitionAndBoundSpan', args),
     sendReferences: async (args) => sendRequest('references', args),
+    sendRename: async (args) => sendRequest('rename', args),
+    sendSemanticDiagnosticsSync: async (args) => sendRequest('semanticDiagnosticsSync', args),
+    sendGetEditsForFileRename: async (args) => sendRequest('getEditsForFileRename', args),
   };
+}
+
+export function formatPath(path: string) {
+  // In windows, tsserver returns paths with '/' instead of '\\'.
+  return path.replaceAll('\\', '/');
 }
