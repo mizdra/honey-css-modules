@@ -142,6 +142,24 @@ describe('Find All References', async () => {
         { file: formatPath(iff.paths['index.ts']), start: { line: 1, offset: 21 }, end: { line: 1, offset: 35 } },
       ],
     },
+    // {
+    //   name: "'./b.module.css' in a.module.css",
+    //   file: iff.paths['a.module.css'],
+    //   line: 1,
+    //   offset: 9,
+    //   expected: [
+    //     { file: formatPath(iff.paths['a.module.css']), start: { line: 1, offset: 10 }, end: { line: 1, offset: 24 } },
+    //   ],
+    // },
+    // {
+    //   name: "'./c.module.css' in a.module.css",
+    //   file: iff.paths['a.module.css'],
+    //   line: 2,
+    //   offset: 33,
+    //   expected: [
+    //     { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 34 }, end: { line: 2, offset: 48 } },
+    //   ],
+    // },
     {
       name: 'a_1 in index.ts',
       file: a_1_in_index_ts.file,
