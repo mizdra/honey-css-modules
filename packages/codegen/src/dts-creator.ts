@@ -2,6 +2,11 @@ import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 import { getPosixRelativePath } from './util.js';
 
+// The hint for the language service of CSS Modules.
+// See packages/ts-plugin/src/language-service.ts for more details.
+export const TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS = '/*1*/';
+export const TOKEN_HINT_IMPORT_VALUE_WITH_ALIAS = '/*2*/';
+
 export interface CreateDtsOptions {
   resolver: Resolver;
   isExternalFile: (filename: string) => boolean;
@@ -80,13 +85,13 @@ export function createDts(
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
-        code += `${tokenImporter.name}: (await import('${specifier}')).default.${tokenImporter.name},\n`;
+        code += `${tokenImporter.name}${TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS}: (await import('${specifier}')).default.${tokenImporter.name},\n`;
       } else {
         code += `  `;
         mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.localName.length);
-        code += `${tokenImporter.localName}: (await import('${specifier}')).default.`;
+        code += `${tokenImporter.localName}${TOKEN_HINT_IMPORT_VALUE_WITH_ALIAS}: (await import('${specifier}')).default.`;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);

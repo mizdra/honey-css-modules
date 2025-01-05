@@ -21,6 +21,11 @@ export {
   type ValueTokenImporter,
 } from './parser/css-module-parser.js';
 export { type Location, type Position } from './parser/location.js';
-export { type CreateDtsOptions, createDts } from './dts-creator.js';
+export {
+  type CreateDtsOptions,
+  createDts,
+  TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS,
+  TOKEN_HINT_IMPORT_VALUE_WITH_ALIAS,
+} from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
 export { createIsExternalFile } from './external-file.js';
