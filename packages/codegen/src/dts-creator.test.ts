@@ -82,8 +82,20 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: './a.module.css' },
-            { type: 'value', from: './b.module.css', name: 'imported1' },
-            { type: 'value', from: './c.module.css', name: 'imported2', localName: 'aliasedImported2' },
+            {
+              type: 'value',
+              from: './b.module.css',
+              name: 'imported1',
+              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+            },
+            {
+              type: 'value',
+              from: './c.module.css',
+              name: 'imported2',
+              loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
+              localName: 'aliasedImported2',
+              localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
+            },
           ],
         },
         options,
@@ -93,14 +105,26 @@ describe('createDts', () => {
         "code": "declare const styles: Readonly<
         & (typeof import('./a.module.css'))['default']
         & Pick<(typeof import('./b.module.css'))['default'], 'imported1'>
-        & Pick<(typeof import('./c.module.css'))['default'], 'imported2'>
+        & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
       >;
       export default styles;
       ",
         "mapping": {
-          "generatedOffsets": [],
-          "lengths": [],
-          "sourceOffsets": [],
+          "generatedOffsets": [
+            137,
+            155,
+            219,
+          ],
+          "lengths": [
+            9,
+            16,
+            9,
+          ],
+          "sourceOffsets": [
+            0,
+            2,
+            1,
+          ],
         },
       }
     `);
@@ -146,13 +170,19 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: '@/a.module.css' },
-            { type: 'value', from: '@/b.module.css', name: 'imported1' },
+            {
+              type: 'value',
+              from: '@/b.module.css',
+              name: 'imported1',
+              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+            },
             {
               type: 'value',
               from: '@/c.module.css',
               name: 'imported2',
+              loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
               localName: 'aliasedImported2',
-              localLoc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+              localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
             },
           ],
         },
@@ -169,13 +199,19 @@ describe('createDts', () => {
       ",
         "mapping": {
           "generatedOffsets": [
+            137,
             155,
+            219,
           ],
           "lengths": [
+            9,
             16,
+            9,
           ],
           "sourceOffsets": [
             0,
+            2,
+            1,
           ],
         },
       }
@@ -189,7 +225,14 @@ describe('createDts', () => {
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: 'external.css' },
-            { type: 'value', from: 'external.css', name: 'imported', localName: 'imported' },
+            {
+              type: 'value',
+              from: 'external.css',
+              name: 'imported',
+              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+              localName: 'imported',
+              localLoc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
+            },
           ],
         },
         { ...options, isExternalFile: () => true },

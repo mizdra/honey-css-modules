@@ -75,12 +75,21 @@ export function createDts(
       code += `  & (typeof import('${specifier}'))['default']\n`;
     } else {
       if (tokenImporter.localName === undefined || tokenImporter.localLoc === undefined) {
-        code += `  & Pick<(typeof import('${specifier}'))['default'], '${tokenImporter.name}'>\n`;
+        code += `  & Pick<(typeof import('${specifier}'))['default'], '`;
+        mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
+        mapping.generatedOffsets.push(code.length);
+        mapping.lengths.push(tokenImporter.name.length);
+        code += `${tokenImporter.name}'>\n`;
       } else {
+        code += `  & { `;
         mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
-        mapping.generatedOffsets.push(code.length + 6);
+        mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.localName.length);
-        code += `  & { ${tokenImporter.localName}: (typeof import('${specifier}'))['default']['${tokenImporter.name}'] }\n`;
+        code += `${tokenImporter.localName}: (typeof import('${specifier}'))['default']['`;
+        mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
+        mapping.generatedOffsets.push(code.length);
+        mapping.lengths.push(tokenImporter.name.length);
+        code += `${tokenImporter.name}'] }\n`;
       }
     }
   }

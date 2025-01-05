@@ -107,6 +107,18 @@ describe('parseAtValue', () => {
           "type": "valueImportDeclaration",
           "values": [
             {
+              "loc": {
+                "end": {
+                  "column": 14,
+                  "line": 6,
+                  "offset": 140,
+                },
+                "start": {
+                  "column": 8,
+                  "line": 6,
+                  "offset": 134,
+                },
+              },
               "name": "import",
             },
           ],
@@ -116,9 +128,33 @@ describe('parseAtValue', () => {
           "type": "valueImportDeclaration",
           "values": [
             {
+              "loc": {
+                "end": {
+                  "column": 15,
+                  "line": 7,
+                  "offset": 172,
+                },
+                "start": {
+                  "column": 8,
+                  "line": 7,
+                  "offset": 165,
+                },
+              },
               "name": "import1",
             },
             {
+              "loc": {
+                "end": {
+                  "column": 24,
+                  "line": 7,
+                  "offset": 181,
+                },
+                "start": {
+                  "column": 17,
+                  "line": 7,
+                  "offset": 174,
+                },
+              },
               "name": "import2",
             },
           ],
@@ -128,6 +164,18 @@ describe('parseAtValue', () => {
           "type": "valueImportDeclaration",
           "values": [
             {
+              "loc": {
+                "end": {
+                  "column": 15,
+                  "line": 8,
+                  "offset": 213,
+                },
+                "start": {
+                  "column": 8,
+                  "line": 8,
+                  "offset": 206,
+                },
+              },
               "localLoc": {
                 "end": {
                   "column": 25,
@@ -166,9 +214,33 @@ describe('parseAtValue', () => {
           "type": "valueImportDeclaration",
           "values": [
             {
+              "loc": {
+                "end": {
+                  "column": 20,
+                  "line": 10,
+                  "offset": 289,
+                },
+                "start": {
+                  "column": 10,
+                  "line": 10,
+                  "offset": 279,
+                },
+              },
               "name": "withSpace2",
             },
             {
+              "loc": {
+                "end": {
+                  "column": 34,
+                  "line": 10,
+                  "offset": 303,
+                },
+                "start": {
+                  "column": 24,
+                  "line": 10,
+                  "offset": 293,
+                },
+              },
               "localLoc": {
                 "end": {
                   "column": 46,

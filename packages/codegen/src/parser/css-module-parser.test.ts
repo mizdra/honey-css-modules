@@ -280,11 +280,35 @@ describe('parseCSSModuleCode', () => {
           },
           {
             "from": "./a.module.css",
+            "loc": {
+              "end": {
+                "column": 9,
+                "line": 2,
+                "offset": 34,
+              },
+              "start": {
+                "column": 8,
+                "line": 2,
+                "offset": 33,
+              },
+            },
             "name": "a",
             "type": "value",
           },
           {
             "from": "./a.module.css",
+            "loc": {
+              "end": {
+                "column": 12,
+                "line": 2,
+                "offset": 37,
+              },
+              "start": {
+                "column": 11,
+                "line": 2,
+                "offset": 36,
+              },
+            },
             "localLoc": {
               "end": {
                 "column": 21,
