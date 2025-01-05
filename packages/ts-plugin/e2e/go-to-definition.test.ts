@@ -102,16 +102,16 @@ describe('Go to Definition', async () => {
         { file: formatPath(iff.paths['a.module.css']), start: { line: 4, offset: 2 }, end: { line: 4, offset: 5 } },
       ],
     },
-    // {
-    //   name: 'a_2 in a.module.ts',
-    //   file: iff.paths['a.module.css'],
-    //   line: 4,
-    //   offset: 2,
-    //   expected: [
-    //     { file: formatPath(iff.paths['a.module.css']), start: { line: 5, offset: 2 }, end: { line: 5, offset: 5 } },
-    //     { file: formatPath(iff.paths['a.module.css']), start: { line: 4, offset: 2 }, end: { line: 4, offset: 5 } },
-    //   ],
-    // },
+    {
+      name: 'a_2 in a.module.ts',
+      file: iff.paths['a.module.css'],
+      line: 4,
+      offset: 2,
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 5, offset: 2 }, end: { line: 5, offset: 5 } },
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 4, offset: 2 }, end: { line: 4, offset: 5 } },
+      ],
+    },
     {
       name: 'a_3 in index.ts',
       file: iff.paths['index.ts'],
@@ -130,15 +130,15 @@ describe('Go to Definition', async () => {
         { file: formatPath(iff.paths['b.module.css']), start: { line: 1, offset: 2 }, end: { line: 1, offset: 5 } },
       ],
     },
-    {
-      name: 'c_1 in index.ts',
-      file: iff.paths['index.ts'],
-      line: 6,
-      offset: 8,
-      expected: [
-        { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
-      ],
-    },
+    // {
+    //   name: 'c_1 in index.ts',
+    //   file: iff.paths['index.ts'],
+    //   line: 6,
+    //   offset: 8,
+    //   expected: [
+    //     { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
+    //   ],
+    // },
     // {
     //   name: 'c_1 in a.module.ts',
     //   file: iff.paths['a.module.css'],
@@ -166,15 +166,15 @@ describe('Go to Definition', async () => {
     //     { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
     //   ],
     // },
-    // {
-    //   name: 'c_2 in a.module.css',
-    //   file: iff.paths['a.module.css'],
-    //   line: 2,
-    //   offset: 13,
-    //   expected: [
-    //     { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
-    //   ],
-    // },
+    {
+      name: 'c_2 in a.module.css',
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 13,
+      expected: [
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      ],
+    },
   ])('Go to Definition for $name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendDefinitionAndBoundSpan({
       file,

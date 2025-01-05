@@ -1,5 +1,5 @@
-declare const styles: Readonly<
-  & { c_1: string }
-  & { c_2: string }
->;
+declare const styles = {
+  c_1: '' as readonly string,
+  c_2: '' as readonly string,
+};
 export default styles;

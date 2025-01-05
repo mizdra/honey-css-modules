@@ -56,43 +56,44 @@ export function createDts(
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
     return {
-      code: `declare const styles: Readonly<{}>;\nexport default styles;\n`,
+      code: `declare const styles = {};\nexport default styles;\n`,
       mapping: { generatedOffsets: [], sourceOffsets: [], lengths: [] },
     };
   }
 
-  let code = 'declare const styles: Readonly<\n';
+  let code = 'declare const styles = {\n';
   const mapping: Mapping = { generatedOffsets: [], sourceOffsets: [], lengths: [] };
   for (const token of localTokens) {
+    code += `  `;
     mapping.sourceOffsets.push(token.loc.start.offset);
-    mapping.generatedOffsets.push(code.length + 6);
+    mapping.generatedOffsets.push(code.length);
     mapping.lengths.push(token.name.length);
-    code += `  & { ${token.name}: string }\n`;
+    code += `${token.name}: '' as readonly string,\n`;
   }
   for (const tokenImporter of tokenImporters) {
     const specifier = getPosixRelativePath(filename, tokenImporter.from);
     if (tokenImporter.type === 'import') {
-      code += `  & (typeof import('${specifier}'))['default']\n`;
+      code += `  ...(await import('${specifier}')).default,\n`;
     } else {
       if (tokenImporter.localName === undefined || tokenImporter.localLoc === undefined) {
-        code += `  & Pick<(typeof import('${specifier}'))['default'], '`;
+        code += `  `;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
-        code += `${tokenImporter.name}'>\n`;
+        code += `${tokenImporter.name}: (await import('${specifier}')).default.${tokenImporter.name},\n`;
       } else {
-        code += `  & { `;
+        code += `  `;
         mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.localName.length);
-        code += `${tokenImporter.localName}: (typeof import('${specifier}'))['default']['`;
+        code += `${tokenImporter.localName}: (await import('${specifier}')).default.`;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
-        code += `${tokenImporter.name}'] }\n`;
+        code += `${tokenImporter.name},\n`;
       }
     }
   }
-  code += '>;\nexport default styles;\n';
+  code += '};\nexport default styles;\n';
   return { code, mapping };
 }

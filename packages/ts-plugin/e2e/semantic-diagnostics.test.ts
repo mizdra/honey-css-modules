@@ -57,7 +57,7 @@ test('Semantic Diagnostics', async () => {
           "line": 5,
           "offset": 8,
         },
-        "text": "Property 'unknown' does not exist on type 'Readonly<{ a_1: string; } & { a_2: string; } & Readonly<{ b_1: string; }> & Pick<Readonly<{ c_1: string; } & { c_2: string; }>, "c_1"> & { c_alias: string; }>'.",
+        "text": "Property 'unknown' does not exist on type '{ c_1: string; c_alias: string; b_1: readonly string; a_1: readonly string; a_2: readonly string; }'.",
       },
     ]
   `);

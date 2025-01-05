@@ -35,25 +35,25 @@ test('generates .d.ts', async () => {
   expect(hcm.stderr.toString()).toBe('');
   expect(hcm.status).toBe(0);
   expect(await readFile(iff.join('dist/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles: Readonly<
-      & { a1: string }
-      & (typeof import('./b.module.css'))['default']
-      & (typeof import('./c.module.css'))['default']
-    >;
+    "declare const styles = {
+      a1: '' as readonly string,
+      ...(await import('./b.module.css')).default,
+      ...(await import('./c.module.css')).default,
+    };
     export default styles;
     "
   `);
   expect(await readFile(iff.join('dist/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles: Readonly<
-      & { b1: string }
-    >;
+    "declare const styles = {
+      b1: '' as readonly string,
+    };
     export default styles;
     "
   `);
   expect(await readFile(iff.join('dist/src/c.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles: Readonly<
-      & { c1: string }
-    >;
+    "declare const styles = {
+      c1: '' as readonly string,
+    };
     export default styles;
     "
   `);
