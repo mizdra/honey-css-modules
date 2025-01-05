@@ -12,16 +12,16 @@ describe('runHCM', () => {
     });
     await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir);
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
-        & { a1: string }
-      >;
+      "declare const styles = {
+        a1: '' as readonly string,
+      };
       export default styles;
       "
     `);
     expect(await readFile(iff.join('generated/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
-        & { b1: string }
-      >;
+      "declare const styles = {
+        b1: '' as readonly string,
+      };
       export default styles;
       "
     `);
@@ -43,9 +43,9 @@ describe('runHCM', () => {
     });
     await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir);
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
-        & (typeof import('./b.module.css'))['default']
-      >;
+      "declare const styles = {
+        ...(await import('./b.module.css')).default,
+      };
       export default styles;
       "
     `);
@@ -66,9 +66,9 @@ describe('runHCM', () => {
     });
     await runHCM({ pattern: './src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir);
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles: Readonly<
-        & { a1: string }
-      >;
+      "declare const styles = {
+        a1: '' as readonly string,
+      };
       export default styles;
       "
     `);

@@ -22,7 +22,7 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles: Readonly<{}>;
+        "code": "declare const styles = {};
       export default styles;
       ",
         "mapping": {
@@ -51,16 +51,16 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles: Readonly<
-        & { local1: string }
-        & { local2: string }
-      >;
+        "code": "declare const styles = {
+        local1: '' as readonly string,
+        local2: '' as readonly string,
+      };
       export default styles;
       ",
         "mapping": {
           "generatedOffsets": [
-            38,
-            61,
+            27,
+            60,
           ],
           "lengths": [
             6,
@@ -102,18 +102,18 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles: Readonly<
-        & (typeof import('./a.module.css'))['default']
-        & Pick<(typeof import('./b.module.css'))['default'], 'imported1'>
-        & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
-      >;
+        "code": "declare const styles = {
+        ...(await import('./a.module.css')).default,
+        imported1: (await import('./b.module.css')).default.imported1,
+        aliasedImported2: (await import('./c.module.css')).default.imported2,
+      };
       export default styles;
       ",
         "mapping": {
           "generatedOffsets": [
-            137,
-            155,
-            219,
+            74,
+            139,
+            198,
           ],
           "lengths": [
             9,
@@ -141,15 +141,15 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles: Readonly<
-        & { local1: string }
-        & (typeof import('./a.module.css'))['default']
-      >;
+        "code": "declare const styles = {
+        local1: '' as readonly string,
+        ...(await import('./a.module.css')).default,
+      };
       export default styles;
       ",
         "mapping": {
           "generatedOffsets": [
-            38,
+            27,
           ],
           "lengths": [
             6,
@@ -190,18 +190,18 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles: Readonly<
-        & (typeof import('./a.module.css'))['default']
-        & Pick<(typeof import('./b.module.css'))['default'], 'imported1'>
-        & { aliasedImported2: (typeof import('./c.module.css'))['default']['imported2'] }
-      >;
+        "code": "declare const styles = {
+        ...(await import('./a.module.css')).default,
+        imported1: (await import('./b.module.css')).default.imported1,
+        aliasedImported2: (await import('./c.module.css')).default.imported2,
+      };
       export default styles;
       ",
         "mapping": {
           "generatedOffsets": [
-            137,
-            155,
-            219,
+            74,
+            139,
+            198,
           ],
           "lengths": [
             9,
@@ -239,7 +239,7 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles: Readonly<{}>;
+        "code": "declare const styles = {};
       export default styles;
       ",
         "mapping": {
@@ -263,7 +263,7 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles: Readonly<{}>;
+        "code": "declare const styles = {};
       export default styles;
       ",
         "mapping": {
