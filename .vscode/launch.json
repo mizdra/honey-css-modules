@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "cli: dev",
+      "name": "codegen: debug",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -10,7 +10,7 @@
       "runtimeArgs": ["-w", "honey-css-modules", "run", "dev"]
     },
     {
-      "name": "vscode: dev",
+      "name": "vscode: debug",
       "type": "extensionHost",
       "request": "launch",
       "args": [
