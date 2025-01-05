@@ -180,38 +180,38 @@ describe('Rename Symbol', async () => {
         },
       ],
     },
-    // {
-    //   name: 'c_1 in index.ts',
-    //   file: iff.paths['index.ts'],
-    //   line: 6,
-    //   offset: 8,
-    //   expected: [
-    //     {
-    //       file: formatPath(iff.paths['index.ts']),
-    //       locs: [{ start: { line: 6, offset: 8 }, end: { line: 6, offset: 11 } }],
-    //     },
-    //     {
-    //       file: formatPath(iff.paths['a.module.css']),
-    //       locs: [{ start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 }, prefixText: 'c_1 as ' }],
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'c_1 in a.module.css',
-    //   file: iff.paths['a.module.css'],
-    //   line: 2,
-    //   offset: 8,
-    //   expected: [
-    //     {
-    //       file: formatPath(iff.paths['index.ts']),
-    //       locs: [{ start: { line: 6, offset: 8 }, end: { line: 6, offset: 11 } }],
-    //     },
-    //     {
-    //       file: formatPath(iff.paths['a.module.css']),
-    //       locs: [{ start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 }, prefixText: 'c_1 as ' }],
-    //     },
-    //   ],
-    // },
+    {
+      name: 'c_1 in index.ts',
+      file: iff.paths['index.ts'],
+      line: 6,
+      offset: 8,
+      expected: [
+        {
+          file: formatPath(iff.paths['index.ts']),
+          locs: [{ start: { line: 6, offset: 8 }, end: { line: 6, offset: 11 } }],
+        },
+        {
+          file: formatPath(iff.paths['a.module.css']),
+          locs: [{ start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 }, prefixText: 'c_1 as ' }],
+        },
+      ],
+    },
+    {
+      name: 'c_1 in a.module.css',
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 8,
+      expected: [
+        {
+          file: formatPath(iff.paths['index.ts']),
+          locs: [{ start: { line: 6, offset: 8 }, end: { line: 6, offset: 11 } }],
+        },
+        {
+          file: formatPath(iff.paths['a.module.css']),
+          locs: [{ start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 }, prefixText: 'c_1 as ' }],
+        },
+      ],
+    },
     // {
     //   name: 'c_1 in c.module.css',
     //   file: iff.paths['c.module.css'],
