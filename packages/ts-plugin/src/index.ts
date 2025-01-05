@@ -3,6 +3,7 @@ import type { HCMConfig } from 'honey-css-modules';
 import { createIsExternalFile, createResolver, readConfigFile, resolveConfig } from 'honey-css-modules';
 import { ConfigNotFoundError } from 'honey-css-modules';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
+import { proxyLanguageService } from './language-service.js';
 
 const plugin = createLanguageServicePlugin((ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
@@ -25,17 +26,15 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     throw error;
   }
 
-  // const { proxyLanguageService } = await import('./language-service.js');
   const resolvedConfig = resolveConfig(config, cwd);
   const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
   return {
     languagePlugins: [createCSSModuleLanguagePlugin(resolvedConfig, resolver, isExternalFile)],
-    // TODO: Support language service for CSS modules
-    // setup: (language) => {
-    //   info.languageService = proxyLanguageService(ts, language, info.languageService);
-    // },
+    setup: (language) => {
+      info.languageService = proxyLanguageService(language, info.languageService, isExternalFile);
+    },
   };
 });
 
