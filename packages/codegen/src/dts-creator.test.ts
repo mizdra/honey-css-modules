@@ -25,6 +25,12 @@ describe('createDts', () => {
         "code": "declare const styles = {};
       export default styles;
       ",
+        "linkedCodeMapping": {
+          "generatedLengths": [],
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
         "mapping": {
           "generatedOffsets": [],
           "lengths": [],
@@ -57,6 +63,12 @@ describe('createDts', () => {
       };
       export default styles;
       ",
+        "linkedCodeMapping": {
+          "generatedLengths": [],
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
         "mapping": {
           "generatedOffsets": [
             27,
@@ -109,6 +121,20 @@ describe('createDts', () => {
       };
       export default styles;
       ",
+        "linkedCodeMapping": {
+          "generatedLengths": [
+            16,
+          ],
+          "generatedOffsets": [
+            139,
+          ],
+          "lengths": [
+            9,
+          ],
+          "sourceOffsets": [
+            198,
+          ],
+        },
         "mapping": {
           "generatedOffsets": [
             74,
@@ -147,6 +173,12 @@ describe('createDts', () => {
       };
       export default styles;
       ",
+        "linkedCodeMapping": {
+          "generatedLengths": [],
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
         "mapping": {
           "generatedOffsets": [
             27,
@@ -197,6 +229,20 @@ describe('createDts', () => {
       };
       export default styles;
       ",
+        "linkedCodeMapping": {
+          "generatedLengths": [
+            16,
+          ],
+          "generatedOffsets": [
+            139,
+          ],
+          "lengths": [
+            9,
+          ],
+          "sourceOffsets": [
+            198,
+          ],
+        },
         "mapping": {
           "generatedOffsets": [
             74,
@@ -242,6 +288,12 @@ describe('createDts', () => {
         "code": "declare const styles = {};
       export default styles;
       ",
+        "linkedCodeMapping": {
+          "generatedLengths": [],
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
         "mapping": {
           "generatedOffsets": [],
           "lengths": [],
@@ -266,6 +318,12 @@ describe('createDts', () => {
         "code": "declare const styles = {};
       export default styles;
       ",
+        "linkedCodeMapping": {
+          "generatedLengths": [],
+          "generatedOffsets": [],
+          "lengths": [],
+          "sourceOffsets": [],
+        },
         "mapping": {
           "generatedOffsets": [],
           "lengths": [],

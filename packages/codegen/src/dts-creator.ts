@@ -16,6 +16,18 @@ interface Mapping {
   lengths: number[];
 }
 
+interface LinkedCodeMapping extends Mapping {
+  generatedLengths: number[];
+}
+
+function createMapping(): Mapping {
+  return { sourceOffsets: [], generatedOffsets: [], lengths: [] };
+}
+
+function createLinkedCodeMapping(): LinkedCodeMapping {
+  return { sourceOffsets: [], generatedOffsets: [], lengths: [], generatedLengths: [] };
+}
+
 /**
  * Create a d.ts file from a CSS module file.
  * @example
@@ -43,7 +55,7 @@ interface Mapping {
 export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsOptions,
-): { code: string; mapping: Mapping } {
+): { code: string; mapping: Mapping; linkedCodeMapping: LinkedCodeMapping } {
   // Resolve and filter external files
   const tokenImporters: CSSModuleFile['tokenImporters'] = [];
   for (const tokenImporter of _tokenImporters) {
@@ -52,17 +64,19 @@ export function createDts(
       tokenImporters.push({ ...tokenImporter, from: resolved });
     }
   }
+  const mapping = createMapping();
+  const linkedCodeMapping = createLinkedCodeMapping();
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
     return {
       code: `declare const styles = {};\nexport default styles;\n`,
-      mapping: { generatedOffsets: [], sourceOffsets: [], lengths: [] },
+      mapping,
+      linkedCodeMapping,
     };
   }
 
   let code = 'declare const styles = {\n';
-  const mapping: Mapping = { generatedOffsets: [], sourceOffsets: [], lengths: [] };
   for (const token of localTokens) {
     code += `  `;
     mapping.sourceOffsets.push(token.loc.start.offset);
@@ -83,17 +97,25 @@ export function createDts(
         code += `${tokenImporter.name}: (await import('${specifier}')).default.${tokenImporter.name},\n`;
       } else {
         code += `  `;
+
         mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.localName.length);
+        linkedCodeMapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.generatedLengths.push(tokenImporter.localName.length);
+
         code += `${tokenImporter.localName}: (await import('${specifier}')).default.`;
+
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
+        linkedCodeMapping.sourceOffsets.push(code.length);
+        linkedCodeMapping.lengths.push(tokenImporter.name.length);
+
         code += `${tokenImporter.name},\n`;
       }
     }
   }
   code += '};\nexport default styles;\n';
-  return { code, mapping };
+  return { code, mapping, linkedCodeMapping };
 }
