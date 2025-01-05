@@ -166,12 +166,12 @@ describe('Find All References', async () => {
       ...a_1_in_index_ts.start,
       expected: [a_1_in_index_ts, a_1_1_in_a_module_css, a_1_2_in_a_module_css],
     },
-    // {
-    //   name: 'a_1 in a.module.css',
-    //   file: a_1_1_in_a_module_css.file,
-    //   ...a_1_1_in_a_module_css.start,
-    //   expected: [a_1_in_index_ts, a_1_1_in_a_module_css, a_1_2_in_a_module_css],
-    // },
+    {
+      name: 'a_1 in a.module.css',
+      file: a_1_1_in_a_module_css.file,
+      ...a_1_1_in_a_module_css.start,
+      expected: [a_1_in_index_ts, a_1_1_in_a_module_css, a_1_2_in_a_module_css],
+    },
     {
       name: 'b_1 in index.ts',
       file: b_1_in_index_ts.file,
