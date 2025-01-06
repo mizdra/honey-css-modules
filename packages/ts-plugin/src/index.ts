@@ -9,6 +9,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] tsconfig.json not found`);
     return {
+      // TODO: Inject volar-service-css to standard CSS language features (but this may be impossible...)
       languagePlugins: [],
     };
   }
@@ -21,6 +22,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   } catch (error) {
     // If the config file is not found, disable the plugin.
     if (error instanceof ConfigNotFoundError) {
+      // TODO: Inject volar-service-css to standard CSS language features (but this may be impossible...)
       return { languagePlugins: [] };
     }
     throw error;
@@ -31,6 +33,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
   return {
+    // TODO: Inject volar-service-css to standard CSS language features (but this may be impossible...)
     languagePlugins: [createCSSModuleLanguagePlugin(resolvedConfig, resolver, isExternalFile)],
     setup: (language) => {
       info.languageService = proxyLanguageService(language, info.languageService);
