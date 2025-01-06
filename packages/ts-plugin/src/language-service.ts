@@ -1,11 +1,11 @@
 import type { Language } from '@volar/language-core';
 import { TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS } from 'honey-css-modules';
 import type ts from 'typescript';
+import { LANGUAGE_ID } from './language-plugin.js';
 
 export function proxyLanguageService(
   language: Language<string>,
   languageService: ts.LanguageService,
-  isExternalFile: (filename: string) => boolean,
 ): ts.LanguageService {
   const proxy: ts.LanguageService = Object.create(null);
 
@@ -30,8 +30,9 @@ export function proxyLanguageService(
 
     // If the token is `@value ... from '...'` and not alias with `as`, set the prefixText to `<originalName> as `.
     return prior.map((location) => {
-      if (isExternalFile(location.fileName)) return location;
-      const script = language.scripts.get(location.fileName)!;
+      const script = language.scripts.get(location.fileName);
+      if (!script || script.languageId !== LANGUAGE_ID) return location;
+
       const root = script.generated!.root;
       const mapper = language.maps.get(root, script);
 

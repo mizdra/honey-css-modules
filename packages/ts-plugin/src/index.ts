@@ -33,7 +33,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   return {
     languagePlugins: [createCSSModuleLanguagePlugin(resolvedConfig, resolver, isExternalFile)],
     setup: (language) => {
-      info.languageService = proxyLanguageService(language, info.languageService, isExternalFile);
+      info.languageService = proxyLanguageService(language, info.languageService);
     },
   };
 });

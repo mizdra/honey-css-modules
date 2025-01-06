@@ -4,7 +4,7 @@ import type { ResolvedHCMConfig } from 'honey-css-modules';
 import { createDts, parseCSSModuleCode, type Resolver } from 'honey-css-modules';
 import ts from 'typescript';
 
-const LANGUAGE_ID = 'css-module';
+export const LANGUAGE_ID = 'css-module';
 
 export function createCSSModuleLanguagePlugin(
   config: ResolvedHCMConfig,
@@ -13,8 +13,7 @@ export function createCSSModuleLanguagePlugin(
 ): LanguagePlugin<string, VirtualCode> {
   return {
     getLanguageId(scriptId) {
-      // TODO: Handle only .module.css. Ignore other CSS files.
-      if (!scriptId.endsWith('.css')) return undefined;
+      if (isExternalFile(scriptId)) return undefined;
       return LANGUAGE_ID;
     },
     createVirtualCode(scriptId, languageId, snapshot) {
