@@ -6,6 +6,13 @@ import { getPosixRelativePath } from './util.js';
 // See packages/ts-plugin/src/language-service.ts for more details.
 export const TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS = '/*1*/';
 export const TOKEN_HINT_IMPORT_VALUE_WITH_ALIAS = '/*2*/';
+export const TOKEN_HINT_LOCAL_TOKEN = '/*3*/';
+export const TOKEN_HINT_LENGTH = 5;
+export const TOKEN_HINT_PATTERN = /\/\*\d\*\//gu;
+export type TokenHint =
+  | typeof TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS
+  | typeof TOKEN_HINT_IMPORT_VALUE_WITH_ALIAS
+  | typeof TOKEN_HINT_LOCAL_TOKEN;
 
 export interface CreateDtsOptions {
   resolver: Resolver;

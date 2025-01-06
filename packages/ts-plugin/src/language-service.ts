@@ -1,5 +1,6 @@
 import type { Language } from '@volar/language-core';
-import { TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS } from 'honey-css-modules';
+import type { TokenHint } from 'honey-css-modules';
+import { TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS, TOKEN_HINT_LENGTH, TOKEN_HINT_PATTERN } from 'honey-css-modules';
 import type ts from 'typescript';
 import { LANGUAGE_ID } from './language-plugin.js';
 
@@ -30,31 +31,49 @@ export function proxyLanguageService(
 
     // If the token is `@value ... from '...'` and not alias with `as`, set the prefixText to `<originalName> as `.
     return prior.map((location) => {
-      const script = language.scripts.get(location.fileName);
-      if (!script || script.languageId !== LANGUAGE_ID) return location;
-
-      const root = script.generated!.root;
-      const mapper = language.maps.get(root, script);
-
-      // Get token position in .d.ts file
-      const generatedStartFirst = mapper.toGeneratedLocation(location.textSpan.start).next();
-      if (generatedStartFirst.done) return location;
-      // NOTE: Technically, one source position can have multiple generated positions. However, honey-css-modules only sets one generated position.
-      //       So, we can safely get the first generated position.
-      const generatedStart = generatedStartFirst.value[0];
-
-      const text = root.snapshot.getText(
-        generatedStart,
-        generatedStart + location.textSpan.length + TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS.length,
-      );
-      if (text.endsWith(TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS)) {
+      const tokenInfo = getTokenInfo(language, location);
+      if (tokenInfo && tokenInfo.hint === TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS) {
         return {
           ...location,
-          prefixText: `${text.slice(0, location.textSpan.length)} as `,
+          prefixText: `${tokenInfo.name} as `,
         };
       }
       return location;
     });
   };
   return proxy;
+}
+
+interface TokenInfo {
+  /** The token name. */
+  name: string;
+  /** The token hint. */
+  hint: TokenHint;
+}
+
+function getTokenInfo(language: Language<string>, location: ts.DocumentSpan): TokenInfo | undefined {
+  const script = language.scripts.get(location.fileName);
+  if (!script || script.languageId !== LANGUAGE_ID) return undefined;
+
+  const root = script.generated!.root;
+  const mapper = language.maps.get(root, script);
+
+  // Get token position in .d.ts file
+  const generatedStartFirst = mapper.toGeneratedLocation(location.textSpan.start).next();
+  if (generatedStartFirst.done) return undefined;
+
+  // NOTE: Technically, one source position can have multiple generated positions. However, honey-css-modules only sets one generated position.
+  //       So, we can safely get the first generated position.
+  const generatedStart = generatedStartFirst.value[0];
+
+  const textWithHint = root.snapshot.getText(
+    generatedStart,
+    generatedStart + location.textSpan.length + TOKEN_HINT_LENGTH,
+  );
+  const hint = textWithHint.slice(location.textSpan.length);
+  if (!hint.match(TOKEN_HINT_PATTERN)) return undefined;
+  return {
+    name: textWithHint.slice(0, location.textSpan.length),
+    hint: hint as TokenHint,
+  };
 }
