@@ -70,7 +70,6 @@ describe('Rename Symbol', async () => {
   await tsserver.sendUpdateOpen({
     openFiles: [{ file: iff.paths['index.ts'] }],
   });
-  // TODO: Pass all tests
   test.each([
     {
       name: 'a_1 in index.ts',
@@ -212,22 +211,26 @@ describe('Rename Symbol', async () => {
         },
       ],
     },
-    // {
-    //   name: 'c_1 in c.module.css',
-    //   file: iff.paths['c.module.css'],
-    //   line: 1,
-    //   offset: 8,
-    //   expected: [
-    //     {
-    //       file: formatPath(iff.paths['a.module.css']),
-    //       locs: [{ start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 }, prefixText: 'c_1 as ' }],
-    //     },
-    //     {
-    //       file: formatPath(iff.paths['c.module.css']),
-    //       locs: [{ start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } }],
-    //     },
-    //   ],
-    // },
+    {
+      name: 'c_1 in c.module.css',
+      file: iff.paths['c.module.css'],
+      line: 1,
+      offset: 8,
+      expected: [
+        {
+          file: formatPath(iff.paths['index.ts']),
+          locs: [{ start: { line: 6, offset: 8 }, end: { line: 6, offset: 11 } }],
+        },
+        {
+          file: formatPath(iff.paths['a.module.css']),
+          locs: [{ start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } }],
+        },
+        {
+          file: formatPath(iff.paths['c.module.css']),
+          locs: [{ start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } }],
+        },
+      ],
+    },
     {
       name: 'c_alias in index.ts',
       file: iff.paths['index.ts'],

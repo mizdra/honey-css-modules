@@ -92,7 +92,11 @@ export function createDts(
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
-        code += `${tokenImporter.name}${TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS}: (await import('${specifier}')).default.${tokenImporter.name},\n`;
+        code += `${tokenImporter.name}${TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS}: (await import('${specifier}')).default.`;
+        mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
+        mapping.generatedOffsets.push(code.length);
+        mapping.lengths.push(tokenImporter.name.length);
+        code += `${tokenImporter.name},\n`;
       } else {
         code += `  `;
         mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
