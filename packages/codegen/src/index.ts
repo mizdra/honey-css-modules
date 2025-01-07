@@ -26,6 +26,10 @@ export {
   createDts,
   TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS,
   TOKEN_HINT_IMPORT_VALUE_WITH_ALIAS,
+  TOKEN_HINT_LOCAL_TOKEN,
+  TOKEN_HINT_LENGTH,
+  TOKEN_HINT_PATTERN,
+  type TokenHint,
 } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
 export { createIsExternalFile } from './external-file.js';

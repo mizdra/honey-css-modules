@@ -1,5 +1,6 @@
 import type { Language } from '@volar/language-core';
-import { TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS } from 'honey-css-modules';
+import type { TokenHint } from 'honey-css-modules';
+import { TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS, TOKEN_HINT_LENGTH, TOKEN_HINT_PATTERN } from 'honey-css-modules';
 import type ts from 'typescript';
 import { LANGUAGE_ID } from './language-plugin.js';
 
@@ -17,44 +18,72 @@ export function proxyLanguageService(
   }
 
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  proxy.findRenameLocations = (fileName, position, findInStrings, findInComments, preferences) => {
-    const prior = languageService.findRenameLocations(
-      fileName,
-      position,
-      findInStrings,
-      findInComments,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      preferences as any,
-    );
-    if (prior === undefined) return undefined;
+  proxy.findRenameLocations = (...args) => {
+    function findRenameLocationsRec(
+      args: Parameters<ts.LanguageService['findRenameLocations']>,
+      renameRequestFromDefinition: boolean = false,
+    ): ts.RenameLocation[] | undefined {
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
+      const prior = languageService.findRenameLocations(...args);
+      if (prior === undefined) return undefined;
 
-    // If the token is `@value ... from '...'` and not alias with `as`, set the prefixText to `<originalName> as `.
-    return prior.map((location) => {
-      const script = language.scripts.get(location.fileName);
-      if (!script || script.languageId !== LANGUAGE_ID) return location;
-
-      const root = script.generated!.root;
-      const mapper = language.maps.get(root, script);
-
-      // Get token position in .d.ts file
-      const generatedStartFirst = mapper.toGeneratedLocation(location.textSpan.start).next();
-      if (generatedStartFirst.done) return location;
-      // NOTE: Technically, one source position can have multiple generated positions. However, honey-css-modules only sets one generated position.
-      //       So, we can safely get the first generated position.
-      const generatedStart = generatedStartFirst.value[0];
-
-      const text = root.snapshot.getText(
-        generatedStart,
-        generatedStart + location.textSpan.length + TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS.length,
-      );
-      if (text.endsWith(TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS)) {
-        return {
-          ...location,
-          prefixText: `${text.slice(0, location.textSpan.length)} as `,
-        };
-      }
-      return location;
-    });
+      return prior.flatMap((location) => {
+        const tokenInfo = getTokenInfo(language, location);
+        if (!tokenInfo || tokenInfo.hint !== TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS) return location;
+        // `location` indicates one of the following.
+        //
+        // - The first `c_1` part of `c_1/*1*/: (await import('./c.module.css')).default.c_1,`
+        //   - This is when rename is requested by the importer of the @value.
+        //   - In this case, `location.contextSpan` is not `undefined`.
+        // - The second `c_1` part of `c_1/*1*/: (await import('./c.module.css')).default.c_1,`
+        //   - This is when rename is requested by the definition source of the @value.
+        //   - In this case, `location.contextSpan` is `undefined`.
+        if (location.contextSpan) {
+          // A rename request from the importer of the @value rename it with `as`.
+          return {
+            ...location,
+            ...(renameRequestFromDefinition ? {} : { prefixText: `${tokenInfo.name} as ` }),
+          };
+        } else {
+          // A rename request from the definition source of the @value rename it without `as`.
+          // The importer also renames the value with the same name.
+          return (
+            findRenameLocationsRec([location.fileName, location.textSpan.start, args[2], args[3], args[4]], true) ?? []
+          );
+        }
+      });
+    }
+    return findRenameLocationsRec(args as Parameters<ts.LanguageService['findRenameLocations']>);
   };
   return proxy;
+}
+
+interface TokenInfo {
+  /** The token name. */
+  name: string;
+  /** The token hint. */
+  hint: TokenHint;
+}
+
+function getTokenInfo(language: Language<string>, location: ts.DocumentSpan): TokenInfo | undefined {
+  const script = language.scripts.get(location.fileName);
+  if (!script || script.languageId !== LANGUAGE_ID) return undefined;
+
+  const root = script.generated!.root;
+  const mapper = language.maps.get(root, script);
+
+  // Get token position in .d.ts file
+  for (const [generatedOffset] of mapper.toGeneratedLocation(location.textSpan.start)) {
+    const textWithHint = root.snapshot.getText(
+      generatedOffset,
+      generatedOffset + location.textSpan.length + TOKEN_HINT_LENGTH,
+    );
+    const hint = textWithHint.slice(location.textSpan.length);
+    if (!hint.match(TOKEN_HINT_PATTERN)) continue;
+    return {
+      name: textWithHint.slice(0, location.textSpan.length),
+      hint: hint as TokenHint,
+    };
+  }
+  return undefined;
 }
