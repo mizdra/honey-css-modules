@@ -40,10 +40,11 @@ describe('Rename Symbol', async () => {
       styles.b_1;
       styles.c_1;
       styles.c_alias;
+      styles.d_1;
     `,
     'a.module.css': dedent`
       @import './b.module.css';
-      @value c_1, c_2 as c_alias from './c.module.css';
+      @value c_1, c_2 as c_alias, d_1 from './c.module.css';
       .a_1 { color: red; }
       .a_1 { color: red; }
       @value a_2: red;
@@ -54,6 +55,10 @@ describe('Rename Symbol', async () => {
     'c.module.css': dedent`
       @value c_1: red;
       @value c_2: red;
+      @value d_1 from './d.module.css';
+    `,
+    'd.module.css': dedent`
+      @value d_1: red;
     `,
     'hcm.config.mjs': dedent`
       export default {
@@ -276,6 +281,30 @@ describe('Rename Symbol', async () => {
         {
           file: formatPath(iff.paths['c.module.css']),
           locs: [{ start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } }],
+        },
+      ],
+    },
+    {
+      name: 'd_1 in d.module.css',
+      file: iff.paths['d.module.css'],
+      line: 1,
+      offset: 8,
+      expected: [
+        {
+          file: formatPath(iff.paths['index.ts']),
+          locs: [{ start: { line: 8, offset: 8 }, end: { line: 8, offset: 11 } }],
+        },
+        {
+          file: formatPath(iff.paths['a.module.css']),
+          locs: [{ start: { line: 2, offset: 29 }, end: { line: 2, offset: 32 } }],
+        },
+        {
+          file: formatPath(iff.paths['c.module.css']),
+          locs: [{ start: { line: 3, offset: 8 }, end: { line: 3, offset: 11 } }],
+        },
+        {
+          file: formatPath(iff.paths['d.module.css']),
+          locs: [{ start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } }],
         },
       ],
     },

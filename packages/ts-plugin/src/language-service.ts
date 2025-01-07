@@ -19,48 +19,60 @@ export function proxyLanguageService(
 
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   proxy.findRenameLocations = (fileName, position, findInStrings, findInComments, preferences) => {
-    const prior = languageService.findRenameLocations(
-      fileName,
-      position,
-      findInStrings,
-      findInComments,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      preferences as any,
-    );
-    if (prior === undefined) return undefined;
+    // eslint-disable-next-line max-params
+    function findRenameLocationsRec(
+      fileName: string,
+      position: number,
+      findInStrings: boolean,
+      findInComments: boolean,
+      preferences: boolean | ts.UserPreferences | undefined,
+      renameRequestFromDefinition: boolean = false,
+    ): ts.RenameLocation[] | undefined {
+      const prior = languageService.findRenameLocations(
+        fileName,
+        position,
+        findInStrings,
+        findInComments,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        preferences as any,
+      );
+      if (prior === undefined) return undefined;
 
-    return prior.flatMap((location) => {
-      const tokenInfo = getTokenInfo(language, location);
-      if (!tokenInfo || tokenInfo.hint !== TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS) return location;
-      // `location` indicates one of the following.
-      //
-      // - The first `c_1` part of `c_1/*1*/: (await import('./c.module.css')).default.c_1,`
-      //   - This is when rename is requested by the importer of the @value.
-      //   - In this case, `location.contextSpan` is not `undefined`.
-      // - The second `c_1` part of `c_1/*1*/: (await import('./c.module.css')).default.c_1,`
-      //   - This is when rename is requested by the definition source of the @value.
-      //   - In this case, `location.contextSpan` is `undefined`.
-      if (location.contextSpan) {
-        // A rename request from the importer of the @value rename it with `as`.
-        return {
-          ...location,
-          prefixText: `${tokenInfo.name} as `,
-        };
-      } else {
-        // A rename request from the definition source of the @value rename it without `as`.
-        // The importer also renames the value with the same name.
-        return (
-          languageService.findRenameLocations(
-            location.fileName,
-            location.textSpan.start,
-            findInStrings,
-            findInComments,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            preferences as any,
-          ) ?? []
-        );
-      }
-    });
+      return prior.flatMap((location) => {
+        const tokenInfo = getTokenInfo(language, location);
+        if (!tokenInfo || tokenInfo.hint !== TOKEN_HINT_IMPORT_VALUE_WITHOUT_ALIAS) return location;
+        // `location` indicates one of the following.
+        //
+        // - The first `c_1` part of `c_1/*1*/: (await import('./c.module.css')).default.c_1,`
+        //   - This is when rename is requested by the importer of the @value.
+        //   - In this case, `location.contextSpan` is not `undefined`.
+        // - The second `c_1` part of `c_1/*1*/: (await import('./c.module.css')).default.c_1,`
+        //   - This is when rename is requested by the definition source of the @value.
+        //   - In this case, `location.contextSpan` is `undefined`.
+        if (location.contextSpan) {
+          // A rename request from the importer of the @value rename it with `as`.
+          return {
+            ...location,
+            ...(renameRequestFromDefinition ? {} : { prefixText: `${tokenInfo.name} as ` }),
+          };
+        } else {
+          // A rename request from the definition source of the @value rename it without `as`.
+          // The importer also renames the value with the same name.
+          return (
+            findRenameLocationsRec(
+              location.fileName,
+              location.textSpan.start,
+              findInStrings,
+              findInComments,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              preferences as any,
+              true,
+            ) ?? []
+          );
+        }
+      });
+    }
+    return findRenameLocationsRec(fileName, position, findInStrings, findInComments, preferences);
   };
   return proxy;
 }
