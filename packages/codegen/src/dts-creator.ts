@@ -7,13 +7,13 @@ export interface CreateDtsOptions {
   isExternalFile: (filename: string) => boolean;
 }
 
-interface Mapping {
+interface CodeMapping {
   /** The source offsets of the tokens in the *.module.css file. */
   sourceOffsets: number[];
-  /** The generated offsets of the tokens in the *.d.ts file. */
-  generatedOffsets: number[];
   /** The lengths of the tokens in the *.module.css file. */
   lengths: number[];
+  /** The generated offsets of the tokens in the *.d.ts file. */
+  generatedOffsets: number[];
 }
 
 /**
@@ -43,7 +43,9 @@ interface Mapping {
 export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsOptions,
-): { code: string; mapping: Mapping } {
+): { code: string; mapping: CodeMapping } {
+  const mapping: CodeMapping = { sourceOffsets: [], lengths: [], generatedOffsets: [] };
+
   // Resolve and filter external files
   const tokenImporters: CSSModuleFile['tokenImporters'] = [];
   for (const tokenImporter of _tokenImporters) {
@@ -55,14 +57,10 @@ export function createDts(
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
-    return {
-      code: `declare const styles = {};\nexport default styles;\n`,
-      mapping: { generatedOffsets: [], sourceOffsets: [], lengths: [] },
-    };
+    return { code: `declare const styles = {};\nexport default styles;\n`, mapping };
   }
 
   let code = 'declare const styles = {\n';
-  const mapping: Mapping = { generatedOffsets: [], sourceOffsets: [], lengths: [] };
   for (const token of localTokens) {
     code += `  `;
     mapping.sourceOffsets.push(token.loc.start.offset);
@@ -78,22 +76,22 @@ export function createDts(
       if (tokenImporter.localName === undefined || tokenImporter.localLoc === undefined) {
         code += `  `;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
-        mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
+        mapping.generatedOffsets.push(code.length);
         code += `${tokenImporter.name}: (await import('${specifier}')).default.`;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
-        mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
+        mapping.generatedOffsets.push(code.length);
         code += `${tokenImporter.name},\n`;
       } else {
         code += `  `;
         mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
-        mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.localName.length);
+        mapping.generatedOffsets.push(code.length);
         code += `${tokenImporter.localName}: (await import('${specifier}')).default.`;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
-        mapping.generatedOffsets.push(code.length);
         mapping.lengths.push(tokenImporter.name.length);
+        mapping.generatedOffsets.push(code.length);
         code += `${tokenImporter.name},\n`;
       }
     }
