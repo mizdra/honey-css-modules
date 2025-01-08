@@ -16,6 +16,19 @@ interface CodeMapping {
   generatedOffsets: number[];
 }
 
+/** The map linking the two codes in *.d.ts */
+// NOTE: `sourceOffsets` and `generatedOffsets` are interchangeable. Exchanging code assignments does not change the behavior.
+interface LinkedCodeMapping extends CodeMapping {
+  /** The offset of the first code to be linked. */
+  sourceOffsets: number[];
+  /** The length of the first code to be linked. */
+  lengths: number[];
+  /** The offset of the second code to be linked. */
+  generatedOffsets: number[];
+  /** The length of the second code to be linked. */
+  generatedLengths: number[];
+}
+
 /**
  * Create a d.ts file from a CSS module file.
  * @example
@@ -43,8 +56,14 @@ interface CodeMapping {
 export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsOptions,
-): { code: string; mapping: CodeMapping } {
+): { code: string; mapping: CodeMapping; linkedCodeMapping: LinkedCodeMapping } {
   const mapping: CodeMapping = { sourceOffsets: [], lengths: [], generatedOffsets: [] };
+  const linkedCodeMapping: LinkedCodeMapping = {
+    sourceOffsets: [],
+    lengths: [],
+    generatedOffsets: [],
+    generatedLengths: [],
+  };
 
   // Resolve and filter external files
   const tokenImporters: CSSModuleFile['tokenImporters'] = [];
@@ -57,7 +76,7 @@ export function createDts(
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
-    return { code: `declare const styles = {};\nexport default styles;\n`, mapping };
+    return { code: `declare const styles = {};\nexport default styles;\n`, mapping, linkedCodeMapping };
   }
 
   let code = 'declare const styles = {\n';
@@ -78,24 +97,32 @@ export function createDts(
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.lengths.push(tokenImporter.name.length);
         mapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.sourceOffsets.push(code.length);
+        linkedCodeMapping.lengths.push(tokenImporter.name.length);
         code += `${tokenImporter.name}: (await import('${specifier}')).default.`;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.lengths.push(tokenImporter.name.length);
         mapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.generatedLengths.push(tokenImporter.name.length);
         code += `${tokenImporter.name},\n`;
       } else {
         code += `  `;
         mapping.sourceOffsets.push(tokenImporter.localLoc.start.offset);
         mapping.lengths.push(tokenImporter.localName.length);
         mapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.sourceOffsets.push(code.length);
+        linkedCodeMapping.lengths.push(tokenImporter.localName.length);
         code += `${tokenImporter.localName}: (await import('${specifier}')).default.`;
         mapping.sourceOffsets.push(tokenImporter.loc.start.offset);
         mapping.lengths.push(tokenImporter.name.length);
         mapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.generatedLengths.push(tokenImporter.name.length);
         code += `${tokenImporter.name},\n`;
       }
     }
   }
   code += '};\nexport default styles;\n';
-  return { code, mapping };
+  return { code, mapping, linkedCodeMapping };
 }

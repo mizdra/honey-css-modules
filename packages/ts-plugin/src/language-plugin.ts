@@ -22,7 +22,7 @@ export function createCSSModuleLanguagePlugin(
       const length = snapshot.getLength();
       const cssModule = snapshot.getText(0, length);
       const cssModuleFile = parseCSSModuleCode(cssModule, { filename: scriptId, dashedIdents: config.dashedIdents });
-      const { code: dtsCode, mapping } = createDts(cssModuleFile, { resolver, isExternalFile });
+      const { code: dtsCode, mapping, linkedCodeMapping } = createDts(cssModuleFile, { resolver, isExternalFile });
       return {
         id: 'main',
         languageId: LANGUAGE_ID,
@@ -31,8 +31,10 @@ export function createCSSModuleLanguagePlugin(
           getLength: () => dtsCode.length,
           getChangeRange: () => undefined,
         },
-        // `mappings` are required to support "Go to definitions" and renaming
+        // `mappings` are required to support "Go to Definition" and renaming
         mappings: [{ ...mapping, data: { navigation: true } }],
+        // `linkedCodeMappings` are required to support "Go to Definition" and renaming for the imported tokens
+        linkedCodeMappings: [{ ...linkedCodeMapping, data: undefined }],
       };
     },
     typescript: {

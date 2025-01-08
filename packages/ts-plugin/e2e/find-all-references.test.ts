@@ -105,16 +105,16 @@ describe('Find All References', async () => {
     start: { line: 2, offset: 20 },
     end: { line: 2, offset: 27 },
   };
-  // const c_2_in_a_module_css = {
-  //   file: formatPath(iff.paths['a.module.css']),
-  //   start: { line: 2, offset: 13 },
-  //   end: { line: 2, offset: 16 },
-  // };
-  // const c_2_in_c_module_css = {
-  //   file: formatPath(iff.paths['c.module.css']),
-  //   start: { line: 2, offset: 8 },
-  //   end: { line: 2, offset: 11 },
-  // };
+  const c_2_in_a_module_css = {
+    file: formatPath(iff.paths['a.module.css']),
+    start: { line: 2, offset: 13 },
+    end: { line: 2, offset: 16 },
+  };
+  const c_2_in_c_module_css = {
+    file: formatPath(iff.paths['c.module.css']),
+    start: { line: 2, offset: 8 },
+    end: { line: 2, offset: 11 },
+  };
   await tsserver.sendUpdateOpen({
     openFiles: [{ file: iff.paths['index.ts'] }],
   });
@@ -206,13 +206,17 @@ describe('Find All References', async () => {
       name: 'c_alias in index.ts',
       file: c_alias_in_index_ts.file,
       ...c_alias_in_index_ts.start,
-      expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
     },
     {
       name: 'c_alias in a.module.css',
       file: c_alias_in_a_module_css.file,
       ...c_alias_in_a_module_css.start,
-      expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
     },
     // {
     //   name: 'c_2 in a.module.css',
