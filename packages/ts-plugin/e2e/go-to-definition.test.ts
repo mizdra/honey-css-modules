@@ -1,9 +1,24 @@
 import dedent from 'dedent';
+import type ts from 'typescript';
 import { describe, expect, test } from 'vitest';
 import { createIFF } from './test/fixture.js';
 import { formatPath, launchTsserver } from './test/tsserver.js';
 
 describe('Go to Definition', async () => {
+  function simplifyDefinitions(definitions: readonly ts.server.protocol.DefinitionInfo[]) {
+    return definitions.map((definition) => {
+      return {
+        file: formatPath(definition.file),
+        start: definition.start,
+        end: definition.end,
+      };
+    });
+  }
+  function sortDefinitions(definitions: readonly ts.server.protocol.DefinitionInfo[]) {
+    return definitions.toSorted((a, b) => {
+      return a.file.localeCompare(b.file) || a.start.line - b.start.line || a.start.offset - b.start.offset;
+    });
+  }
   const tsserver = launchTsserver();
   const iff = await createIFF({
     'index.ts': dedent`
@@ -130,42 +145,62 @@ describe('Go to Definition', async () => {
         { file: formatPath(iff.paths['b.module.css']), start: { line: 1, offset: 2 }, end: { line: 1, offset: 5 } },
       ],
     },
-    // {
-    //   name: 'c_1 in index.ts',
-    //   file: iff.paths['index.ts'],
-    //   line: 6,
-    //   offset: 8,
-    //   expected: [
-    //     { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
-    //   ],
-    // },
-    // {
-    //   name: 'c_1 in a.module.ts',
-    //   file: iff.paths['a.module.css'],
-    //   line: 2,
-    //   offset: 8,
-    //   expected: [
-    //     { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
-    //   ],
-    // },
-    // {
-    //   name: 'c_alias in index.ts',
-    //   file: iff.paths['index.ts'],
-    //   line: 8,
-    //   offset: 8,
-    //   expected: [
-    //     { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
-    //   ],
-    // },
-    // {
-    //   name: 'c_alias in a.module.css',
-    //   file: iff.paths['a.module.css'],
-    //   line: 2,
-    //   offset: 20,
-    //   expected: [
-    //     { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
-    //   ],
-    // },
+    {
+      name: 'c_1 in index.ts',
+      file: iff.paths['index.ts'],
+      line: 6,
+      offset: 8,
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [
+      //   { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
+      // ],
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
+      ],
+    },
+    {
+      name: 'c_1 in a.module.ts',
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 8,
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [
+      //   { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
+      // ],
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 8 }, end: { line: 1, offset: 11 } },
+      ],
+    },
+    {
+      name: 'c_alias in index.ts',
+      file: iff.paths['index.ts'],
+      line: 7,
+      offset: 8,
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [
+      //   { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      // ],
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 20 }, end: { line: 2, offset: 27 } },
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      ],
+    },
+    {
+      name: 'c_alias in a.module.css',
+      file: iff.paths['a.module.css'],
+      line: 2,
+      offset: 20,
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [
+      //   { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      // ],
+      expected: [
+        { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 20 }, end: { line: 2, offset: 27 } },
+        { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
+      ],
+    },
     {
       name: 'c_2 in a.module.css',
       file: iff.paths['a.module.css'],
@@ -181,6 +216,6 @@ describe('Go to Definition', async () => {
       line,
       offset,
     });
-    expect(res.body?.definitions).toStrictEqual(expected);
+    expect(sortDefinitions(simplifyDefinitions(res.body?.definitions ?? []))).toStrictEqual(sortDefinitions(expected));
   });
 });
