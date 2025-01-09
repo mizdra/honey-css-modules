@@ -80,21 +80,21 @@ describe('Find All References', async () => {
     start: { line: 1, offset: 2 },
     end: { line: 1, offset: 5 },
   };
-  // const c_1_in_index_ts = {
-  //   file: formatPath(iff.paths['index.ts']),
-  //   start: { line: 4, offset: 8 },
-  //   end: { line: 4, offset: 11 },
-  // };
-  // const c_1_in_a_module_css = {
-  //   file: formatPath(iff.paths['a.module.css']),
-  //   start: { line: 2, offset: 8 },
-  //   end: { line: 2, offset: 11 },
-  // };
-  // const c_1_in_c_module_css = {
-  //   file: formatPath(iff.paths['c.module.css']),
-  //   start: { line: 1, offset: 8 },
-  //   end: { line: 1, offset: 11 },
-  // };
+  const c_1_in_index_ts = {
+    file: formatPath(iff.paths['index.ts']),
+    start: { line: 4, offset: 8 },
+    end: { line: 4, offset: 11 },
+  };
+  const c_1_in_a_module_css = {
+    file: formatPath(iff.paths['a.module.css']),
+    start: { line: 2, offset: 8 },
+    end: { line: 2, offset: 11 },
+  };
+  const c_1_in_c_module_css = {
+    file: formatPath(iff.paths['c.module.css']),
+    start: { line: 1, offset: 8 },
+    end: { line: 1, offset: 11 },
+  };
   const c_alias_in_index_ts = {
     file: formatPath(iff.paths['index.ts']),
     start: { line: 5, offset: 8 },
@@ -105,16 +105,16 @@ describe('Find All References', async () => {
     start: { line: 2, offset: 20 },
     end: { line: 2, offset: 27 },
   };
-  // const c_2_in_a_module_css = {
-  //   file: formatPath(iff.paths['a.module.css']),
-  //   start: { line: 2, offset: 13 },
-  //   end: { line: 2, offset: 16 },
-  // };
-  // const c_2_in_c_module_css = {
-  //   file: formatPath(iff.paths['c.module.css']),
-  //   start: { line: 2, offset: 8 },
-  //   end: { line: 2, offset: 11 },
-  // };
+  const c_2_in_a_module_css = {
+    file: formatPath(iff.paths['a.module.css']),
+    start: { line: 2, offset: 13 },
+    end: { line: 2, offset: 16 },
+  };
+  const c_2_in_c_module_css = {
+    file: formatPath(iff.paths['c.module.css']),
+    start: { line: 2, offset: 8 },
+    end: { line: 2, offset: 11 },
+  };
   await tsserver.sendUpdateOpen({
     openFiles: [{ file: iff.paths['index.ts'] }],
   });
@@ -184,48 +184,58 @@ describe('Find All References', async () => {
       ...b_1_in_b_module_css.start,
       expected: [b_1_in_index_ts, b_1_in_b_module_css],
     },
-    // {
-    //   name: 'c_1 in index.ts',
-    //   file: c_1_in_index_ts.file,
-    //   ...c_1_in_index_ts.start,
-    //   expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_c_module_css],
-    // },
-    // {
-    //   name: 'c_1 in a.module.css',
-    //   file: c_1_in_a_module_css.file,
-    //   ...c_1_in_a_module_css.start,
-    //   expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_c_module_css],
-    // },
-    // {
-    //   name: 'c_1 in c.module.css',
-    //   file: c_1_in_c_module_css.file,
-    //   ...c_1_in_c_module_css.start,
-    //   expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_c_module_css],
-    // },
+    {
+      name: 'c_1 in index.ts',
+      file: c_1_in_index_ts.file,
+      ...c_1_in_index_ts.start,
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_c_module_css],
+      expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_a_module_css, c_1_in_c_module_css],
+    },
+    {
+      name: 'c_1 in a.module.css',
+      file: c_1_in_a_module_css.file,
+      ...c_1_in_a_module_css.start,
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_c_module_css],
+      expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_a_module_css, c_1_in_c_module_css],
+    },
+    {
+      name: 'c_1 in c.module.css',
+      file: c_1_in_c_module_css.file,
+      ...c_1_in_c_module_css.start,
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_c_module_css],
+      expected: [c_1_in_index_ts, c_1_in_a_module_css, c_1_in_a_module_css, c_1_in_c_module_css],
+    },
     {
       name: 'c_alias in index.ts',
       file: c_alias_in_index_ts.file,
       ...c_alias_in_index_ts.start,
-      expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
     },
     {
       name: 'c_alias in a.module.css',
       file: c_alias_in_a_module_css.file,
       ...c_alias_in_a_module_css.start,
-      expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      // NOTE: For simplicity of implementation, this is not the ideal behavior. The ideal behavior is as follows:
+      // expected: [c_alias_in_index_ts, c_alias_in_a_module_css],
+      expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
     },
-    // {
-    //   name: 'c_2 in a.module.css',
-    //   file: c_2_in_a_module_css.file,
-    //   ...c_2_in_a_module_css.start,
-    //   expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
-    // },
-    // {
-    //   name: 'c_2 in c.module.css',
-    //   file: c_2_in_c_module_css.file,
-    //   ...c_2_in_c_module_css.start,
-    //   expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
-    // },
+    {
+      name: 'c_2 in a.module.css',
+      file: c_2_in_a_module_css.file,
+      ...c_2_in_a_module_css.start,
+      expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
+    },
+    {
+      name: 'c_2 in c.module.css',
+      file: c_2_in_c_module_css.file,
+      ...c_2_in_c_module_css.start,
+      expected: [c_alias_in_index_ts, c_alias_in_a_module_css, c_2_in_a_module_css, c_2_in_c_module_css],
+    },
   ])('Find All References for $name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendReferences({
       file,
