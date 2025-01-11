@@ -238,9 +238,9 @@ describe('createDts', () => {
     ).toMatchInlineSnapshot(`
       {
         "code": "declare const styles = {
-        ...(await import('./a.module.css')).default,
-        imported1: (await import('./b.module.css')).default.imported1,
-        aliasedImported2: (await import('./c.module.css')).default.imported2,
+        ...(await import('@/a.module.css')).default,
+        imported1: (await import('@/b.module.css')).default.imported1,
+        aliasedImported2: (await import('@/c.module.css')).default.imported2,
       };
       export default styles;
       ",

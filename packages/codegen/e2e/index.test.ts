@@ -38,7 +38,7 @@ test('generates .d.ts', async () => {
     "declare const styles = {
       a1: '' as readonly string,
       ...(await import('./b.module.css')).default,
-      ...(await import('./c.module.css')).default,
+      ...(await import('@/c.module.css')).default,
     };
     export default styles;
     "

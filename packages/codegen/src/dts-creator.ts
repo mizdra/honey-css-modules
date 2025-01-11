@@ -1,6 +1,5 @@
 import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
-import { getPosixRelativePath } from './util.js';
 
 export interface CreateDtsOptions {
   resolver: Resolver;
@@ -65,14 +64,11 @@ export function createDts(
     generatedLengths: [],
   };
 
-  // Resolve and filter external files
-  const tokenImporters: CSSModuleFile['tokenImporters'] = [];
-  for (const tokenImporter of _tokenImporters) {
+  // Filter external files
+  const tokenImporters = _tokenImporters.filter((tokenImporter) => {
     const resolved = options.resolver(tokenImporter.from, { request: filename });
-    if (resolved !== undefined && !options.isExternalFile(resolved)) {
-      tokenImporters.push({ ...tokenImporter, from: resolved });
-    }
-  }
+    return resolved !== undefined && !options.isExternalFile(resolved);
+  });
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
@@ -88,9 +84,8 @@ export function createDts(
     code += `${token.name}: '' as readonly string,\n`;
   }
   for (const tokenImporter of tokenImporters) {
-    const specifier = getPosixRelativePath(filename, tokenImporter.from);
     if (tokenImporter.type === 'import') {
-      code += `  ...(await import('${specifier}')).default,\n`;
+      code += `  ...(await import('${tokenImporter.from}')).default,\n`;
     } else {
       for (const value of tokenImporter.values) {
         if (value.localName === undefined || value.localLoc === undefined) {
@@ -100,7 +95,7 @@ export function createDts(
           mapping.generatedOffsets.push(code.length);
           linkedCodeMapping.sourceOffsets.push(code.length);
           linkedCodeMapping.lengths.push(value.name.length);
-          code += `${value.name}: (await import('${specifier}')).default.`;
+          code += `${value.name}: (await import('${tokenImporter.from}')).default.`;
           mapping.sourceOffsets.push(value.loc.start.offset);
           mapping.lengths.push(value.name.length);
           mapping.generatedOffsets.push(code.length);
@@ -114,7 +109,7 @@ export function createDts(
           mapping.generatedOffsets.push(code.length);
           linkedCodeMapping.sourceOffsets.push(code.length);
           linkedCodeMapping.lengths.push(value.localName.length);
-          code += `${value.localName}: (await import('${specifier}')).default.`;
+          code += `${value.localName}: (await import('${tokenImporter.from}')).default.`;
           mapping.sourceOffsets.push(value.loc.start.offset);
           mapping.lengths.push(value.name.length);
           mapping.generatedOffsets.push(code.length);
