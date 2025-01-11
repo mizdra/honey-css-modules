@@ -13,9 +13,13 @@ test('parseAtImport', () => {
       @import "test.css" print;
     `),
   );
-  expect(parseAtImport(atImports[0]!)).toBe(undefined);
-  expect(parseAtImport(atImports[1]!)).toBe('test.css');
-  expect(parseAtImport(atImports[2]!)).toBe('test.css');
-  expect(parseAtImport(atImports[3]!)).toBe('test.css');
-  expect(parseAtImport(atImports[4]!)).toBe('test.css');
+  expect(atImports.map(parseAtImport)).toMatchInlineSnapshot(`
+    [
+      undefined,
+      "test.css",
+      "test.css",
+      "test.css",
+      "test.css",
+    ]
+  `);
 });
