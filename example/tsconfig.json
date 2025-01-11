@@ -8,6 +8,9 @@
     /* Modules */
     "module": "Preserve" /* Specify what module code is generated. */,
     "moduleResolution": "bundler" /* Specify how TypeScript looks up a file from a given module specifier. */,
+    "paths": {
+      "@/*": ["./*"]
+    },
 
     "rootDirs": ["src", "generated/src"],
     "types": [] // Simplify tsserver.log
