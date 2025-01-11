@@ -88,35 +88,22 @@ export function createDts(
       code += `  ...(await import('${tokenImporter.from}')).default,\n`;
     } else {
       for (const value of tokenImporter.values) {
-        if (value.localName === undefined || value.localLoc === undefined) {
-          code += `  `;
-          mapping.sourceOffsets.push(value.loc.start.offset);
-          mapping.lengths.push(value.name.length);
-          mapping.generatedOffsets.push(code.length);
-          linkedCodeMapping.sourceOffsets.push(code.length);
-          linkedCodeMapping.lengths.push(value.name.length);
-          code += `${value.name}: (await import('${tokenImporter.from}')).default.`;
-          mapping.sourceOffsets.push(value.loc.start.offset);
-          mapping.lengths.push(value.name.length);
-          mapping.generatedOffsets.push(code.length);
-          linkedCodeMapping.generatedOffsets.push(code.length);
-          linkedCodeMapping.generatedLengths.push(value.name.length);
-          code += `${value.name},\n`;
-        } else {
-          code += `  `;
-          mapping.sourceOffsets.push(value.localLoc.start.offset);
-          mapping.lengths.push(value.localName.length);
-          mapping.generatedOffsets.push(code.length);
-          linkedCodeMapping.sourceOffsets.push(code.length);
-          linkedCodeMapping.lengths.push(value.localName.length);
-          code += `${value.localName}: (await import('${tokenImporter.from}')).default.`;
-          mapping.sourceOffsets.push(value.loc.start.offset);
-          mapping.lengths.push(value.name.length);
-          mapping.generatedOffsets.push(code.length);
-          linkedCodeMapping.generatedOffsets.push(code.length);
-          linkedCodeMapping.generatedLengths.push(value.name.length);
-          code += `${value.name},\n`;
-        }
+        const localName = value.localName ?? value.name;
+        const localLoc = value.localLoc ?? value.loc;
+
+        code += `  `;
+        mapping.sourceOffsets.push(localLoc.start.offset);
+        mapping.lengths.push(localName.length);
+        mapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.sourceOffsets.push(code.length);
+        linkedCodeMapping.lengths.push(localName.length);
+        code += `${localName}: (await import('${tokenImporter.from}')).default.`;
+        mapping.sourceOffsets.push(value.loc.start.offset);
+        mapping.lengths.push(value.name.length);
+        mapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.generatedOffsets.push(code.length);
+        linkedCodeMapping.generatedLengths.push(value.name.length);
+        code += `${value.name},\n`;
       }
     }
   }
