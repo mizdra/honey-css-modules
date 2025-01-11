@@ -6,6 +6,6 @@ declare const styles = {
   ...(await import('./b.module.css')).default,
   c_1: (await import('./c.module.css')).default.c_1,
   c_alias: (await import('./c.module.css')).default.c_2,
-  ...(await import('./d.module.css')).default,
+  ...(await import('@/src/d.module.css')).default,
 };
 export default styles;

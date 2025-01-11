@@ -7,7 +7,9 @@ const options: CreateDtsOptions = {
   isExternalFile: () => false,
 };
 
-const dummyPos = { line: 1, column: 1, offset: 0 };
+function fakeLoc(offset: number) {
+  return { start: { line: 1, column: 1, offset }, end: { line: 1, column: 1, offset } };
+}
 
 describe('createDts', () => {
   test('creates d.ts file if css module file has no tokens', () => {
@@ -47,9 +49,9 @@ describe('createDts', () => {
           localTokens: [
             {
               name: 'local1',
-              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+              loc: fakeLoc(0),
             },
-            { name: 'local2', loc: { start: { line: 2, column: 1, offset: 10 }, end: dummyPos } },
+            { name: 'local2', loc: fakeLoc(1) },
           ],
           tokenImporters: [],
         },
@@ -80,7 +82,7 @@ describe('createDts', () => {
           ],
           "sourceOffsets": [
             0,
-            10,
+            1,
           ],
         },
       }
@@ -93,23 +95,25 @@ describe('createDts', () => {
           filename: '/test.module.css',
           localTokens: [],
           tokenImporters: [
-            { type: 'import', from: './a.module.css' },
+            { type: 'import', from: './a.module.css', fromLoc: fakeLoc(0) },
             {
               type: 'value',
+              values: [{ name: 'imported1', loc: fakeLoc(1) }],
               from: './b.module.css',
-              values: [{ name: 'imported1', loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos } }],
+              fromLoc: fakeLoc(2),
             },
             {
               type: 'value',
-              from: './c.module.css',
               values: [
                 {
-                  name: 'imported2',
-                  loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
                   localName: 'aliasedImported2',
-                  localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
+                  localLoc: fakeLoc(3),
+                  name: 'imported2',
+                  loc: fakeLoc(4),
                 },
               ],
+              from: './c.module.css',
+              fromLoc: fakeLoc(5),
             },
           ],
         },
@@ -144,22 +148,31 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
+            44,
             74,
+            99,
             126,
             139,
+            171,
             198,
           ],
           "lengths": [
+            16,
             9,
+            16,
             9,
+            16,
             16,
             9,
           ],
           "sourceOffsets": [
-            0,
-            0,
-            2,
+            -1,
             1,
+            1,
+            1,
+            3,
+            4,
+            4,
           ],
         },
       }
@@ -170,8 +183,8 @@ describe('createDts', () => {
       createDts(
         {
           filename: '/test.module.css',
-          localTokens: [{ name: 'local1', loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos } }],
-          tokenImporters: [{ type: 'import', from: './a.module.css' }],
+          localTokens: [{ name: 'local1', loc: fakeLoc(0) }],
+          tokenImporters: [{ type: 'import', from: './a.module.css', fromLoc: fakeLoc(1) }],
         },
         options,
       ),
@@ -192,11 +205,14 @@ describe('createDts', () => {
         "mapping": {
           "generatedOffsets": [
             27,
+            77,
           ],
           "lengths": [
             6,
+            16,
           ],
           "sourceOffsets": [
+            0,
             0,
           ],
         },
@@ -211,23 +227,25 @@ describe('createDts', () => {
           filename: '/src/test.module.css',
           localTokens: [],
           tokenImporters: [
-            { type: 'import', from: '@/a.module.css' },
+            { type: 'import', from: '@/a.module.css', fromLoc: fakeLoc(0) },
             {
               type: 'value',
+              values: [{ name: 'imported1', loc: fakeLoc(1) }],
               from: '@/b.module.css',
-              values: [{ name: 'imported1', loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos } }],
+              fromLoc: fakeLoc(2),
             },
             {
               type: 'value',
-              from: '@/c.module.css',
               values: [
                 {
-                  name: 'imported2',
-                  loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
                   localName: 'aliasedImported2',
-                  localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
+                  localLoc: fakeLoc(3),
+                  name: 'imported2',
+                  loc: fakeLoc(4),
                 },
               ],
+              from: '@/c.module.css',
+              fromLoc: fakeLoc(5),
             },
           ],
         },
@@ -236,9 +254,9 @@ describe('createDts', () => {
     ).toMatchInlineSnapshot(`
       {
         "code": "declare const styles = {
-        ...(await import('./a.module.css')).default,
-        imported1: (await import('./b.module.css')).default.imported1,
-        aliasedImported2: (await import('./c.module.css')).default.imported2,
+        ...(await import('@/a.module.css')).default,
+        imported1: (await import('@/b.module.css')).default.imported1,
+        aliasedImported2: (await import('@/c.module.css')).default.imported2,
       };
       export default styles;
       ",
@@ -262,22 +280,31 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
+            44,
             74,
+            99,
             126,
             139,
+            171,
             198,
           ],
           "lengths": [
+            16,
             9,
+            16,
             9,
+            16,
             16,
             9,
           ],
           "sourceOffsets": [
-            0,
-            0,
-            2,
+            -1,
             1,
+            1,
+            1,
+            3,
+            4,
+            4,
           ],
         },
       }
@@ -290,18 +317,19 @@ describe('createDts', () => {
           filename: '/test.module.css',
           localTokens: [],
           tokenImporters: [
-            { type: 'import', from: 'external.css' },
+            { type: 'import', from: 'external.css', fromLoc: fakeLoc(0) },
             {
               type: 'value',
-              from: 'external.css',
               values: [
                 {
-                  name: 'imported',
-                  loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
                   localName: 'imported',
-                  localLoc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
+                  localLoc: fakeLoc(1),
+                  name: 'imported',
+                  loc: fakeLoc(2),
                 },
               ],
+              from: 'external.css',
+              fromLoc: fakeLoc(3),
             },
           ],
         },
@@ -333,7 +361,7 @@ describe('createDts', () => {
         {
           filename: '/src/test.module.css',
           localTokens: [],
-          tokenImporters: [{ type: 'import', from: '@/a.module.css' }],
+          tokenImporters: [{ type: 'import', from: '@/a.module.css', fromLoc: fakeLoc(0) }],
         },
         { ...options, resolver },
       ),

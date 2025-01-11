@@ -35,20 +35,16 @@ function collectTokens(ast: Root) {
   const tokenImporters: TokenImporter[] = [];
   ast.walk((node) => {
     if (isAtImportNode(node)) {
-      const from = parseAtImport(node);
-      if (from !== undefined) {
-        tokenImporters.push({ type: 'import', from });
+      const parsed = parseAtImport(node);
+      if (parsed !== undefined) {
+        tokenImporters.push({ type: 'import', ...parsed });
       }
     } else if (isAtValueNode(node)) {
-      const parsedAtValue = parseAtValue(node);
-      if (parsedAtValue.type === 'valueDeclaration') {
-        localTokens.push({ name: parsedAtValue.name, loc: parsedAtValue.loc });
-      } else if (parsedAtValue.type === 'valueImportDeclaration') {
-        tokenImporters.push({
-          type: 'value',
-          from: parsedAtValue.from,
-          values: parsedAtValue.values,
-        });
+      const parsed = parseAtValue(node);
+      if (parsed.type === 'valueDeclaration') {
+        localTokens.push({ name: parsed.name, loc: parsed.loc });
+      } else if (parsed.type === 'valueImportDeclaration') {
+        tokenImporters.push({ ...parsed, type: 'value' });
       }
     } else if (isRuleNode(node)) {
       const classSelectors = parseRule(node);
@@ -77,9 +73,12 @@ export interface AtImportTokenImporter {
   type: 'import';
   /**
    * The specifier of the file from which the token is imported.
-   * This is a string before being resolved.
+   * This is a string before being resolved and surrounded by quotes.
+   * @example `@import './a.module.css'` would have `from` as `"'./a.module.css'"`.
    */
   from: string;
+  /** The location of the `from` in *.module.css file. */
+  fromLoc: Location;
 }
 
 /** A token importer using `@value ... from '...'`. */
@@ -89,9 +88,12 @@ export interface AtValueTokenImporter {
   values: AtValueTokenImporterValue[];
   /**
    * The specifier of the file from which the token is imported.
-   * This is a string before being resolved.
+   * This is a string before being resolved and surrounded by quotes.
+   * @example `@value a from './a.module.css'` would have `from` as `"'./a.module.css'"`.
    */
   from: string;
+  /** The location of the `from` in *.module.css file. */
+  fromLoc: Location;
 }
 
 /** A value imported from a CSS module file using `@value ... from '...'`. */

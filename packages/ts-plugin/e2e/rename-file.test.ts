@@ -46,28 +46,28 @@ describe('Rename File', async () => {
         },
       ],
     },
-    // {
-    //   name: 'b.module.css',
-    //   oldFilePath: iff.paths['b.module.css'],
-    //   newFilePath: iff.join('bb.module.css'),
-    //   expected: [
-    //     {
-    //       fileName: formatPath(iff.paths['a.module.css']),
-    //       textChanges: [{ start: { line: 1, offset: 10 }, end: { line: 1, offset: 24 }, newText: './bb.module.css' }],
-    //     },
-    //   ],
-    // },
-    // {
-    //   name: 'c.module.css',
-    //   oldFilePath: iff.paths['c.module.css'],
-    //   newFilePath: iff.join('cc.module.css'),
-    //   expected: [
-    //     {
-    //       fileName: formatPath(iff.paths['a.module.css']),
-    //       textChanges: [{ start: { line: 2, offset: 18 }, end: { line: 2, offset: 32 }, newText: './cc.module.css' }],
-    //     },
-    //   ],
-    // },
+    {
+      name: 'b.module.css',
+      oldFilePath: iff.paths['b.module.css'],
+      newFilePath: iff.join('bb.module.css'),
+      expected: [
+        {
+          fileName: formatPath(iff.paths['a.module.css']),
+          textChanges: [{ start: { line: 1, offset: 10 }, end: { line: 1, offset: 24 }, newText: './bb.module.css' }],
+        },
+      ],
+    },
+    {
+      name: 'c.module.css',
+      oldFilePath: iff.paths['c.module.css'],
+      newFilePath: iff.join('cc.module.css'),
+      expected: [
+        {
+          fileName: formatPath(iff.paths['a.module.css']),
+          textChanges: [{ start: { line: 2, offset: 18 }, end: { line: 2, offset: 32 }, newText: './cc.module.css' }],
+        },
+      ],
+    },
   ])('for $name', async ({ oldFilePath, newFilePath, expected }) => {
     const res = await tsserver.sendGetEditsForFileRename({ oldFilePath, newFilePath });
     expect(res.body).toStrictEqual(expected);

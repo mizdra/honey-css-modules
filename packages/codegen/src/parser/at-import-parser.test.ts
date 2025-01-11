@@ -13,9 +13,69 @@ test('parseAtImport', () => {
       @import "test.css" print;
     `),
   );
-  expect(parseAtImport(atImports[0]!)).toBe(undefined);
-  expect(parseAtImport(atImports[1]!)).toBe('test.css');
-  expect(parseAtImport(atImports[2]!)).toBe('test.css');
-  expect(parseAtImport(atImports[3]!)).toBe('test.css');
-  expect(parseAtImport(atImports[4]!)).toBe('test.css');
+  expect(atImports.map(parseAtImport)).toMatchInlineSnapshot(`
+    [
+      undefined,
+      {
+        "from": "test.css",
+        "fromLoc": {
+          "end": {
+            "column": 18,
+            "line": 2,
+            "offset": 26,
+          },
+          "start": {
+            "column": 10,
+            "line": 2,
+            "offset": 18,
+          },
+        },
+      },
+      {
+        "from": "test.css",
+        "fromLoc": {
+          "end": {
+            "column": 22,
+            "line": 3,
+            "offset": 50,
+          },
+          "start": {
+            "column": 14,
+            "line": 3,
+            "offset": 42,
+          },
+        },
+      },
+      {
+        "from": "test.css",
+        "fromLoc": {
+          "end": {
+            "column": 21,
+            "line": 4,
+            "offset": 74,
+          },
+          "start": {
+            "column": 13,
+            "line": 4,
+            "offset": 66,
+          },
+        },
+      },
+      {
+        "from": "test.css",
+        "fromLoc": {
+          "end": {
+            "column": 18,
+            "line": 5,
+            "offset": 94,
+          },
+          "start": {
+            "column": 10,
+            "line": 5,
+            "offset": 86,
+          },
+        },
+      },
+    ]
+  `);
 });
