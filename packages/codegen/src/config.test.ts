@@ -102,8 +102,4 @@ test('assertConfig', () => {
     `[Error: \`logLevel\` must be one of \`debug\`, \`info\`, or \`silent\`.]`,
   );
   expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', logLevel: 'debug' })).not.toThrow();
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', cwd: 1 })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`cwd\` must be a string.]`,
-  );
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', cwd: 'str' })).not.toThrow();
 });

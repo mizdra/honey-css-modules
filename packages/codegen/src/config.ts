@@ -54,9 +54,6 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
     throw new ConfigValidationError('`dashedIdents` must be a boolean.');
   }
   if ('logLevel' in config) assertLogLevel(config.logLevel);
-  if ('cwd' in config && typeof config.cwd !== 'string') {
-    throw new ConfigValidationError('`cwd` must be a string.');
-  }
 }
 
 /**
