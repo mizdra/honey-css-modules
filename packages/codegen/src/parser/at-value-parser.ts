@@ -18,6 +18,7 @@ interface ValueImportDeclaration {
     localLoc?: Location;
   }[];
   from: string;
+  fromLoc: Location;
 }
 
 type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
@@ -50,6 +51,8 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
   const matchesForValueImport = atValue.params.match(VALUE_IMPORT_PATTERN);
   if (matchesForValueImport) {
     const [, importedItems, from] = matchesForValueImport as [string, string, string];
+    // The length of the `@value  ` part in `@value  import1 from '...'`
+    const baseLength = 6 + (atValue.raws.afterName?.length ?? 0);
 
     let lastItemIndex = 0;
     const values = importedItems.split(/\s*,\s*/u).map((alias) => {
@@ -60,8 +63,6 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
       if (matchesForImportedItem) {
         const [, name, localName] = matchesForImportedItem as [string, string, string | undefined];
         const nameIndex = matchesForImportedItem.indices![1]![0];
-        // The length of the `@value  ` part in `@value  import1 from '...'`
-        const baseLength = 6 + (atValue.raws.afterName?.length ?? 0);
         const start = {
           line: atValue.source!.start!.line,
           column: atValue.source!.start!.column + baseLength + currentItemIndex + nameIndex,
@@ -97,7 +98,19 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
     // `from` is surrounded by quotes (e.g., `"./test.module.css"`). So, remove the quotes.
     const normalizedFrom = from.slice(1, -1);
 
-    return { type: 'valueImportDeclaration', values, from: normalizedFrom };
+    const fromIndex = matchesForValueImport.indices![2]![0] + 1;
+    const start = {
+      line: atValue.source!.start!.line,
+      column: atValue.source!.start!.column + baseLength + fromIndex,
+      offset: atValue.source!.start!.offset + baseLength + fromIndex,
+    };
+    const end = {
+      line: start.line,
+      column: start.column + normalizedFrom.length,
+      offset: start.offset + normalizedFrom.length,
+    };
+
+    return { type: 'valueImportDeclaration', values, from: normalizedFrom, fromLoc: { start, end } };
   }
 
   const matchesForValueDefinition = `${atValue.params}${atValue.raws.between!}`.match(VALUE_DEFINITION_PATTERN);
