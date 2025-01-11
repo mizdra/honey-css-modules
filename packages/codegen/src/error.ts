@@ -14,15 +14,15 @@ export class ConfigImportError extends Error {
   }
 }
 
+export class ConfigValidationError extends Error {
+  code = 'CONFIG_VALIDATION_ERROR';
+}
+
 export class AtValueInvalidError extends Error {
   code = 'AT_VALUE_INVALID';
   constructor(atValue: AtRule) {
     super(`\`${atValue.toString()}\` is invalid!`);
   }
-}
-
-export class ConfigValidationError extends Error {
-  code = 'CONFIG_VALIDATION_ERROR';
 }
 
 export class CSSModuleParseError extends Error {

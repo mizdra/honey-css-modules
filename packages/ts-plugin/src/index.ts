@@ -29,7 +29,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   }
 
   const resolvedConfig = resolveConfig(config, cwd);
-  const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
+  const resolver = createResolver(resolvedConfig.paths, resolvedConfig.cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
   return {
