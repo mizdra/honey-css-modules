@@ -19,6 +19,7 @@ export {
   type AtImportTokenImporter,
   type TokenImporter,
   type AtValueTokenImporter,
+  type AtValueTokenImporterValue,
 } from './parser/css-module-parser.js';
 export { type Location, type Position } from './parser/location.js';
 export { type CreateDtsOptions, createDts } from './dts-creator.js';
