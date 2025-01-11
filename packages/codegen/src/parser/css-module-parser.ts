@@ -44,13 +44,11 @@ function collectTokens(ast: Root) {
       if (parsedAtValue.type === 'valueDeclaration') {
         localTokens.push({ name: parsedAtValue.name, loc: parsedAtValue.loc });
       } else if (parsedAtValue.type === 'valueImportDeclaration') {
-        for (const value of parsedAtValue.values) {
-          tokenImporters.push({
-            type: 'value',
-            from: parsedAtValue.from,
-            ...value,
-          });
-        }
+        tokenImporters.push({
+          type: 'value',
+          from: parsedAtValue.from,
+          values: parsedAtValue.values,
+        });
       }
     } else if (isRuleNode(node)) {
       const classSelectors = parseRule(node);
@@ -71,7 +69,7 @@ export interface Token {
 }
 
 /**
- * A token importer using `@import`.
+ * A token importer using `@import '...'`.
  * `@import` imports all tokens from the file. Therefore, it does not have
  * the name of the imported token unlike {@link ValueTokenImporter}.
  */
@@ -84,21 +82,26 @@ export interface ImportTokenImporter {
   from: string;
 }
 
-/** A token importer using `@value`. */
+/** A token importer using `@value ... from '...'`. */
 export interface ValueTokenImporter {
   type: 'value';
+  /** The values imported from the file. */
+  values: ValueTokenImporterValue[];
   /**
    * The specifier of the file from which the token is imported.
    * This is a string before being resolved.
    */
   from: string;
+}
+
+export interface ValueTokenImporterValue {
   /**
    * The name of the token in the file from which it is imported.
    * @example `@value a from './a.module.css'` would have `name` as `'a'`.
    * @example `@value a as b from './a.module.css'` would have `name` as `'a'`.
    */
   name: string;
-  /** The location of the `name` in the source file. */
+  /** The location of the `name` in *.module.css file. */
   loc: Location;
   /**
    * The name of the token in the current file.
@@ -107,7 +110,7 @@ export interface ValueTokenImporter {
    */
   localName?: string;
   /**
-   * The location of the `localName` in the source file.
+   * The location of the `localName` in *.module.css file.
    * This is `undefined` when `localName` is `undefined`.
    */
   localLoc?: Location;

@@ -97,16 +97,19 @@ describe('createDts', () => {
             {
               type: 'value',
               from: './b.module.css',
-              name: 'imported1',
-              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+              values: [{ name: 'imported1', loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos } }],
             },
             {
               type: 'value',
               from: './c.module.css',
-              name: 'imported2',
-              loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
-              localName: 'aliasedImported2',
-              localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
+              values: [
+                {
+                  name: 'imported2',
+                  loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
+                  localName: 'aliasedImported2',
+                  localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
+                },
+              ],
             },
           ],
         },
@@ -212,16 +215,19 @@ describe('createDts', () => {
             {
               type: 'value',
               from: '@/b.module.css',
-              name: 'imported1',
-              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+              values: [{ name: 'imported1', loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos } }],
             },
             {
               type: 'value',
               from: '@/c.module.css',
-              name: 'imported2',
-              loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
-              localName: 'aliasedImported2',
-              localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
+              values: [
+                {
+                  name: 'imported2',
+                  loc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
+                  localName: 'aliasedImported2',
+                  localLoc: { start: { line: 1, column: 3, offset: 2 }, end: dummyPos },
+                },
+              ],
             },
           ],
         },
@@ -288,10 +294,14 @@ describe('createDts', () => {
             {
               type: 'value',
               from: 'external.css',
-              name: 'imported',
-              loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
-              localName: 'imported',
-              localLoc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
+              values: [
+                {
+                  name: 'imported',
+                  loc: { start: { line: 1, column: 1, offset: 0 }, end: dummyPos },
+                  localName: 'imported',
+                  localLoc: { start: { line: 1, column: 2, offset: 1 }, end: dummyPos },
+                },
+              ],
             },
           ],
         },
