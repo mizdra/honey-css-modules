@@ -41,13 +41,13 @@ interface LinkedCodeMapping extends CodeMapping {
  * ```
  * The d.ts file would be:
  * ```ts
- * declare const styles: Readonly<
- *   & { local1: string }
- *   & { local2: string }
- *   & (typeof import('./a.module.css'))['default']
- *   & { imported1: (typeof import('./c.module.css'))['default']['imported1'] }
- *   & { aliasedImported2: (typeof import('./d.module.css'))['default']['imported2'] }
- * >;
+ * const styles = {
+ *   local1: '' as readonly string,
+ *   local2: '' as readonly string,
+ *   ...(await import('./a.module.css')).default,
+ *   imported1: (await import('./b.module.css')).default.imported1,
+ *   aliasedImported2: (await import('./b.module.css')).default.imported2,
+ * };
  * export default styles;
  * ```
  *
