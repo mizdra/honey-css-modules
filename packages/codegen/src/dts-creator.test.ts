@@ -148,21 +148,30 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
+            44,
             74,
+            99,
             126,
             139,
+            171,
             198,
           ],
           "lengths": [
+            16,
             9,
+            16,
             9,
+            16,
             16,
             9,
           ],
           "sourceOffsets": [
+            -1,
+            1,
             1,
             1,
             3,
+            4,
             4,
           ],
         },
@@ -196,11 +205,14 @@ describe('createDts', () => {
         "mapping": {
           "generatedOffsets": [
             27,
+            77,
           ],
           "lengths": [
             6,
+            16,
           ],
           "sourceOffsets": [
+            0,
             0,
           ],
         },
@@ -268,21 +280,30 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
+            44,
             74,
+            99,
             126,
             139,
+            171,
             198,
           ],
           "lengths": [
+            16,
             9,
+            16,
             9,
+            16,
             16,
             9,
           ],
           "sourceOffsets": [
+            -1,
+            1,
             1,
             1,
             3,
+            4,
             4,
           ],
         },
