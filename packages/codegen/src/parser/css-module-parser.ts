@@ -71,9 +71,9 @@ export interface Token {
 /**
  * A token importer using `@import '...'`.
  * `@import` imports all tokens from the file. Therefore, it does not have
- * the name of the imported token unlike {@link ValueTokenImporter}.
+ * the name of the imported token unlike {@link AtValueTokenImporter}.
  */
-export interface ImportTokenImporter {
+export interface AtImportTokenImporter {
   type: 'import';
   /**
    * The specifier of the file from which the token is imported.
@@ -83,10 +83,10 @@ export interface ImportTokenImporter {
 }
 
 /** A token importer using `@value ... from '...'`. */
-export interface ValueTokenImporter {
+export interface AtValueTokenImporter {
   type: 'value';
   /** The values imported from the file. */
-  values: ValueTokenImporterValue[];
+  values: AtValueTokenImporterValue[];
   /**
    * The specifier of the file from which the token is imported.
    * This is a string before being resolved.
@@ -94,7 +94,8 @@ export interface ValueTokenImporter {
   from: string;
 }
 
-export interface ValueTokenImporterValue {
+/** A value imported from a CSS module file using `@value ... from '...'`. */
+export interface AtValueTokenImporterValue {
   /**
    * The name of the token in the file from which it is imported.
    * @example `@value a from './a.module.css'` would have `name` as `'a'`.
@@ -116,7 +117,7 @@ export interface ValueTokenImporterValue {
   localLoc?: Location;
 }
 
-export type TokenImporter = ImportTokenImporter | ValueTokenImporter;
+export type TokenImporter = AtImportTokenImporter | AtValueTokenImporter;
 
 export interface CSSModuleFile {
   /** Absolute path of the file */

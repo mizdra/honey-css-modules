@@ -16,9 +16,9 @@ export {
   type ParseCSSModuleCodeOptions,
   type CSSModuleFile,
   type Token,
-  type ImportTokenImporter,
+  type AtImportTokenImporter,
   type TokenImporter,
-  type ValueTokenImporter,
+  type AtValueTokenImporter,
 } from './parser/css-module-parser.js';
 export { type Location, type Position } from './parser/location.js';
 export { type CreateDtsOptions, createDts } from './dts-creator.js';
