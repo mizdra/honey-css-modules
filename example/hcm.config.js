@@ -2,4 +2,7 @@
 export default {
   pattern: 'src/**/*.module.css',
   dtsOutDir: 'generated',
+  paths: {
+    '@/*': ['./*'],
+  },
 };

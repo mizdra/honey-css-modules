@@ -40,7 +40,6 @@ async function processFile(
 
 /**
  * Run honey-css-modules .d.ts generation.
- * @param config Configuration object.
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {CSSModuleParseError}
  * @throws {AtValueInvalidError}
@@ -50,8 +49,8 @@ async function processFile(
  */
 export async function runHCM(config: HCMConfig, cwd: string): Promise<void> {
   const resolvedConfig = resolveConfig(config, cwd);
-  const { pattern, alias } = resolvedConfig;
-  const resolver = createResolver(alias, cwd);
+  const { pattern, paths } = resolvedConfig;
+  const resolver = createResolver(paths, cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
   const promises: Promise<void>[] = [];

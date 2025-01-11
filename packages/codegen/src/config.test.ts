@@ -82,14 +82,17 @@ test('assertConfig', () => {
     `[Error: \`dtsOutDir\` must be a string.]`,
   );
   expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str' })).not.toThrow();
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', alias: 1 })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`alias\` must be an object.]`,
+  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', paths: 1 })).toThrowErrorMatchingInlineSnapshot(
+    `[Error: \`paths\` must be an object.]`,
   );
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', alias: {} })).not.toThrow();
+  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', paths: {} })).not.toThrow();
   expect(() =>
-    assertConfig({ pattern: 'str', dtsOutDir: 'str', alias: { str: 1 } }),
-  ).toThrowErrorMatchingInlineSnapshot(`[Error: \`alias.str\` must be a string.]`);
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', alias: { str: 'str' } })).not.toThrow();
+    assertConfig({ pattern: 'str', dtsOutDir: 'str', paths: { '@/*': 1 } }),
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: \`paths["@/*"]\` must be an array.]`);
+  expect(() =>
+    assertConfig({ pattern: 'str', dtsOutDir: 'str', paths: { '@/*': [1] } }),
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: \`paths["@/*"][0]\` must be a string.]`);
+  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', paths: { '@/*': ['./*'] } })).not.toThrow();
   expect(() =>
     assertConfig({ pattern: 'str', dtsOutDir: 'str', arbitraryExtensions: 1 }),
   ).toThrowErrorMatchingInlineSnapshot(`[Error: \`arbitraryExtensions\` must be a boolean.]`);
@@ -102,8 +105,4 @@ test('assertConfig', () => {
     `[Error: \`logLevel\` must be one of \`debug\`, \`info\`, or \`silent\`.]`,
   );
   expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', logLevel: 'debug' })).not.toThrow();
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', cwd: 1 })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`cwd\` must be a string.]`,
-  );
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', cwd: 'str' })).not.toThrow();
 });

@@ -21,7 +21,7 @@ test('generates .d.ts', async () => {
       export default {
         pattern: 'src/**/*.module.css',
         dtsOutDir: 'dist',
-        alias: { '@': 'src' },
+        paths: { '@/*': ['./src/*'] },
       };
     `,
   });
