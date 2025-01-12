@@ -78,6 +78,16 @@ export function createDts(
   let code = 'declare const styles = {\n';
   for (const token of localTokens) {
     code += `  `;
+    if (token.definition) {
+      const cssLines = token.definition.trim().split('\n');
+      code += '/**\n';
+      code += `   * \`\`\`css\n`;
+      for (const line of cssLines) {
+        code += `   * ${line}\n`;
+      }
+      code += `   * \`\`\`\n`;
+      code += `   */\n  `;
+    }
     mapping.sourceOffsets.push(token.loc.start.offset);
     mapping.generatedOffsets.push(code.length);
     mapping.lengths.push(token.name.length);

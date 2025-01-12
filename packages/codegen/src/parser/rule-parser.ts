@@ -61,6 +61,8 @@ interface ClassSelector {
   name: string;
   /** The location of the class selector. */
   loc: Location;
+  /** The style definition of the class selector */
+  definition: string;
 }
 
 /**
@@ -87,6 +89,7 @@ export function parseRule(rule: Rule): ClassSelector[] {
     return {
       name: className.value,
       loc: { start, end },
+      definition: rule.toString(),
     };
   });
 }
