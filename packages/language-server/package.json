@@ -35,5 +35,8 @@
     "!src/test",
     "dist"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "@volar/language-server": "^2.4.11",
+    "volar-service-css": "^0.0.62"
+  }
 }
