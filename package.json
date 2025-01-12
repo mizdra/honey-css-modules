@@ -8,6 +8,7 @@
   "workspaces": [
     "packages/codegen",
     "packages/ts-plugin",
+    "packages/language-server",
     "packages/vscode"
   ],
   "scripts": {
