@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import vscode = require('vscode');
+import * as vscode from 'vscode';
+import * as lsp from 'vscode-languageclient/node';
 
-exports.activate = function activate(_context: vscode.ExtensionContext) {
+let client: lsp.BaseLanguageClient;
+
+export async function activate(_context: vscode.ExtensionContext) {
   console.log('[vscode-honey-css-modules] Activated');
 
   // By default, `vscode.typescript-language-features` is not activated when a user opens *.css in VS Code.
@@ -40,6 +42,30 @@ exports.activate = function activate(_context: vscode.ExtensionContext) {
         }
       });
   }
-};
 
-exports.deactivate = function deactivate() {};
+  // TODO: Do not use Node.js API
+  const serverModulePath = require.resolve('honey-css-modules-language-server');
+
+  const serverOptions: lsp.ServerOptions = {
+    run: {
+      module: serverModulePath,
+      transport: lsp.TransportKind.ipc,
+      options: { execArgv: [] },
+    },
+    debug: {
+      module: serverModulePath,
+      transport: lsp.TransportKind.ipc,
+      options: { execArgv: ['--nolazy', `--inspect=${6009}`] },
+    },
+  };
+  const clientOptions: lsp.LanguageClientOptions = {
+    documentSelector: [{ language: 'css' }],
+    initializationOptions: {},
+  };
+  client = new lsp.LanguageClient('vscode-honey-css-modules', 'vscode-honey-css-modules', serverOptions, clientOptions);
+  await client.start();
+}
+
+export function deactivate(): Thenable<unknown> | undefined {
+  return client?.stop();
+}
