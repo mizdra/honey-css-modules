@@ -1,6 +1,21 @@
 declare const styles = {
+  /**
+   * ```css
+   * .a_1 { color: red; }
+   * ```
+   */
   a_1: '' as readonly string,
+  /**
+   * ```css
+   * .a_2 { color: red; }
+   * ```
+   */
   a_2: '' as readonly string,
+  /**
+   * ```css
+   * .a_2 { color: red; }
+   * ```
+   */
   a_2: '' as readonly string,
   a_3: '' as readonly string,
   ...(await import('./b.module.css')).default,

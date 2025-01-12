@@ -37,6 +37,7 @@ describe('parseRule', () => {
       [
         [
           {
+            "definition": ".basic {}",
             "loc": {
               "end": {
                 "column": 7,
@@ -54,6 +55,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".cascading {}",
             "loc": {
               "end": {
                 "column": 11,
@@ -71,6 +73,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".cascading {}",
             "loc": {
               "end": {
                 "column": 11,
@@ -88,6 +91,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".pseudo_class_1 {}",
             "loc": {
               "end": {
                 "column": 16,
@@ -105,6 +109,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".pseudo_class_2:hover {}",
             "loc": {
               "end": {
                 "column": 16,
@@ -122,6 +127,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ":not(.pseudo_class_3) {}",
             "loc": {
               "end": {
                 "column": 21,
@@ -139,6 +145,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".multiple_selector_1.multiple_selector_2 {}",
             "loc": {
               "end": {
                 "column": 21,
@@ -154,6 +161,7 @@ describe('parseRule', () => {
             "name": "multiple_selector_1",
           },
           {
+            "definition": ".multiple_selector_1.multiple_selector_2 {}",
             "loc": {
               "end": {
                 "column": 41,
@@ -171,6 +179,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".combinator_1 + .combinator_2 {}",
             "loc": {
               "end": {
                 "column": 14,
@@ -186,6 +195,7 @@ describe('parseRule', () => {
             "name": "combinator_1",
           },
           {
+            "definition": ".combinator_1 + .combinator_2 {}",
             "loc": {
               "end": {
                 "column": 30,
@@ -203,6 +213,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".at_rule {}",
             "loc": {
               "end": {
                 "column": 13,
@@ -220,6 +231,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".selector_list_1, .selector_list_2 {}",
             "loc": {
               "end": {
                 "column": 17,
@@ -235,6 +247,7 @@ describe('parseRule', () => {
             "name": "selector_list_1",
           },
           {
+            "definition": ".selector_list_1, .selector_list_2 {}",
             "loc": {
               "end": {
                 "column": 35,
@@ -252,6 +265,7 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ":local(.local_class_name_1) {}",
             "loc": {
               "end": {
                 "column": 27,
@@ -269,6 +283,9 @@ describe('parseRule', () => {
         ],
         [
           {
+            "definition": ".with_newline_1,
+      .with_newline_2
+        + .with_newline_3, {}",
             "loc": {
               "end": {
                 "column": 16,
@@ -284,6 +301,9 @@ describe('parseRule', () => {
             "name": "with_newline_1",
           },
           {
+            "definition": ".with_newline_1,
+      .with_newline_2
+        + .with_newline_3, {}",
             "loc": {
               "end": {
                 "column": 16,
@@ -299,6 +319,9 @@ describe('parseRule', () => {
             "name": "with_newline_2",
           },
           {
+            "definition": ".with_newline_1,
+      .with_newline_2
+        + .with_newline_3, {}",
             "loc": {
               "end": {
                 "column": 20,

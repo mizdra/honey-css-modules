@@ -32,6 +32,7 @@ describe('parseCSSModuleCode', () => {
         "filename": "/test.module.css",
         "localTokens": [
           {
+            "definition": ".basic {}",
             "loc": {
               "end": {
                 "column": 7,
@@ -47,6 +48,7 @@ describe('parseCSSModuleCode', () => {
             "name": "basic",
           },
           {
+            "definition": ".cascading {}",
             "loc": {
               "end": {
                 "column": 11,
@@ -62,6 +64,7 @@ describe('parseCSSModuleCode', () => {
             "name": "cascading",
           },
           {
+            "definition": ".cascading {}",
             "loc": {
               "end": {
                 "column": 11,
@@ -77,6 +80,7 @@ describe('parseCSSModuleCode', () => {
             "name": "cascading",
           },
           {
+            "definition": ".pseudo_class_1 {}",
             "loc": {
               "end": {
                 "column": 16,
@@ -92,6 +96,7 @@ describe('parseCSSModuleCode', () => {
             "name": "pseudo_class_1",
           },
           {
+            "definition": ".pseudo_class_2:hover {}",
             "loc": {
               "end": {
                 "column": 16,
@@ -107,6 +112,7 @@ describe('parseCSSModuleCode', () => {
             "name": "pseudo_class_2",
           },
           {
+            "definition": ":not(.pseudo_class_3) {}",
             "loc": {
               "end": {
                 "column": 21,
@@ -122,6 +128,7 @@ describe('parseCSSModuleCode', () => {
             "name": "pseudo_class_3",
           },
           {
+            "definition": ".multiple_selector_1.multiple_selector_2 {}",
             "loc": {
               "end": {
                 "column": 21,
@@ -137,6 +144,7 @@ describe('parseCSSModuleCode', () => {
             "name": "multiple_selector_1",
           },
           {
+            "definition": ".multiple_selector_1.multiple_selector_2 {}",
             "loc": {
               "end": {
                 "column": 41,
@@ -152,6 +160,7 @@ describe('parseCSSModuleCode', () => {
             "name": "multiple_selector_2",
           },
           {
+            "definition": ".combinator_1 + .combinator_2 {}",
             "loc": {
               "end": {
                 "column": 14,
@@ -167,6 +176,7 @@ describe('parseCSSModuleCode', () => {
             "name": "combinator_1",
           },
           {
+            "definition": ".combinator_1 + .combinator_2 {}",
             "loc": {
               "end": {
                 "column": 30,
@@ -182,6 +192,7 @@ describe('parseCSSModuleCode', () => {
             "name": "combinator_2",
           },
           {
+            "definition": ".at_rule {}",
             "loc": {
               "end": {
                 "column": 13,
@@ -197,6 +208,7 @@ describe('parseCSSModuleCode', () => {
             "name": "at_rule",
           },
           {
+            "definition": ".selector_list_1, .selector_list_2 {}",
             "loc": {
               "end": {
                 "column": 17,
@@ -212,6 +224,7 @@ describe('parseCSSModuleCode', () => {
             "name": "selector_list_1",
           },
           {
+            "definition": ".selector_list_1, .selector_list_2 {}",
             "loc": {
               "end": {
                 "column": 35,
@@ -227,6 +240,7 @@ describe('parseCSSModuleCode', () => {
             "name": "selector_list_2",
           },
           {
+            "definition": ":local(.local_1) {}",
             "loc": {
               "end": {
                 "column": 16,

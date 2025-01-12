@@ -36,6 +36,11 @@ test('generates .d.ts', async () => {
   expect(hcm.status).toBe(0);
   expect(await readFile(iff.join('dist/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
     "declare const styles = {
+      /**
+       * \`\`\`css
+       * .a1 { color: red; }
+       * \`\`\`
+       */
       a1: '' as readonly string,
       ...(await import('./b.module.css')).default,
       ...(await import('@/c.module.css')).default,
@@ -45,6 +50,11 @@ test('generates .d.ts', async () => {
   `);
   expect(await readFile(iff.join('dist/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
     "declare const styles = {
+      /**
+       * \`\`\`css
+       * .b1 { color: red; }
+       * \`\`\`
+       */
       b1: '' as readonly string,
     };
     export default styles;
@@ -52,6 +62,11 @@ test('generates .d.ts', async () => {
   `);
   expect(await readFile(iff.join('dist/src/c.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
     "declare const styles = {
+      /**
+       * \`\`\`css
+       * .c1 { color: red; }
+       * \`\`\`
+       */
       c1: '' as readonly string,
     };
     export default styles;
