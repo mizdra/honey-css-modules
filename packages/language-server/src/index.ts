@@ -10,7 +10,19 @@ const server = createServer(connection);
 connection.listen();
 
 connection.onInitialize((params) => {
-  const cssService = createCssService();
+  const cssService = createCssService({
+    getCustomData(_context) {
+      // TODO: Load user defined custom data
+      return [
+        {
+          provideProperties: () => [],
+          provideAtDirectives: () => [{ name: '@value', description: 'Define values with CSS Modules' }],
+          providePseudoClasses: () => [],
+          providePseudoElements: () => [],
+        },
+      ];
+    },
+  });
 
   // Disable rename provider due to conflict with ts-plugin
   // TODO: Allow rename operations that do not conflict with ts-plugin
