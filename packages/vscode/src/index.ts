@@ -59,7 +59,7 @@ export async function activate(_context: vscode.ExtensionContext) {
     },
   };
   const clientOptions: lsp.LanguageClientOptions = {
-    documentSelector: [{ language: 'css' }],
+    documentSelector: [{ language: 'css' }, { language: 'scss' }, { language: 'less' }],
     initializationOptions: {},
   };
   client = new lsp.LanguageClient('vscode-honey-css-modules', 'vscode-honey-css-modules', serverOptions, clientOptions);

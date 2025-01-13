@@ -28,7 +28,9 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:css"
+    "onLanguage:css",
+    "onLanguage:less",
+    "onLanguage:scss"
   ],
   "contributes": {
     "typescriptServerPlugins": [
