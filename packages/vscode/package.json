@@ -56,7 +56,6 @@
     }
   },
   "dependencies": {
-    "honey-css-modules-language-server": "../language-server",
     "ts-honey-css-modules-plugin": "../ts-plugin",
     "vscode-languageclient": "^9.0.1"
   }
