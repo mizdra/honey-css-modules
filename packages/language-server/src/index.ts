@@ -12,7 +12,6 @@ connection.listen();
 connection.onInitialize((params) => {
   const cssService = createCssService({
     getCustomData(_context) {
-      // TODO: Load user defined custom data
       return [
         {
           provideProperties: () => [],
