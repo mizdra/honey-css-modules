@@ -11,6 +11,9 @@
       "path": "packages/ts-plugin"
     },
     {
+      "path": "packages/language-server"
+    },
+    {
       "path": "packages/vscode"
     }
   ]
