@@ -25,6 +25,7 @@
   },
   "prettier": "@mizdra/prettier-config-mizdra",
   "devDependencies": {
+    "@eslint/css": "^0.2.0",
     "@mizdra/eslint-config-mizdra": "^6.0.0",
     "@mizdra/inline-fixture-files": "^2.0.0",
     "@mizdra/prettier-config-mizdra": "^2.0.0",

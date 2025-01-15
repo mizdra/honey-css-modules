@@ -36,5 +36,9 @@
     "!src/test",
     "dist"
   ],
-  "dependencies": {}
+  "dependencies": {},
+  "peerDependencies": {
+    "@eslint/css": ">=0.2.0",
+    "eslint": ">=9.18.0"
+  }
 }
