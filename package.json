@@ -9,7 +9,8 @@
     "packages/codegen",
     "packages/ts-plugin",
     "packages/language-server",
-    "packages/vscode"
+    "packages/vscode",
+    "packages/eslint-plugin"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
