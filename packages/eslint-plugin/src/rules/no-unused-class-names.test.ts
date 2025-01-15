@@ -1,4 +1,5 @@
 import css from '@eslint/css';
+import parser from '@typescript-eslint/parser';
 import { RuleTester } from 'eslint';
 import { test } from 'vitest';
 import { noUnusedClassNames } from './no-unused-class-names.js';
@@ -6,6 +7,7 @@ import { noUnusedClassNames } from './no-unused-class-names.js';
 test('no-unused-class-names', () => {
   const ruleTester = new RuleTester({
     plugins: { css },
+    languageOptions: { parser },
     language: 'css/css',
   });
   ruleTester.run('no-unused-class-names', noUnusedClassNames, {
