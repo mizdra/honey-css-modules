@@ -14,7 +14,7 @@
   "private": true,
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -b tsconfig.build.json"
   },
   "engines": {
     "node": ">=22.0.0"
