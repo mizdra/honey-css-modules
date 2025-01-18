@@ -16,7 +16,7 @@ This is a guide for contributors.
   git switch main && git pull
   ```
 - ```bash
-  rm -rf dist && npm run build
+  npm run build -- --clean && npm run build
   ```
 - ```bash
   npm version <major|minor|patch>
