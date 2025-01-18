@@ -1,12 +1,10 @@
-import { platform } from 'node:os';
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { assertConfig, readConfigFile } from './config.js';
 import { ConfigImportError, ConfigNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
-// TODO: Run tests on Windows if https://github.com/vitest-dev/vitest/issues/7084 is fixed.
-describe.runIf(platform() !== 'win32')('readConfigFile', () => {
+describe('readConfigFile', () => {
   test('returns a config object', async () => {
     const iff = await createIFF({
       'hcm.config.js': dedent`
