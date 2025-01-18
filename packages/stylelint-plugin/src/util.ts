@@ -1,13 +1,14 @@
 import { readFile } from 'node:fs/promises';
 
-export async function readTsText(cssModulePath: string): Promise<string | undefined> {
+export async function readTsFile(cssModulePath: string): Promise<{ path: string; text: string } | undefined> {
   // TODO: Make TypeScript file names customizable
   const paths = [cssModulePath.replace('.module.css', '.tsx'), cssModulePath.replace('.module.css', '.ts')];
   for (const path of paths) {
     try {
       // TODO: Cache the result of readFile
       // eslint-disable-next-line no-await-in-loop
-      return await readFile(path, 'utf-8');
+      const text = await readFile(path, 'utf-8');
+      return { path, text };
     } catch {
       continue;
     }
