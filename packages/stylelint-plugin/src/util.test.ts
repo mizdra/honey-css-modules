@@ -1,7 +1,7 @@
 import dedent from 'dedent';
 import { expect, test } from 'vitest';
 import { createIFF } from './test/fixture.js';
-import { findUsedClassNames, readTsFile } from './util.js';
+import { findUsedTokenNames, readTsFile } from './util.js';
 
 test('readTsText', async () => {
   const iff = await createIFF({
@@ -16,7 +16,7 @@ test('readTsText', async () => {
   expect(await readTsFile(iff.join('d.module.css'))).toBe(undefined);
 });
 
-test('findUsedClassNames', () => {
+test('findUsedTokenNames', () => {
   const code = dedent`
     import styles from './a.module.css';
     styles.foo;
@@ -27,5 +27,5 @@ test('findUsedClassNames', () => {
     styles;
   `;
   const expected = new Set(['foo', 'bar']);
-  expect(findUsedClassNames(code)).toEqual(expected);
+  expect(findUsedTokenNames(code)).toEqual(expected);
 });

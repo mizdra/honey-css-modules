@@ -2,7 +2,7 @@ import { basename } from 'node:path';
 import { parseRule } from 'honey-css-modules';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
-import { findUsedClassNames, readTsFile } from '../util.js';
+import { findUsedTokenNames, readTsFile } from '../util.js';
 
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
@@ -31,13 +31,13 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
     // assumed that all class names are used.
     if (tsFile === undefined) return;
 
-    const usedClassNames = findUsedClassNames(tsFile.text);
+    const usedTokenNames = findUsedTokenNames(tsFile.text);
 
     root.walkRules((rule) => {
       const classSelectors = parseRule(rule);
 
       for (const classSelector of classSelectors) {
-        if (!usedClassNames.has(classSelector.name)) {
+        if (!usedTokenNames.has(classSelector.name)) {
           utils.report({
             result,
             ruleName,
