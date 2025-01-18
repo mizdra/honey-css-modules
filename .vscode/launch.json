@@ -7,7 +7,8 @@
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["-w", "honey-css-modules", "run", "dev"]
+      "runtimeArgs": ["-w", "honey-css-modules", "run", "dev"],
+      "console": "integratedTerminal"
     },
     {
       "name": "vscode: debug",
@@ -26,6 +27,16 @@
         "${workspaceFolder}/packages/vscode/dist/**/*.cjs",
         "${workspaceFolder}/packages/vscode/dist/**/*.mjs"
       ],
+      "preLaunchTask": "npm: build"
+    },
+    {
+      "name": "stylelint-plugin: debug",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/example",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["stylelint", "src/**/*.css"],
+      "console": "integratedTerminal",
       "preLaunchTask": "npm: build"
     }
   ]
