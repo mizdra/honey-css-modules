@@ -36,5 +36,10 @@
     "!src/test",
     "dist"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "honey-css-modules": "../codegen"
+  },
+  "peerDependencies": {
+    "stylelint": "^16.0.0"
+  }
 }

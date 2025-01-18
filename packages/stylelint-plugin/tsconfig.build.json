@@ -11,5 +11,10 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true
-  }
+  },
+  "references": [
+    {
+      "path": "../codegen/tsconfig.build.json"
+    }
+  ]
 }
