@@ -13,7 +13,7 @@
     "packages/stylelint-plugin"
   ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "tsc -b tsconfig.build.json",
     "lint": "run-s -c lint:*",
     "lint:tsc": "tsc -b",
     "lint:eslint": "eslint --cache --cache-strategy content .",
