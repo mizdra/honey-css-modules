@@ -7,7 +7,7 @@
       "request": "launch",
       "cwd": "${workspaceFolder}/example",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["packages/codegen/bin/hcm.mjs"],
+      "runtimeArgs": ["../packages/codegen/bin/hcm.mjs"],
       "console": "integratedTerminal",
       "preLaunchTask": "npm: build - packages/codegen"
     },
