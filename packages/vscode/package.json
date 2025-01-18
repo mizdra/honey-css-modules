@@ -15,7 +15,7 @@
   "private": true,
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -b tsconfig.build.json"
   },
   "engines": {
     "vscode": "^1.77.0"

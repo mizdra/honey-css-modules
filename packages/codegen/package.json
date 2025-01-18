@@ -21,7 +21,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -b tsconfig.build.json",
     "dev": "npm run build && cd ../../example && node ../packages/codegen/bin/hcm.mjs"
   },
   "engines": {
