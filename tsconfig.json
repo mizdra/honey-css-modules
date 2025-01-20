@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
-  "exclude": ["node_modules", "**/dist", "**/bin", "example"],
+  "exclude": ["node_modules", "**/dist", "example"],
   "compilerOptions": {
     /* Language and Environment */
     "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
