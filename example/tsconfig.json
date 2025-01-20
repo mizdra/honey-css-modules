@@ -12,6 +12,9 @@
       "@/*": ["./*"]
     },
 
+    /* Emit */
+    "noEmit": true /* Disable emitting files from a compilation. */,
+
     "rootDirs": ["src", "generated/src"],
     "types": [] // Simplify tsserver.log
   }
