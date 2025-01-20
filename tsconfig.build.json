@@ -1,5 +1,8 @@
 {
   "files": [],
+  "compilerOptions": {
+    "composite": true
+  },
   "references": [
     { "path": "packages/codegen/tsconfig.build.json" },
     { "path": "packages/ts-plugin/tsconfig.build.json" },

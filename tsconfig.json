@@ -8,11 +8,5 @@
 
     "noEmit": true
   },
-  "references": [
-    { "path": "packages/codegen/tsconfig.build.json" },
-    { "path": "packages/ts-plugin/tsconfig.build.json" },
-    { "path": "packages/language-server/tsconfig.build.json" },
-    { "path": "packages/vscode/tsconfig.build.json" },
-    { "path": "packages/stylelint-plugin/tsconfig.build.json" }
-  ]
+  "references": [{ "path": "tsconfig.build.json" }]
 }
