@@ -1,8 +1,19 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "include": ["src"], // Avoid bin/ and configuration files.
   "exclude": ["src/**/*.test.ts", "src/**/__snapshots__", "src/test"],
   "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "lib": [
+      "ESNext"
+    ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
+
+    /* Modules */
+    "module": "NodeNext" /* Specify what module code is generated. */,
+    // If --module=NodeNext, --moduleResolution=NodeNext can be omitted. However, it is set just in case.
+    "moduleResolution": "NodeNext" /* Specify how TypeScript looks up a file from a given module specifier. */,
+
     "composite": true,
     "noEmit": false,
     "incremental": true,
