@@ -1,23 +1,23 @@
 {
-  "files": [],
+  "extends": "./tsconfig.base.json",
+  "exclude": ["node_modules", "**/dist", "**/bin", "example"],
   "compilerOptions": {
-    "noEmit": true
+    /* Language and Environment */
+    "target": "ES2022" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "lib": [
+      "ESNext"
+    ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
+
+    /* Modules */
+    "module": "NodeNext" /* Specify what module code is generated. */,
+    // If --module=NodeNext, --moduleResolution=NodeNext can be omitted. However, it is set just in case.
+    "moduleResolution": "NodeNext" /* Specify how TypeScript looks up a file from a given module specifier. */
   },
   "references": [
-    {
-      "path": "packages/codegen"
-    },
-    {
-      "path": "packages/ts-plugin"
-    },
-    {
-      "path": "packages/language-server"
-    },
-    {
-      "path": "packages/vscode"
-    },
-    {
-      "path": "packages/stylelint-plugin"
-    }
+    { "path": "packages/codegen/tsconfig.build.json" },
+    { "path": "packages/ts-plugin/tsconfig.build.json" },
+    { "path": "packages/language-server/tsconfig.build.json" },
+    { "path": "packages/vscode/tsconfig.build.json" },
+    { "path": "packages/stylelint-plugin/tsconfig.build.json" }
   ]
 }
