@@ -1,23 +1,12 @@
 {
-  "files": [],
+  "extends": "./tsconfig.base.json",
+  "exclude": ["node_modules", "**/dist", "example"],
   "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ESNext"],
+    "module": "NodeNext",
+
     "noEmit": true
   },
-  "references": [
-    {
-      "path": "packages/codegen"
-    },
-    {
-      "path": "packages/ts-plugin"
-    },
-    {
-      "path": "packages/language-server"
-    },
-    {
-      "path": "packages/vscode"
-    },
-    {
-      "path": "packages/stylelint-plugin"
-    }
-  ]
+  "references": [{ "path": "tsconfig.build.json" }]
 }

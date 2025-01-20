@@ -2,8 +2,7 @@ import mizdra from '@mizdra/eslint-config-mizdra';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-  // TODO: Lint vitest.workspace.mts
-  { ignores: ['**/dist', 'example', 'vitest.workspace.mts'] },
+  { ignores: ['**/dist', 'example'] },
   ...mizdra.baseConfigs,
   ...mizdra.typescriptConfigs,
   ...mizdra.nodeConfigs,

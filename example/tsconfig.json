@@ -1,17 +1,13 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    /* Language and Environment */
-    "target": "ES5" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "target": "ES5", // Simplify tsserver.log
     "lib": ["ES5"], // Simplify tsserver.log
+    "module": "Preserve",
+    "moduleResolution": "bundler",
 
-    /* Modules */
-    "module": "Preserve" /* Specify what module code is generated. */,
-    "moduleResolution": "bundler" /* Specify how TypeScript looks up a file from a given module specifier. */,
-    "paths": {
-      "@/*": ["./*"]
-    },
-
+    "noEmit": true,
+    "paths": { "@/*": ["./*"] },
     "rootDirs": ["src", "generated/src"],
     "types": [] // Simplify tsserver.log
   }
