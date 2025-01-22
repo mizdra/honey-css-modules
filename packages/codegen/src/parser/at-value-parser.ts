@@ -1,5 +1,6 @@
 import type { AtRule } from 'postcss';
 import { AtValueInvalidError } from '../error.js';
+import type { Diagnostic } from './diagnostic.js';
 import type { Location } from './location.js';
 
 interface ValueDeclaration {
@@ -22,6 +23,11 @@ interface ValueImportDeclaration {
 }
 
 type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
+
+interface ParseAtValueResult {
+  atValue?: ParsedAtValue;
+  diagnostics: Diagnostic[];
+}
 
 const VALUE_IMPORT_PATTERN = /^(.+?)\s+from\s+("[^"]*"|'[^']*')$/du;
 const VALUE_DEFINITION_PATTERN = /(?:\s+|^)([\w-]+):?(.*?)$/du;
@@ -47,8 +53,9 @@ const IMPORTED_ITEM_PATTERN = /^([\w-]+)(?:\s+as\s+([\w-]+))?/du;
  */
 // MEMO: honey-css-modules does not support `@value` with parentheses (e.g., `@value (a, b) from '...';`) to simplify the implementation.
 // MEMO: honey-css-modules does not support `@value` with variable module name (e.g., `@value a from moduleName;`) to simplify the implementation.
-export function parseAtValue(atValue: AtRule): ParsedAtValue {
+export function parseAtValue(atValue: AtRule): ParseAtValueResult {
   const matchesForValueImport = atValue.params.match(VALUE_IMPORT_PATTERN);
+  const diagnostics: Diagnostic[] = [];
   if (matchesForValueImport) {
     const [, importedItems, from] = matchesForValueImport as [string, string, string];
     // The length of the `@value  ` part in `@value  import1 from '...'`
@@ -110,7 +117,13 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
       offset: start.offset + normalizedFrom.length,
     };
 
-    return { type: 'valueImportDeclaration', values, from: normalizedFrom, fromLoc: { start, end } };
+    const parsedAtValue: ValueImportDeclaration = {
+      type: 'valueImportDeclaration',
+      values,
+      from: normalizedFrom,
+      fromLoc: { start, end },
+    };
+    return { atValue: parsedAtValue, diagnostics };
   }
 
   const matchesForValueDefinition = `${atValue.params}${atValue.raws.between!}`.match(VALUE_DEFINITION_PATTERN);
@@ -129,7 +142,8 @@ export function parseAtValue(atValue: AtRule): ParsedAtValue {
       column: start.column + name.length,
       offset: start.offset + name.length,
     };
-    return { type: 'valueDeclaration', name, loc: { start, end } };
+    const parsedAtValue = { type: 'valueDeclaration', name, loc: { start, end } } as const;
+    return { atValue: parsedAtValue, diagnostics };
   }
   throw new AtValueInvalidError(atValue);
 }

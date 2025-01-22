@@ -40,11 +40,12 @@ function collectTokens(ast: Root) {
         tokenImporters.push({ type: 'import', ...parsed });
       }
     } else if (isAtValueNode(node)) {
-      const parsed = parseAtValue(node);
-      if (parsed.type === 'valueDeclaration') {
-        localTokens.push({ name: parsed.name, loc: parsed.loc });
-      } else if (parsed.type === 'valueImportDeclaration') {
-        tokenImporters.push({ ...parsed, type: 'value' });
+      const { atValue } = parseAtValue(node);
+      if (atValue === undefined) return;
+      if (atValue.type === 'valueDeclaration') {
+        localTokens.push({ name: atValue.name, loc: atValue.loc });
+      } else if (atValue.type === 'valueImportDeclaration') {
+        tokenImporters.push({ ...atValue, type: 'value' });
       }
     } else if (isRuleNode(node)) {
       const classSelectors = parseRule(node);
