@@ -48,7 +48,7 @@ function collectTokens(ast: Root) {
         tokenImporters.push({ ...atValue, type: 'value' });
       }
     } else if (isRuleNode(node)) {
-      const classSelectors = parseRule(node);
+      const { classSelectors } = parseRule(node);
       for (const classSelector of classSelectors) {
         localTokens.push(classSelector);
       }

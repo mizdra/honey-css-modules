@@ -1,6 +1,7 @@
 import type { Rule } from 'postcss';
 import selectorParser from 'postcss-selector-parser';
 import { ScopeError } from '../error.js';
+import type { Diagnostic } from './diagnostic.js';
 import { type Location } from './location.js';
 
 /**
@@ -63,13 +64,19 @@ interface ClassSelector {
   loc: Location;
 }
 
+interface ParseRuleResult {
+  classSelectors: ClassSelector[];
+  diagnostics: Diagnostic[];
+}
+
 /**
  * Parse a rule and collect local class selectors.
  * @throws {ScopeError}
  */
-export function parseRule(rule: Rule): ClassSelector[] {
+export function parseRule(rule: Rule): ParseRuleResult {
+  const diagnostics: Diagnostic[] = [];
   const root = selectorParser().astSync(rule);
-  return collectLocalClassNames(root).map((className) => {
+  const classSelectors = collectLocalClassNames(root).map((className) => {
     // If `rule` is `.a, .b { color: red; }` and `className` is `.b`,
     // `rule.source` is `{ start: { line: 1, column: 1 }, end: { line: 1, column: 22 } }`
     // And `className.source` is `{ start: { line: 1, column: 5 }, end: { line: 1, column: 6 } }`.
@@ -89,4 +96,5 @@ export function parseRule(rule: Rule): ClassSelector[] {
       loc: { start, end },
     };
   });
+  return { classSelectors, diagnostics };
 }
