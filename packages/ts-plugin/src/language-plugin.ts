@@ -20,9 +20,14 @@ export function createCSSModuleLanguagePlugin(
       if (languageId !== LANGUAGE_ID) return undefined;
 
       const length = snapshot.getLength();
-      const cssModule = snapshot.getText(0, length);
-      const cssModuleFile = parseCSSModuleCode(cssModule, { filename: scriptId, dashedIdents: config.dashedIdents });
-      const { code: dtsCode, mapping, linkedCodeMapping } = createDts(cssModuleFile, { resolver, isExternalFile });
+      const cssModuleCode = snapshot.getText(0, length);
+      const { cssModule } = parseCSSModuleCode(cssModuleCode, {
+        filename: scriptId,
+        dashedIdents: config.dashedIdents,
+      });
+      // TODO: Report diagnostics
+      if (cssModule === undefined) return undefined;
+      const { code: dtsCode, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, isExternalFile });
       return {
         id: 'main',
         languageId: LANGUAGE_ID,

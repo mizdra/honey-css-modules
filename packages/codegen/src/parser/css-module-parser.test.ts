@@ -29,235 +29,238 @@ describe('parseCSSModuleCode', () => {
     );
     expect(parsed).toMatchInlineSnapshot(`
       {
-        "filename": "/test.module.css",
-        "localTokens": [
-          {
-            "loc": {
-              "end": {
-                "column": 7,
-                "line": 1,
-                "offset": 6,
+        "cssModule": {
+          "filename": "/test.module.css",
+          "localTokens": [
+            {
+              "loc": {
+                "end": {
+                  "column": 7,
+                  "line": 1,
+                  "offset": 6,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 1,
+                  "offset": 1,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 1,
-                "offset": 1,
-              },
+              "name": "basic",
             },
-            "name": "basic",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 11,
-                "line": 2,
-                "offset": 20,
+            {
+              "loc": {
+                "end": {
+                  "column": 11,
+                  "line": 2,
+                  "offset": 20,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 2,
+                  "offset": 11,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 2,
-                "offset": 11,
-              },
+              "name": "cascading",
             },
-            "name": "cascading",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 11,
-                "line": 3,
-                "offset": 34,
+            {
+              "loc": {
+                "end": {
+                  "column": 11,
+                  "line": 3,
+                  "offset": 34,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 3,
+                  "offset": 25,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 3,
-                "offset": 25,
-              },
+              "name": "cascading",
             },
-            "name": "cascading",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 16,
-                "line": 4,
-                "offset": 53,
+            {
+              "loc": {
+                "end": {
+                  "column": 16,
+                  "line": 4,
+                  "offset": 53,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 4,
+                  "offset": 39,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 4,
-                "offset": 39,
-              },
+              "name": "pseudo_class_1",
             },
-            "name": "pseudo_class_1",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 16,
-                "line": 5,
-                "offset": 72,
+            {
+              "loc": {
+                "end": {
+                  "column": 16,
+                  "line": 5,
+                  "offset": 72,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 5,
+                  "offset": 58,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 5,
-                "offset": 58,
-              },
+              "name": "pseudo_class_2",
             },
-            "name": "pseudo_class_2",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 21,
-                "line": 6,
-                "offset": 102,
+            {
+              "loc": {
+                "end": {
+                  "column": 21,
+                  "line": 6,
+                  "offset": 102,
+                },
+                "start": {
+                  "column": 7,
+                  "line": 6,
+                  "offset": 88,
+                },
               },
-              "start": {
-                "column": 7,
-                "line": 6,
-                "offset": 88,
-              },
+              "name": "pseudo_class_3",
             },
-            "name": "pseudo_class_3",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 21,
-                "line": 7,
-                "offset": 127,
+            {
+              "loc": {
+                "end": {
+                  "column": 21,
+                  "line": 7,
+                  "offset": 127,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 7,
+                  "offset": 108,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 7,
-                "offset": 108,
-              },
+              "name": "multiple_selector_1",
             },
-            "name": "multiple_selector_1",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 41,
-                "line": 7,
-                "offset": 147,
+            {
+              "loc": {
+                "end": {
+                  "column": 41,
+                  "line": 7,
+                  "offset": 147,
+                },
+                "start": {
+                  "column": 22,
+                  "line": 7,
+                  "offset": 128,
+                },
               },
-              "start": {
-                "column": 22,
-                "line": 7,
-                "offset": 128,
-              },
+              "name": "multiple_selector_2",
             },
-            "name": "multiple_selector_2",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 14,
-                "line": 8,
-                "offset": 164,
+            {
+              "loc": {
+                "end": {
+                  "column": 14,
+                  "line": 8,
+                  "offset": 164,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 8,
+                  "offset": 152,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 8,
-                "offset": 152,
-              },
+              "name": "combinator_1",
             },
-            "name": "combinator_1",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 30,
-                "line": 8,
-                "offset": 180,
+            {
+              "loc": {
+                "end": {
+                  "column": 30,
+                  "line": 8,
+                  "offset": 180,
+                },
+                "start": {
+                  "column": 18,
+                  "line": 8,
+                  "offset": 168,
+                },
               },
-              "start": {
-                "column": 18,
-                "line": 8,
-                "offset": 168,
-              },
+              "name": "combinator_2",
             },
-            "name": "combinator_2",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 13,
-                "line": 11,
-                "offset": 265,
+            {
+              "loc": {
+                "end": {
+                  "column": 13,
+                  "line": 11,
+                  "offset": 265,
+                },
+                "start": {
+                  "column": 6,
+                  "line": 11,
+                  "offset": 258,
+                },
               },
-              "start": {
-                "column": 6,
-                "line": 11,
-                "offset": 258,
-              },
+              "name": "at_rule",
             },
-            "name": "at_rule",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 17,
-                "line": 14,
-                "offset": 291,
+            {
+              "loc": {
+                "end": {
+                  "column": 17,
+                  "line": 14,
+                  "offset": 291,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 14,
+                  "offset": 276,
+                },
               },
-              "start": {
-                "column": 2,
-                "line": 14,
-                "offset": 276,
-              },
+              "name": "selector_list_1",
             },
-            "name": "selector_list_1",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 35,
-                "line": 14,
-                "offset": 309,
+            {
+              "loc": {
+                "end": {
+                  "column": 35,
+                  "line": 14,
+                  "offset": 309,
+                },
+                "start": {
+                  "column": 20,
+                  "line": 14,
+                  "offset": 294,
+                },
               },
-              "start": {
-                "column": 20,
-                "line": 14,
-                "offset": 294,
-              },
+              "name": "selector_list_2",
             },
-            "name": "selector_list_2",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 16,
-                "line": 15,
-                "offset": 328,
+            {
+              "loc": {
+                "end": {
+                  "column": 16,
+                  "line": 15,
+                  "offset": 328,
+                },
+                "start": {
+                  "column": 9,
+                  "line": 15,
+                  "offset": 321,
+                },
               },
-              "start": {
-                "column": 9,
-                "line": 15,
-                "offset": 321,
-              },
+              "name": "local_1",
             },
-            "name": "local_1",
-          },
-          {
-            "loc": {
-              "end": {
-                "column": 13,
-                "line": 16,
-                "offset": 345,
+            {
+              "loc": {
+                "end": {
+                  "column": 13,
+                  "line": 16,
+                  "offset": 345,
+                },
+                "start": {
+                  "column": 8,
+                  "line": 16,
+                  "offset": 340,
+                },
               },
-              "start": {
-                "column": 8,
-                "line": 16,
-                "offset": 340,
-              },
+              "name": "value",
             },
-            "name": "value",
-          },
-        ],
-        "tokenImporters": [],
+          ],
+          "tokenImporters": [],
+        },
+        "diagnostics": [],
       }
     `);
   });
@@ -271,87 +274,90 @@ describe('parseCSSModuleCode', () => {
     );
     expect(parsed).toMatchInlineSnapshot(`
       {
-        "filename": "/test.module.css",
-        "localTokens": [],
-        "tokenImporters": [
-          {
-            "from": "./a.module.css",
-            "fromLoc": {
-              "end": {
-                "column": 24,
-                "line": 1,
-                "offset": 23,
+        "cssModule": {
+          "filename": "/test.module.css",
+          "localTokens": [],
+          "tokenImporters": [
+            {
+              "from": "./a.module.css",
+              "fromLoc": {
+                "end": {
+                  "column": 24,
+                  "line": 1,
+                  "offset": 23,
+                },
+                "start": {
+                  "column": 10,
+                  "line": 1,
+                  "offset": 9,
+                },
               },
-              "start": {
-                "column": 10,
-                "line": 1,
-                "offset": 9,
-              },
+              "type": "import",
             },
-            "type": "import",
-          },
-          {
-            "from": "./a.module.css",
-            "fromLoc": {
-              "end": {
-                "column": 42,
-                "line": 2,
-                "offset": 67,
+            {
+              "from": "./a.module.css",
+              "fromLoc": {
+                "end": {
+                  "column": 42,
+                  "line": 2,
+                  "offset": 67,
+                },
+                "start": {
+                  "column": 28,
+                  "line": 2,
+                  "offset": 53,
+                },
               },
-              "start": {
-                "column": 28,
-                "line": 2,
-                "offset": 53,
-              },
+              "type": "value",
+              "values": [
+                {
+                  "loc": {
+                    "end": {
+                      "column": 9,
+                      "line": 2,
+                      "offset": 34,
+                    },
+                    "start": {
+                      "column": 8,
+                      "line": 2,
+                      "offset": 33,
+                    },
+                  },
+                  "name": "a",
+                },
+                {
+                  "loc": {
+                    "end": {
+                      "column": 12,
+                      "line": 2,
+                      "offset": 37,
+                    },
+                    "start": {
+                      "column": 11,
+                      "line": 2,
+                      "offset": 36,
+                    },
+                  },
+                  "localLoc": {
+                    "end": {
+                      "column": 21,
+                      "line": 2,
+                      "offset": 46,
+                    },
+                    "start": {
+                      "column": 16,
+                      "line": 2,
+                      "offset": 41,
+                    },
+                  },
+                  "localName": "alias",
+                  "name": "b",
+                },
+              ],
             },
-            "type": "value",
-            "values": [
-              {
-                "loc": {
-                  "end": {
-                    "column": 9,
-                    "line": 2,
-                    "offset": 34,
-                  },
-                  "start": {
-                    "column": 8,
-                    "line": 2,
-                    "offset": 33,
-                  },
-                },
-                "name": "a",
-              },
-              {
-                "loc": {
-                  "end": {
-                    "column": 12,
-                    "line": 2,
-                    "offset": 37,
-                  },
-                  "start": {
-                    "column": 11,
-                    "line": 2,
-                    "offset": 36,
-                  },
-                },
-                "localLoc": {
-                  "end": {
-                    "column": 21,
-                    "line": 2,
-                    "offset": 46,
-                  },
-                  "start": {
-                    "column": 16,
-                    "line": 2,
-                    "offset": 41,
-                  },
-                },
-                "localName": "alias",
-                "name": "b",
-              },
-            ],
-          },
-        ],
+          ],
+        },
+        "diagnostics": [],
       }
     `);
   });
@@ -360,7 +366,7 @@ describe('parseCSSModuleCode', () => {
   test.fails('collects local tokens as CSS variables if dashedIdents is true', () => {
     const code1 = ':root { --a: red; }';
     const parsed1 = parseCSSModuleCode(code1, { ...options, dashedIdents: false });
-    expect(parsed1.localTokens).toEqual([]);
+    expect(parsed1.cssModule?.localTokens).toEqual([]);
 
     const code2 = dedent`
         :root { --a: red; }
@@ -371,7 +377,7 @@ describe('parseCSSModuleCode', () => {
         }
       `;
     const parsed2 = parseCSSModuleCode(code2, { ...options, dashedIdents: true });
-    expect(parsed2.localTokens).toEqual(['--a', 'a', '--b']);
+    expect(parsed2.cssModule?.localTokens).toEqual(['--a', 'a', '--b']);
   });
   // TODO: Support local tokens by animation names. This is supported by postcss-modules-local-by-default and lightningcss.
   // https://github.com/css-modules/postcss-modules-local-by-default/blob/39a2f78d9f39f5c0e30dd9b2a25f4a145431cb20/test/index.test.js#L162-L399

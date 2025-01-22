@@ -29,8 +29,12 @@ async function processFile(
   } catch (error) {
     throw new ReadCSSModuleFileError(filename, error);
   }
-  const cssModuleFile = parseCSSModuleCode(code, { filename, dashedIdents });
-  const { code: dtsCode } = createDts(cssModuleFile, { resolver, isExternalFile });
+  const { cssModule } = parseCSSModuleCode(code, { filename, dashedIdents });
+  if (cssModule === undefined) {
+    // TODO: Report diagnostics
+    return;
+  }
+  const { code: dtsCode } = createDts(cssModule, { resolver, isExternalFile });
   await writeDtsFile(dtsCode, filename, {
     outDir: dtsOutDir,
     cwd,
