@@ -346,9 +346,93 @@ describe('parseAtValue', () => {
         @value a,,b from "test.css";
       `),
     );
-    expect(() => parseAtValue(atValue1!)).toThrowErrorMatchingInlineSnapshot(`[Error: \`@value\` is invalid!]`);
-    expect(() => parseAtValue(atValue2!)).toThrowErrorMatchingInlineSnapshot(
-      `[Error: \`@value a,,b from "test.css"\` is invalid!]`,
-    );
+    expect(parseAtValue(atValue1!)).toMatchInlineSnapshot(`
+      {
+        "diagnostics": [
+          {
+            "category": "error",
+            "end": {
+              "column": 8,
+              "line": 1,
+              "offset": 7,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+              "offset": 0,
+            },
+            "text": "\`@value\` is a invalid syntax.",
+          },
+        ],
+      }
+    `);
+    expect(parseAtValue(atValue2!)).toMatchInlineSnapshot(`
+      {
+        "atValue": {
+          "from": "test.css",
+          "fromLoc": {
+            "end": {
+              "column": 27,
+              "line": 2,
+              "offset": 34,
+            },
+            "start": {
+              "column": 19,
+              "line": 2,
+              "offset": 26,
+            },
+          },
+          "type": "valueImportDeclaration",
+          "values": [
+            {
+              "loc": {
+                "end": {
+                  "column": 9,
+                  "line": 2,
+                  "offset": 16,
+                },
+                "start": {
+                  "column": 8,
+                  "line": 2,
+                  "offset": 15,
+                },
+              },
+              "name": "a",
+            },
+            {
+              "loc": {
+                "end": {
+                  "column": 12,
+                  "line": 2,
+                  "offset": 19,
+                },
+                "start": {
+                  "column": 11,
+                  "line": 2,
+                  "offset": 18,
+                },
+              },
+              "name": "b",
+            },
+          ],
+        },
+        "diagnostics": [
+          {
+            "category": "error",
+            "end": {
+              "column": 8,
+              "line": 2,
+              "offset": 15,
+            },
+            "start": {
+              "column": 8,
+              "line": 2,
+              "offset": 15,
+            },
+            "text": "\`\` is invalid syntax.",
+          },
+        ],
+      }
+    `);
   });
 });

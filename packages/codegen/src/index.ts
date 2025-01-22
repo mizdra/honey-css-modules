@@ -4,7 +4,6 @@ export {
   ConfigNotFoundError,
   ConfigImportError,
   ConfigValidationError,
-  AtValueInvalidError,
   CSSModuleParseError,
   ScopeError,
   ResolveError,
