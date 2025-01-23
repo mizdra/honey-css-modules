@@ -34,7 +34,7 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
     const usedTokenNames = findUsedTokenNames(tsFile.text);
 
     root.walkRules((rule) => {
-      const classSelectors = parseRule(rule);
+      const { classSelectors } = parseRule(rule);
 
       for (const classSelector of classSelectors) {
         if (!usedTokenNames.has(classSelector.name)) {

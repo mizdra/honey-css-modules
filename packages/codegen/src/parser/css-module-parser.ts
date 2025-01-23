@@ -3,6 +3,7 @@ import { parse } from 'postcss';
 import { CSSModuleParseError } from '../error.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
+import type { Diagnostic } from './diagnostic.js';
 import { type Location } from './location.js';
 import { parseRule } from './rule-parser.js';
 
@@ -31,6 +32,7 @@ function isRuleNode(node: Node): node is Rule {
  * @throws {ScopeError}
  */
 function collectTokens(ast: Root) {
+  const allDiagnostics: Diagnostic[] = [];
   const localTokens: Token[] = [];
   const tokenImporters: TokenImporter[] = [];
   ast.walk((node) => {
@@ -40,20 +42,23 @@ function collectTokens(ast: Root) {
         tokenImporters.push({ type: 'import', ...parsed });
       }
     } else if (isAtValueNode(node)) {
-      const parsed = parseAtValue(node);
-      if (parsed.type === 'valueDeclaration') {
-        localTokens.push({ name: parsed.name, loc: parsed.loc });
-      } else if (parsed.type === 'valueImportDeclaration') {
-        tokenImporters.push({ ...parsed, type: 'value' });
+      const { atValue, diagnostics } = parseAtValue(node);
+      allDiagnostics.push(...diagnostics);
+      if (atValue === undefined) return;
+      if (atValue.type === 'valueDeclaration') {
+        localTokens.push({ name: atValue.name, loc: atValue.loc });
+      } else if (atValue.type === 'valueImportDeclaration') {
+        tokenImporters.push({ ...atValue, type: 'value' });
       }
     } else if (isRuleNode(node)) {
-      const classSelectors = parseRule(node);
+      const { classSelectors, diagnostics } = parseRule(node);
+      allDiagnostics.push(...diagnostics);
       for (const classSelector of classSelectors) {
         localTokens.push(classSelector);
       }
     }
   });
-  return { localTokens, tokenImporters };
+  return { localTokens, tokenImporters, diagnostics: allDiagnostics };
 }
 
 /** The item being exported from a CSS module file (a.k.a. token). */
@@ -147,22 +152,28 @@ export interface ParseCSSModuleCodeOptions {
   dashedIdents: boolean;
 }
 
+interface ParseCSSModuleCodeResult {
+  cssModule?: CSSModuleFile;
+  diagnostics: Diagnostic[];
+}
+
 /**
  * @throws {CSSModuleParseError}
  * @throws {AtValueInvalidError}
  * @throws {ScopeError}
  */
-export function parseCSSModuleCode(code: string, { filename }: ParseCSSModuleCodeOptions): CSSModuleFile {
+export function parseCSSModuleCode(code: string, { filename }: ParseCSSModuleCodeOptions): ParseCSSModuleCodeResult {
   let ast: Root;
   try {
     ast = parse(code, { from: filename });
   } catch (e) {
     throw new CSSModuleParseError(filename, e);
   }
-  const { localTokens, tokenImporters } = collectTokens(ast);
-  return {
+  const { localTokens, tokenImporters, diagnostics } = collectTokens(ast);
+  const cssModule = {
     filename,
     localTokens,
     tokenImporters,
   };
+  return { cssModule, diagnostics };
 }
