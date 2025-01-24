@@ -12,6 +12,9 @@ interface Tsserver {
   sendSemanticDiagnosticsSync(
     args: server.protocol.SemanticDiagnosticsSyncRequest['arguments'],
   ): Promise<server.protocol.SemanticDiagnosticsSyncResponse>;
+  sendSyntacticDiagnosticsSync(
+    args: server.protocol.SyntacticDiagnosticsSyncRequest['arguments'],
+  ): Promise<server.protocol.SyntacticDiagnosticsSyncResponse>;
   sendGetEditsForFileRename(
     args: server.protocol.GetEditsForFileRenameRequest['arguments'],
   ): Promise<server.protocol.GetEditsForFileRenameResponse>;
@@ -53,6 +56,7 @@ export function launchTsserver(): Tsserver {
     sendReferences: async (args) => sendRequest('references', args),
     sendRename: async (args) => sendRequest('rename', args),
     sendSemanticDiagnosticsSync: async (args) => sendRequest('semanticDiagnosticsSync', args),
+    sendSyntacticDiagnosticsSync: async (args) => sendRequest('syntacticDiagnosticsSync', args),
     sendGetEditsForFileRename: async (args) => sendRequest('getEditsForFileRename', args),
   };
 }
