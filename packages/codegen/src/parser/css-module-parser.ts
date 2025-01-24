@@ -1,5 +1,6 @@
 import type { AtRule, Node, Root, Rule } from 'postcss';
 import { parse } from 'postcss';
+import safeParser from 'postcss-safe-parser';
 import { CSSModuleParseError } from '../error.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
@@ -148,6 +149,7 @@ export interface CSSModuleFile {
 export interface ParseCSSModuleCodeOptions {
   filename: string;
   dashedIdents: boolean;
+  safe: boolean;
 }
 
 interface ParseCSSModuleCodeResult {
@@ -158,10 +160,14 @@ interface ParseCSSModuleCodeResult {
 /**
  * @throws {CSSModuleParseError}
  */
-export function parseCSSModuleCode(code: string, { filename }: ParseCSSModuleCodeOptions): ParseCSSModuleCodeResult {
+export function parseCSSModuleCode(
+  code: string,
+  { filename, safe }: ParseCSSModuleCodeOptions,
+): ParseCSSModuleCodeResult {
   let ast: Root;
   try {
-    ast = parse(code, { from: filename });
+    const parser = safe ? safeParser : parse;
+    ast = parser(code, { from: filename });
   } catch (e) {
     throw new CSSModuleParseError(filename, e);
   }

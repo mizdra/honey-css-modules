@@ -24,6 +24,7 @@ export function createCSSModuleLanguagePlugin(
       const { cssModule } = parseCSSModuleCode(cssModuleCode, {
         filename: scriptId,
         dashedIdents: config.dashedIdents,
+        safe: false,
       });
       // TODO: Report diagnostics
       if (cssModule === undefined) return undefined;
