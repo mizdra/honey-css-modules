@@ -1,8 +1,12 @@
 import type { Language } from '@volar/language-core';
-import type ts from 'typescript';
+import type { Diagnostic } from 'honey-css-modules';
+import ts from 'typescript';
+import { HCM_DATA_KEY, isCSSModuleScript } from './language-plugin.js';
+
+const ERROR_CODE = 0;
 
 export function proxyLanguageService(
-  _language: Language<string>,
+  language: Language<string>,
   languageService: ts.LanguageService,
 ): ts.LanguageService {
   const proxy: ts.LanguageService = Object.create(null);
@@ -14,5 +18,41 @@ export function proxyLanguageService(
     proxy[k] = (...args: {}[]) => x.apply(languageService, args);
   }
 
+  proxy.getSyntacticDiagnostics = (fileName: string) => {
+    const prior = languageService.getSyntacticDiagnostics(fileName);
+    const script = language.scripts.get(fileName);
+    if (!isCSSModuleScript(script)) return prior;
+
+    const virtualCode = script.generated.root;
+    const diagnostics = virtualCode[HCM_DATA_KEY].diagnostics;
+    const sourceFile = languageService.getProgram()!.getSourceFile(fileName)!;
+    const tsDiagnostics = diagnostics.map((diagnostic) => convertDiagnostic(diagnostic, sourceFile));
+    return [...prior, ...tsDiagnostics];
+  };
+
   return proxy;
+}
+
+function convertDiagnostic(diagnostic: Diagnostic, sourceFile: ts.SourceFile): ts.DiagnosticWithLocation {
+  return {
+    file: sourceFile,
+    start: diagnostic.start.offset,
+    category: convertErrorCategory(diagnostic.category),
+    length: diagnostic.end.offset - diagnostic.start.offset,
+    messageText: diagnostic.text,
+    code: ERROR_CODE,
+  };
+}
+
+function convertErrorCategory(category: 'error' | 'warning' | 'suggestion'): ts.DiagnosticCategory {
+  switch (category) {
+    case 'error':
+      return ts.DiagnosticCategory.Error;
+    case 'warning':
+      return ts.DiagnosticCategory.Warning;
+    case 'suggestion':
+      return ts.DiagnosticCategory.Suggestion;
+    default:
+      throw new Error(`Unknown category: ${String(category)}`);
+  }
 }
