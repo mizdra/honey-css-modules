@@ -1,8 +1,9 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
+import { CSSModuleParseError } from '../error.js';
 import { parseCSSModuleCode, type ParseCSSModuleCodeOptions } from './css-module-parser.js';
 
-const options: ParseCSSModuleCodeOptions = { filename: '/test.module.css', dashedIdents: false };
+const options: ParseCSSModuleCodeOptions = { filename: '/test.module.css', dashedIdents: false, safe: false };
 
 describe('parseCSSModuleCode', () => {
   test('collects local tokens', () => {
@@ -456,4 +457,48 @@ describe('parseCSSModuleCode', () => {
   // TODO: Support local tokens by custom identifiers. This is supported by lightningcss.
   // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L43
   // https://developer.mozilla.org/ja/docs/Web/CSS/custom-ident
+  test('throws an error if the CSS is invalid', () => {
+    expect(() => {
+      parseCSSModuleCode(
+        dedent`
+          .a {
+        `,
+        options,
+      );
+    }).toThrow(CSSModuleParseError);
+  });
+  test('parses CSS in a fault-tolerant manner if safe is true', () => {
+    const parsed = parseCSSModuleCode(
+      dedent`
+        .a {
+      `,
+      { ...options, safe: true },
+    );
+    expect(parsed).toMatchInlineSnapshot(`
+      {
+        "cssModule": {
+          "filename": "/test.module.css",
+          "localTokens": [
+            {
+              "loc": {
+                "end": {
+                  "column": 3,
+                  "line": 1,
+                  "offset": 2,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 1,
+                  "offset": 1,
+                },
+              },
+              "name": "a",
+            },
+          ],
+          "tokenImporters": [],
+        },
+        "diagnostics": [],
+      }
+    `);
+  });
 });

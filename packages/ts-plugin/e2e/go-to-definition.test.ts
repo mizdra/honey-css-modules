@@ -1,24 +1,9 @@
 import dedent from 'dedent';
-import type ts from 'typescript';
 import { describe, expect, test } from 'vitest';
 import { createIFF } from './test/fixture.js';
-import { formatPath, launchTsserver } from './test/tsserver.js';
+import { formatPath, launchTsserver, simplifyDefinitions, sortDefinitions } from './test/tsserver.js';
 
 describe('Go to Definition', async () => {
-  function simplifyDefinitions(definitions: readonly ts.server.protocol.DefinitionInfo[]) {
-    return definitions.map((definition) => {
-      return {
-        file: formatPath(definition.file),
-        start: definition.start,
-        end: definition.end,
-      };
-    });
-  }
-  function sortDefinitions(definitions: readonly ts.server.protocol.DefinitionInfo[]) {
-    return definitions.toSorted((a, b) => {
-      return a.file.localeCompare(b.file) || a.start.line - b.start.line || a.start.offset - b.start.offset;
-    });
-  }
   const tsserver = launchTsserver();
   const iff = await createIFF({
     'index.ts': dedent`

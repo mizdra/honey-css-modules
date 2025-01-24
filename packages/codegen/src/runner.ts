@@ -26,7 +26,7 @@ async function processFile(
   } catch (error) {
     throw new ReadCSSModuleFileError(filename, error);
   }
-  const { cssModule } = parseCSSModuleCode(code, { filename, dashedIdents });
+  const { cssModule } = parseCSSModuleCode(code, { filename, dashedIdents, safe: false });
   if (cssModule === undefined) {
     // TODO: Report diagnostics
     return;
