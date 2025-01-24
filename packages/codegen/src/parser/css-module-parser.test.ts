@@ -361,6 +361,70 @@ describe('parseCSSModuleCode', () => {
       }
     `);
   });
+  test('collects diagnostics', () => {
+    const parsed = parseCSSModuleCode(
+      dedent`
+        :local .local1 {}
+        @value;
+      `,
+      options,
+    );
+    expect(parsed).toMatchInlineSnapshot(`
+      {
+        "cssModule": {
+          "filename": "/test.module.css",
+          "localTokens": [
+            {
+              "loc": {
+                "end": {
+                  "column": 15,
+                  "line": 1,
+                  "offset": 14,
+                },
+                "start": {
+                  "column": 9,
+                  "line": 1,
+                  "offset": 8,
+                },
+              },
+              "name": "local1",
+            },
+          ],
+          "tokenImporters": [],
+        },
+        "diagnostics": [
+          {
+            "category": "error",
+            "end": {
+              "column": 7,
+              "line": 1,
+              "offset": 6,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+              "offset": 0,
+            },
+            "text": "\`:local\` is not supported. Use \`:local(...)\` instead.",
+          },
+          {
+            "category": "error",
+            "end": {
+              "column": 8,
+              "line": 2,
+              "offset": 25,
+            },
+            "start": {
+              "column": 1,
+              "line": 2,
+              "offset": 18,
+            },
+            "text": "\`@value\` is a invalid syntax.",
+          },
+        ],
+      }
+    `);
+  });
   // TODO: Support local tokens by CSS variables. This is supported by lightningcss.
   // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L34
   test.fails('collects local tokens as CSS variables if dashedIdents is true', () => {
