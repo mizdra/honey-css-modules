@@ -23,14 +23,6 @@ export class CSSModuleParseError extends Error {
   }
 }
 
-// TODO: Include filename and error location for ts-plugin
-export class ResolveError extends Error {
-  code = 'RESOLVE_ERROR';
-  constructor(specifier: string, cause: unknown) {
-    super(`Failed to resolve specifier (${specifier}).`, { cause });
-  }
-}
-
 export class WriteDtsFileError extends Error {
   code = 'WRITE_DTS_FILE_ERROR';
   constructor(filename: string, cause: unknown) {
