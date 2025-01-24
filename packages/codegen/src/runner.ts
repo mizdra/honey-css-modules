@@ -12,7 +12,6 @@ import { createResolver, type Resolver } from './resolver.js';
 /**
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {CSSModuleParseError}
- * @throws {ScopeError}
  * @throws {ResolveError}
  * @throws {WriteDtsFileError}
  */
@@ -45,7 +44,6 @@ async function processFile(
  * Run honey-css-modules .d.ts generation.
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {CSSModuleParseError}
- * @throws {ScopeError}
  * @throws {ResolveError}
  * @throws {WriteDtsFileError}
  */

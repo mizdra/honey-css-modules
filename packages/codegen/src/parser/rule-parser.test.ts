@@ -365,37 +365,210 @@ describe('parseRule', () => {
       //   'local2',
       // ]);
     });
-    test('An error is thrown when `:local(...)` or `:global(...)` is nested', () => {
-      expect(() => parseRuleSimply(':local(:global(.a)) {}')).toThrowErrorMatchingInlineSnapshot(
-        `[Error: A \`:global\` is not allowed inside of \`:local(...)\`.]`,
+    test('reports diagnostics when `:local(...)` or `:global(...)` is nested', () => {
+      const rules = createRules(
+        createRoot(dedent`
+          :local(:global(.a)) {}
+          :global(:local(.a)) {}
+          :local(:local(.a)) {}
+          :global(:global(.a)) {}
+        `),
       );
-      expect(() => parseRuleSimply(':global(:local(.a)) {}')).toThrowErrorMatchingInlineSnapshot(
-        `[Error: A \`:local\` is not allowed inside of \`:global(...)\`.]`,
-      );
-      expect(() => parseRuleSimply(':local(:local(.a)) {}')).toThrowErrorMatchingInlineSnapshot(
-        `[Error: A \`:local\` is not allowed inside of \`:local(...)\`.]`,
-      );
-      expect(() => parseRuleSimply(':global(:global(.a)) {}')).toThrowErrorMatchingInlineSnapshot(
-        `[Error: A \`:global\` is not allowed inside of \`:global(...)\`.]`,
-      );
+      const result = rules.map(parseRule);
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "classSelectors": [],
+            "diagnostics": [
+              {
+                "category": "error",
+                "end": {
+                  "column": 19,
+                  "line": 1,
+                  "offset": 18,
+                },
+                "start": {
+                  "column": 8,
+                  "line": 1,
+                  "offset": 7,
+                },
+                "text": "A \`:global(...)\` is not allowed inside of \`:local(...)\`.",
+              },
+            ],
+          },
+          {
+            "classSelectors": [],
+            "diagnostics": [
+              {
+                "category": "error",
+                "end": {
+                  "column": 19,
+                  "line": 2,
+                  "offset": 41,
+                },
+                "start": {
+                  "column": 9,
+                  "line": 2,
+                  "offset": 31,
+                },
+                "text": "A \`:local(...)\` is not allowed inside of \`:global(...)\`.",
+              },
+            ],
+          },
+          {
+            "classSelectors": [],
+            "diagnostics": [
+              {
+                "category": "error",
+                "end": {
+                  "column": 18,
+                  "line": 3,
+                  "offset": 63,
+                },
+                "start": {
+                  "column": 8,
+                  "line": 3,
+                  "offset": 53,
+                },
+                "text": "A \`:local(...)\` is not allowed inside of \`:local(...)\`.",
+              },
+            ],
+          },
+          {
+            "classSelectors": [],
+            "diagnostics": [
+              {
+                "category": "error",
+                "end": {
+                  "column": 20,
+                  "line": 4,
+                  "offset": 87,
+                },
+                "start": {
+                  "column": 9,
+                  "line": 4,
+                  "offset": 76,
+                },
+                "text": "A \`:global(...)\` is not allowed inside of \`:global(...)\`.",
+              },
+            ],
+          },
+        ]
+      `);
     });
     test('`:local()` and `:global()` is allowed', () => {
       // postcss-modules does not allow it, but honey-css-modules allows it.
       // Because allowing it does not harm users.
-      expect(parseRuleSimply(':local() {}')).toStrictEqual([]);
-      expect(parseRuleSimply(':global() {}')).toStrictEqual([]);
-      expect(parseRuleSimply(':local( ) {}')).toStrictEqual([]);
+      const rules = createRules(
+        createRoot(dedent`
+          :local() {}
+          :global() {}
+          :local( ) {}
+        `),
+      );
+      const result = rules.map(parseRule);
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "classSelectors": [],
+            "diagnostics": [],
+          },
+          {
+            "classSelectors": [],
+            "diagnostics": [],
+          },
+          {
+            "classSelectors": [],
+            "diagnostics": [],
+          },
+        ]
+      `);
     });
   });
   describe('`:local` and `:global`', () => {
     // The :local and :global specifications are complex. Therefore, honey-css-modules does not support them.
-    test('An error is thrown when using `:local` or `:global`', () => {
-      expect(() => parseRuleSimply(':local .local1 {}')).toThrowErrorMatchingInlineSnapshot(
-        `[Error: \`:local\` (without any arguments) is not supported. Use \`:local(...)\` instead.]`,
+    test('reports diagnostics when using `:local` or `:global`', () => {
+      const rules = createRules(
+        createRoot(dedent`
+          :local .local1 {}
+          :global .global1 {}
+        `),
       );
-      expect(() => parseRuleSimply(':global .global1 {}')).toThrowErrorMatchingInlineSnapshot(
-        `[Error: \`:global\` (without any arguments) is not supported. Use \`:global(...)\` instead.]`,
-      );
+      const result = rules.map(parseRule);
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "classSelectors": [
+              {
+                "loc": {
+                  "end": {
+                    "column": 15,
+                    "line": 1,
+                    "offset": 14,
+                  },
+                  "start": {
+                    "column": 9,
+                    "line": 1,
+                    "offset": 8,
+                  },
+                },
+                "name": "local1",
+              },
+            ],
+            "diagnostics": [
+              {
+                "category": "error",
+                "end": {
+                  "column": 7,
+                  "line": 1,
+                  "offset": 6,
+                },
+                "start": {
+                  "column": 1,
+                  "line": 1,
+                  "offset": 0,
+                },
+                "text": "\`:local\` is not supported. Use \`:local(...)\` instead.",
+              },
+            ],
+          },
+          {
+            "classSelectors": [
+              {
+                "loc": {
+                  "end": {
+                    "column": 17,
+                    "line": 2,
+                    "offset": 34,
+                  },
+                  "start": {
+                    "column": 10,
+                    "line": 2,
+                    "offset": 27,
+                  },
+                },
+                "name": "global1",
+              },
+            ],
+            "diagnostics": [
+              {
+                "category": "error",
+                "end": {
+                  "column": 8,
+                  "line": 2,
+                  "offset": 25,
+                },
+                "start": {
+                  "column": 1,
+                  "line": 2,
+                  "offset": 18,
+                },
+                "text": "\`:global\` is not supported. Use \`:global(...)\` instead.",
+              },
+            ],
+          },
+        ]
+      `);
     });
     // test('`:global` changes the mode to global and the following class names are global', () => {
     //   expect(parseRuleSimply('.local1 :global .global1 .global2 {}')).toStrictEqual(['local1']);

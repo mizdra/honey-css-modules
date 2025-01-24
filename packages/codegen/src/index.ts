@@ -5,7 +5,6 @@ export {
   ConfigImportError,
   ConfigValidationError,
   CSSModuleParseError,
-  ScopeError,
   ResolveError,
   WriteDtsFileError,
   ReadCSSModuleFileError,

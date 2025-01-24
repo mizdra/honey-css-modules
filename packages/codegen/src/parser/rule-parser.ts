@@ -1,8 +1,22 @@
 import type { Rule } from 'postcss';
 import selectorParser from 'postcss-selector-parser';
-import { ScopeError } from '../error.js';
 import type { Diagnostic } from './diagnostic.js';
-import { type Location } from './location.js';
+import { calcLocationForSelectorParserNode, type Location } from './location.js';
+
+interface CollectResult {
+  classNames: selectorParser.ClassName[];
+  diagnostics: Diagnostic[];
+}
+
+function flatCollectResults(results: CollectResult[]): CollectResult {
+  const classNames: selectorParser.ClassName[] = [];
+  const diagnostics: Diagnostic[] = [];
+  for (const result of results) {
+    classNames.push(...result.classNames);
+    diagnostics.push(...result.diagnostics);
+  }
+  return { classNames, diagnostics };
+}
 
 /**
  * Collect local class names from the AST.
@@ -11,49 +25,53 @@ import { type Location } from './location.js';
  * @see https://github.com/css-modules/postcss-modules-local-by-default/blob/38119276608ef14821797cfc0242b3c7dead69af/src/index.js
  * @see https://github.com/css-modules/postcss-modules-local-by-default/blob/38119276608ef14821797cfc0242b3c7dead69af/test/index.test.js
  * @example `.local1 :global(.global1) .local2 :local(.local3)` => `[".local1", ".local2", ".local3"]`
- * @throws {ScopeError}
  */
-function collectLocalClassNames(root: selectorParser.Root): selectorParser.ClassName[] {
+function collectLocalClassNames(rule: Rule, root: selectorParser.Root): CollectResult {
   return visitNode(root, undefined);
 
-  function visitNode(
-    node: selectorParser.Node,
-    wrappedBy: ':local(...)' | ':global(...)' | undefined,
-  ): selectorParser.ClassName[] {
+  function visitNode(node: selectorParser.Node, wrappedBy: ':local(...)' | ':global(...)' | undefined): CollectResult {
     if (selectorParser.isClassName(node)) {
       switch (wrappedBy) {
         // If the class name is wrapped by `:local(...)` or `:global(...)`,
         // the scope is determined by the wrapper.
         case ':local(...)':
-          return [node];
+          return { classNames: [node], diagnostics: [] };
         case ':global(...)':
-          return [];
+          return { classNames: [], diagnostics: [] };
         // If the class name is not wrapped by `:local(...)` or `:global(...)`,
         // the scope is determined by the mode.
         default:
           // Mode is customizable in css-loader, but we don't support it for simplicity. We fix the mode to 'local'.
-          return [node];
+          return { classNames: [node], diagnostics: [] };
       }
     } else if (selectorParser.isPseudo(node) && (node.value === ':local' || node.value === ':global')) {
       if (node.nodes.length === 0) {
         // `node` is `:local` or `:global` (without any arguments)
         // We don't support `:local` and `:global` (without any arguments) because they are complex.
-        throw new ScopeError(
-          `\`${node.value}\` (without any arguments) is not supported. Use \`${node.value}(...)\` instead.`,
-        );
+        const diagnostic: Diagnostic = {
+          ...calcLocationForSelectorParserNode(rule, node),
+          text: `\`${node.value}\` is not supported. Use \`${node.value}(...)\` instead.`,
+          category: 'error',
+        };
+        return { classNames: [], diagnostics: [diagnostic] };
       } else {
         // `node` is `:local(...)` or `:global(...)` (with arguments)
         if (wrappedBy !== undefined) {
-          throw new ScopeError(`A \`${node.value}\` is not allowed inside of \`${wrappedBy}\`.`);
+          const diagnostic: Diagnostic = {
+            ...calcLocationForSelectorParserNode(rule, node),
+            text: `A \`${node.value}(...)\` is not allowed inside of \`${wrappedBy}\`.`,
+            category: 'error',
+          };
+          return { classNames: [], diagnostics: [diagnostic] };
         }
-        return node.nodes.flatMap((child) =>
-          visitNode(child, node.value === ':local' ? ':local(...)' : ':global(...)'),
+        return flatCollectResults(
+          node.nodes.map((child) => visitNode(child, node.value === ':local' ? ':local(...)' : ':global(...)')),
         );
       }
     } else if (selectorParser.isContainer(node)) {
-      return node.nodes.flatMap((child) => visitNode(child, wrappedBy));
+      return flatCollectResults(node.nodes.map((child) => visitNode(child, wrappedBy)));
     }
-    return [];
+    return { classNames: [], diagnostics: [] };
   }
 }
 
@@ -71,12 +89,11 @@ interface ParseRuleResult {
 
 /**
  * Parse a rule and collect local class selectors.
- * @throws {ScopeError}
  */
 export function parseRule(rule: Rule): ParseRuleResult {
-  const diagnostics: Diagnostic[] = [];
   const root = selectorParser().astSync(rule);
-  const classSelectors = collectLocalClassNames(root).map((className) => {
+  const result = collectLocalClassNames(rule, root);
+  const classSelectors = result.classNames.map((className) => {
     // If `rule` is `.a, .b { color: red; }` and `className` is `.b`,
     // `rule.source` is `{ start: { line: 1, column: 1 }, end: { line: 1, column: 22 } }`
     // And `className.source` is `{ start: { line: 1, column: 5 }, end: { line: 1, column: 6 } }`.
@@ -96,5 +113,5 @@ export function parseRule(rule: Rule): ParseRuleResult {
       loc: { start, end },
     };
   });
-  return { classSelectors, diagnostics };
+  return { classSelectors, diagnostics: result.diagnostics };
 }

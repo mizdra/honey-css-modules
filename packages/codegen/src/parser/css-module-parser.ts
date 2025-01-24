@@ -28,7 +28,6 @@ function isRuleNode(node: Node): node is Rule {
 
 /**
  * Collect tokens from the AST.
- * @throws {ScopeError}
  */
 function collectTokens(ast: Root) {
   const allDiagnostics: Diagnostic[] = [];
@@ -158,7 +157,6 @@ interface ParseCSSModuleCodeResult {
 
 /**
  * @throws {CSSModuleParseError}
- * @throws {ScopeError}
  */
 export function parseCSSModuleCode(code: string, { filename }: ParseCSSModuleCodeOptions): ParseCSSModuleCodeResult {
   let ast: Root;
