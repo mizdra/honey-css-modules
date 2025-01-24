@@ -1,5 +1,6 @@
 import serverHarness from '@typescript/server-harness';
 import type { server } from 'typescript';
+import type ts from 'typescript';
 
 interface Tsserver {
   sendUpdateOpen(args: server.protocol.UpdateOpenRequest['arguments']): Promise<server.protocol.Response>;
@@ -59,4 +60,19 @@ export function launchTsserver(): Tsserver {
 export function formatPath(path: string) {
   // In windows, tsserver returns paths with '/' instead of '\\'.
   return path.replaceAll('\\', '/');
+}
+
+export function simplifyDefinitions(definitions: readonly ts.server.protocol.DefinitionInfo[]) {
+  return definitions.map((definition) => {
+    return {
+      file: formatPath(definition.file),
+      start: definition.start,
+      end: definition.end,
+    };
+  });
+}
+export function sortDefinitions(definitions: readonly ts.server.protocol.DefinitionInfo[]) {
+  return definitions.toSorted((a, b) => {
+    return a.file.localeCompare(b.file) || a.start.line - b.start.line || a.start.offset - b.start.offset;
+  });
 }

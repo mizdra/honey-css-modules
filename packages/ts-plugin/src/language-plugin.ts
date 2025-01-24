@@ -24,7 +24,9 @@ export function createCSSModuleLanguagePlugin(
       const { cssModule } = parseCSSModuleCode(cssModuleCode, {
         filename: scriptId,
         dashedIdents: config.dashedIdents,
-        safe: false,
+        // The CSS in the process of being written in an editor often contains invalid syntax.
+        // So, ts-plugin uses a fault-tolerant Parser to parse CSS.
+        safe: true,
       });
       // TODO: Report diagnostics
       if (cssModule === undefined) return undefined;
