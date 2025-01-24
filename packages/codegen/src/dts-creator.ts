@@ -49,8 +49,6 @@ interface LinkedCodeMapping extends CodeMapping {
  * };
  * export default styles;
  * ```
- *
- * @throws {ResolveError} When the resolver throws an error.
  */
 export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,

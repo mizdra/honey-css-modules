@@ -1,5 +1,4 @@
 import type { AtRule } from 'postcss';
-import { AtValueInvalidError } from '../error.js';
 import type { Diagnostic } from './diagnostic.js';
 import type { Location } from './location.js';
 
@@ -37,7 +36,6 @@ const IMPORTED_ITEM_PATTERN = /^([\w-]+)(?:\s+as\s+([\w-]+))?/du;
  * Parse the `@value` rule.
  * Forked from https://github.com/css-modules/postcss-modules-values/blob/v4.0.0/src/index.js.
  *
- * @throws {AtValueInvalidError}
  * @license
  * ISC License (ISC)
  * Copyright (c) 2015, Glen Maddern
@@ -62,7 +60,8 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
     const baseLength = 6 + (atValue.raws.afterName?.length ?? 0);
 
     let lastItemIndex = 0;
-    const values = importedItems.split(/\s*,\s*/u).map((alias) => {
+    const values: ValueImportDeclaration['values'] = [];
+    for (const alias of importedItems.split(/\s*,\s*/u)) {
       const currentItemIndex = importedItems.indexOf(alias, lastItemIndex);
       lastItemIndex = currentItemIndex;
       const matchesForImportedItem = alias.match(IMPORTED_ITEM_PATTERN);
@@ -82,7 +81,7 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
         };
         const result = { name, loc: { start, end } };
         if (localName === undefined) {
-          return result;
+          values.push(result);
         } else {
           const localNameIndex = matchesForImportedItem.indices![2]![0];
           const start = {
@@ -95,12 +94,27 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
             column: start.column + localName.length,
             offset: start.offset + localName.length,
           };
-          return { ...result, localName, localLoc: { start, end } };
+          values.push({ ...result, localName, localLoc: { start, end } });
         }
       } else {
-        throw new AtValueInvalidError(atValue);
+        const start = {
+          line: atValue.source!.start!.line,
+          column: atValue.source!.start!.column + baseLength + currentItemIndex,
+          offset: atValue.source!.start!.offset + baseLength + currentItemIndex,
+        };
+        const end = {
+          line: start.line,
+          column: start.column + alias.length,
+          offset: start.offset + alias.length,
+        };
+        diagnostics.push({
+          start,
+          end,
+          text: `\`${alias}\` is invalid syntax.`,
+          category: 'error',
+        });
       }
-    });
+    }
 
     // `from` is surrounded by quotes (e.g., `"./test.module.css"`). So, remove the quotes.
     const normalizedFrom = from.slice(1, -1);
@@ -145,5 +159,20 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
     const parsedAtValue = { type: 'valueDeclaration', name, loc: { start, end } } as const;
     return { atValue: parsedAtValue, diagnostics };
   }
-  throw new AtValueInvalidError(atValue);
+  diagnostics.push({
+    start: {
+      line: atValue.source!.start!.line,
+      column: atValue.source!.start!.column,
+      offset: atValue.source!.start!.offset,
+    },
+    end: {
+      line: atValue.source!.end!.line,
+      column: atValue.source!.end!.column + 1,
+      // MEMO: For some reason `end.offset` is exclusive. This may be a bug in postcss.
+      offset: atValue.source!.end!.offset,
+    },
+    text: `\`${atValue.toString()}\` is a invalid syntax.`,
+    category: 'error',
+  });
+  return { diagnostics };
 }

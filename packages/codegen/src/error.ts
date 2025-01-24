@@ -1,5 +1,3 @@
-import type { AtRule } from 'postcss';
-
 export class ConfigNotFoundError extends Error {
   code = 'CONFIG_NOT_FOUND';
   constructor() {
@@ -18,30 +16,10 @@ export class ConfigValidationError extends Error {
   code = 'CONFIG_VALIDATION_ERROR';
 }
 
-export class AtValueInvalidError extends Error {
-  code = 'AT_VALUE_INVALID';
-  constructor(atValue: AtRule) {
-    super(`\`${atValue.toString()}\` is invalid!`);
-  }
-}
-
 export class CSSModuleParseError extends Error {
   code = 'CSS_MODULE_PARSE_ERROR';
   constructor(filename: string, cause: unknown) {
     super(`Failed to parse CSS Module file (${filename}).`, { cause });
-  }
-}
-
-// TODO: Include filename and error location for ts-plugin
-export class ScopeError extends Error {
-  code = 'SCOPE_ERROR';
-}
-
-// TODO: Include filename and error location for ts-plugin
-export class ResolveError extends Error {
-  code = 'RESOLVE_ERROR';
-  constructor(specifier: string, cause: unknown) {
-    super(`Failed to resolve specifier (${specifier}).`, { cause });
   }
 }
 
