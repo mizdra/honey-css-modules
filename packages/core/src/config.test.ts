@@ -99,8 +99,4 @@ test('assertConfig', () => {
     `[Error: \`dashedIdents\` must be a boolean.]`,
   );
   expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', dashedIdents: true })).not.toThrow();
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', logLevel: 1 })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`logLevel\` must be one of \`debug\`, \`info\`, or \`silent\`.]`,
-  );
-  expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', logLevel: 'debug' })).not.toThrow();
 });
