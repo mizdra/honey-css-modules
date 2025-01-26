@@ -2,10 +2,19 @@ import { execFileSync } from 'node:child_process';
 import { accessSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { ConfigImportError, ConfigNotFoundError, ConfigValidationError } from './error.js';
+import {
+  createConfigImportDiagnostic,
+  createConfigNotFoundDiagnostic,
+  createConfigValidationDiagnostic,
+  type Diagnostic,
+} from './parser/diagnostic.js';
 
 // TODO: Support `ts`, `mts` and `cts` extensions
 const ALLOWED_CONFIG_FILE_EXTENSIONS = ['js', 'mjs', 'cjs'];
+
+class ConfigValidationError extends Error {
+  code = 'CONFIG_VALIDATION_ERROR';
+}
 
 export interface HCMConfig {
   pattern: string;
@@ -53,12 +62,14 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
   }
 }
 
+type ReadConfigFileResult = { config: HCMConfig } | { diagnostic: Diagnostic };
+
 /**
  * @throws {ConfigNotFoundError}
  * @throws {ConfigImportError}
  * @throws {ConfigValidationError}
  */
-export function readConfigFile(cwd: string): HCMConfig {
+export function readConfigFile(cwd: string): ReadConfigFileResult {
   for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
     const path = join(cwd, `hcm.config.${ext}`);
     try {
@@ -90,13 +101,20 @@ export function readConfigFile(cwd: string): HCMConfig {
         ).toString(),
       );
     } catch (error) {
-      throw new ConfigImportError(path, error);
+      return { diagnostic: createConfigImportDiagnostic(path, error) };
     }
-    if (!('default' in module)) throw new ConfigValidationError('Config must be a default export.');
-    assertConfig(module.default);
-    return module.default;
+    if (!('default' in module))
+      return { diagnostic: createConfigValidationDiagnostic('Config must be a default export.') };
+    try {
+      assertConfig(module.default);
+    } catch (error) {
+      if (error instanceof ConfigValidationError)
+        return { diagnostic: createConfigValidationDiagnostic(error.message) };
+      throw error;
+    }
+    return { config: module.default };
   }
-  throw new ConfigNotFoundError();
+  return { diagnostic: createConfigNotFoundDiagnostic() };
 }
 
 export interface ResolvedHCMConfig {

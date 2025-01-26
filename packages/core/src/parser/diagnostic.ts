@@ -40,3 +40,28 @@ export interface SyntacticDiagnostic extends DiagnosticBase {
   /**  The last file position at which the text applies. It is exclusive. */
   end?: DiagnosticPosition;
 }
+
+export function createConfigNotFoundDiagnostic(): SystemDiagnostic {
+  return {
+    type: 'system',
+    category: 'error',
+    text: 'No config file found. Did you forget to create hcm.config.{js,mjs,cjs}?',
+  };
+}
+
+export function createConfigImportDiagnostic(path: string, cause: unknown): SystemDiagnostic {
+  return {
+    type: 'system',
+    category: 'error',
+    text: `Failed to import config file (${path}).`,
+    cause,
+  };
+}
+
+export function createConfigValidationDiagnostic(message: string): SystemDiagnostic {
+  return {
+    type: 'system',
+    category: 'error',
+    text: message,
+  };
+}

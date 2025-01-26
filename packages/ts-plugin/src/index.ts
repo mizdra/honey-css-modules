@@ -1,7 +1,5 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
-import type { HCMConfig } from 'honey-css-modules-core';
 import { createIsExternalFile, createResolver, readConfigFile, resolveConfig } from 'honey-css-modules-core';
-import { ConfigNotFoundError } from 'honey-css-modules-core';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 import { proxyLanguageService } from './language-service.js';
 
@@ -12,19 +10,16 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   }
   const cwd = info.project.getCurrentDirectory();
 
-  let config: HCMConfig;
-  try {
-    config = readConfigFile(cwd);
-    info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
-  } catch (error) {
-    // If the config file is not found, disable the plugin.
-    if (error instanceof ConfigNotFoundError) {
-      return { languagePlugins: [] };
-    }
-    throw error;
+  const readConfigResult = readConfigFile(cwd);
+  if ('diagnostic' in readConfigResult) {
+    // TODO: Log the diagnostic.
+    return { languagePlugins: [] };
   }
+  info.project.projectService.logger.info(
+    `[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(readConfigResult.config)}`,
+  );
 
-  const resolvedConfig = resolveConfig(config, cwd);
+  const resolvedConfig = resolveConfig(readConfigResult.config, cwd);
   const resolver = createResolver(resolvedConfig.paths, resolvedConfig.cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
