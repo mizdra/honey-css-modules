@@ -4,7 +4,6 @@ export {
   ConfigNotFoundError,
   ConfigImportError,
   ConfigValidationError,
-  CSSModuleParseError,
   WriteDtsFileError,
   ReadCSSModuleFileError,
 } from './error.js';
