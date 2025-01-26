@@ -6,7 +6,9 @@ import { createDts } from './dts-creator.js';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import { createIsExternalFile } from './external-file.js';
+import type { Logger } from './logger/logger.js';
 import { parseCSSModuleCode } from './parser/css-module-parser.js';
+import type { Diagnostic } from './parser/diagnostic.js';
 import { createResolver, type Resolver } from './resolver.js';
 
 /**
@@ -18,17 +20,16 @@ async function processFile(
   { dashedIdents, dtsOutDir, cwd, arbitraryExtensions }: ResolvedHCMConfig,
   resolver: Resolver,
   isExternalFile: (filename: string) => boolean,
-): Promise<void> {
+): Promise<Diagnostic[]> {
   let code: string;
   try {
     code = await readFile(filename, 'utf-8');
   } catch (error) {
     throw new ReadCSSModuleFileError(filename, error);
   }
-  const { cssModule } = parseCSSModuleCode(code, { filename, dashedIdents, safe: false });
-  if (cssModule === undefined) {
-    // TODO: Report diagnostics
-    return;
+  const { cssModule, diagnostics } = parseCSSModuleCode(code, { filename, dashedIdents, safe: false });
+  if (diagnostics.length > 0) {
+    return diagnostics;
   }
   const { code: dtsCode } = createDts(cssModule, { resolver, isExternalFile });
   await writeDtsFile(dtsCode, filename, {
@@ -36,6 +37,7 @@ async function processFile(
     cwd,
     arbitraryExtensions,
   });
+  return [];
 }
 
 /**
@@ -43,13 +45,13 @@ async function processFile(
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(config: HCMConfig, cwd: string): Promise<void> {
+export async function runHCM(config: HCMConfig, cwd: string, logger: Logger): Promise<void> {
   const resolvedConfig = resolveConfig(config, cwd);
   const { pattern, paths } = resolvedConfig;
   const resolver = createResolver(paths, cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
-  const promises: Promise<void>[] = [];
+  const promises: Promise<Diagnostic[]>[] = [];
   for await (const filename of globIterate(pattern, { cwd })) {
     promises.push(
       processFile(
@@ -60,6 +62,11 @@ export async function runHCM(config: HCMConfig, cwd: string): Promise<void> {
       ),
     );
   }
-  await Promise.all(promises);
+  const diagnostics = (await Promise.all(promises)).flat();
+  if (diagnostics.length > 0) {
+    logger.logDiagnostics(diagnostics);
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
   // TODO: Logging completion message
 }

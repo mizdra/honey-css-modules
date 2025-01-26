@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { readConfigFile, runHCM } from '../dist/index.js';
+import { createLogger, readConfigFile, runHCM } from '../dist/index.js';
 
 const cwd = process.cwd();
 // TODO: Improve error handling
-await runHCM(readConfigFile(cwd), cwd);
+await runHCM(readConfigFile(cwd), cwd, createLogger(cwd));

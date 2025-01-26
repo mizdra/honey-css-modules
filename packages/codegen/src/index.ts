@@ -1,5 +1,6 @@
 export { runHCM } from './runner.js';
 export { defineConfig, type HCMConfig, readConfigFile, resolveConfig, type ResolvedHCMConfig } from './config.js';
+export { type Logger, createLogger } from './logger/logger.js';
 export {
   ConfigNotFoundError,
   ConfigImportError,
