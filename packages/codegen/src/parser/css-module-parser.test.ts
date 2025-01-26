@@ -399,28 +399,29 @@ describe('parseCSSModuleCode', () => {
             "end": {
               "column": 7,
               "line": 1,
-              "offset": 6,
             },
+            "filename": "/test.module.css",
             "start": {
               "column": 1,
               "line": 1,
               "offset": 0,
             },
             "text": "\`:local\` is not supported. Use \`:local(...)\` instead.",
+            "type": "syntactic",
           },
           {
             "category": "error",
             "end": {
               "column": 8,
               "line": 2,
-              "offset": 25,
             },
+            "filename": "/test.module.css",
             "start": {
               "column": 1,
               "line": 2,
-              "offset": 18,
             },
             "text": "\`@value\` is a invalid syntax.",
+            "type": "syntactic",
           },
         ],
       }

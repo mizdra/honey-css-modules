@@ -1,5 +1,6 @@
 import type { Rule } from 'postcss';
 import type selectorParser from 'postcss-selector-parser';
+import type { DiagnosticPosition } from './diagnostic.js';
 
 export interface Position {
   /**
@@ -32,14 +33,11 @@ export interface Location {
   end: Position;
 }
 
-export function calcLocationForSelectorParserNode(rule: Rule, node: selectorParser.Node): Location {
-  const start = {
-    ...rule.positionBy({ index: node.sourceIndex }),
-    offset: rule.source!.start!.offset + node.sourceIndex,
-  };
-  const end = {
-    ...rule.positionBy({ index: node.sourceIndex + node.toString().length }),
-    offset: rule.source!.start!.offset + node.sourceIndex + node.toString().length,
-  };
+export function calcDiagnosticsLocationForSelectorParserNode(
+  rule: Rule,
+  node: selectorParser.Node,
+): { start: DiagnosticPosition; end: DiagnosticPosition } {
+  const start = rule.positionBy({ index: node.sourceIndex });
+  const end = rule.positionBy({ index: node.sourceIndex + node.toString().length });
   return { start, end };
 }

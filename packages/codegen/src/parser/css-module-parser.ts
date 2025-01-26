@@ -4,7 +4,7 @@ import safeParser from 'postcss-safe-parser';
 import { CSSModuleParseError } from '../error.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
-import type { Diagnostic } from './diagnostic.js';
+import type { SyntacticDiagnostic } from './diagnostic.js';
 import { type Location } from './location.js';
 import { parseRule } from './rule-parser.js';
 
@@ -31,7 +31,7 @@ function isRuleNode(node: Node): node is Rule {
  * Collect tokens from the AST.
  */
 function collectTokens(ast: Root) {
-  const allDiagnostics: Diagnostic[] = [];
+  const allDiagnostics: SyntacticDiagnostic[] = [];
   const localTokens: Token[] = [];
   const tokenImporters: TokenImporter[] = [];
   ast.walk((node) => {
@@ -154,7 +154,7 @@ export interface ParseCSSModuleCodeOptions {
 
 interface ParseCSSModuleCodeResult {
   cssModule?: CSSModuleFile;
-  diagnostics: Diagnostic[];
+  diagnostics: SyntacticDiagnostic[];
 }
 
 /**

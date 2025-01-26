@@ -1,16 +1,16 @@
 import type { Rule } from 'postcss';
 import selectorParser from 'postcss-selector-parser';
-import type { Diagnostic } from './diagnostic.js';
-import { calcLocationForSelectorParserNode, type Location } from './location.js';
+import type { SyntacticDiagnostic } from './diagnostic.js';
+import { calcDiagnosticsLocationForSelectorParserNode, type Location } from './location.js';
 
 interface CollectResult {
   classNames: selectorParser.ClassName[];
-  diagnostics: Diagnostic[];
+  diagnostics: SyntacticDiagnostic[];
 }
 
 function flatCollectResults(results: CollectResult[]): CollectResult {
   const classNames: selectorParser.ClassName[] = [];
-  const diagnostics: Diagnostic[] = [];
+  const diagnostics: SyntacticDiagnostic[] = [];
   for (const result of results) {
     classNames.push(...result.classNames);
     diagnostics.push(...result.diagnostics);
@@ -48,8 +48,10 @@ function collectLocalClassNames(rule: Rule, root: selectorParser.Root): CollectR
       if (node.nodes.length === 0) {
         // `node` is `:local` or `:global` (without any arguments)
         // We don't support `:local` and `:global` (without any arguments) because they are complex.
-        const diagnostic: Diagnostic = {
-          ...calcLocationForSelectorParserNode(rule, node),
+        const diagnostic: SyntacticDiagnostic = {
+          type: 'syntactic',
+          filename: rule.source!.input.file!,
+          ...calcDiagnosticsLocationForSelectorParserNode(rule, node),
           text: `\`${node.value}\` is not supported. Use \`${node.value}(...)\` instead.`,
           category: 'error',
         };
@@ -57,8 +59,10 @@ function collectLocalClassNames(rule: Rule, root: selectorParser.Root): CollectR
       } else {
         // `node` is `:local(...)` or `:global(...)` (with arguments)
         if (wrappedBy !== undefined) {
-          const diagnostic: Diagnostic = {
-            ...calcLocationForSelectorParserNode(rule, node),
+          const diagnostic: SyntacticDiagnostic = {
+            type: 'syntactic',
+            filename: rule.source!.input.file!,
+            ...calcDiagnosticsLocationForSelectorParserNode(rule, node),
             text: `A \`${node.value}(...)\` is not allowed inside of \`${wrappedBy}\`.`,
             category: 'error',
           };
@@ -84,7 +88,7 @@ interface ClassSelector {
 
 interface ParseRuleResult {
   classSelectors: ClassSelector[];
-  diagnostics: Diagnostic[];
+  diagnostics: SyntacticDiagnostic[];
 }
 
 /**
