@@ -1,6 +1,6 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { Diagnostic, ResolvedHCMConfig } from 'honey-css-modules';
+import type { ResolvedHCMConfig, SyntacticDiagnostic } from 'honey-css-modules';
 import { createDts, parseCSSModuleCode, type Resolver } from 'honey-css-modules';
 import ts from 'typescript';
 
@@ -10,7 +10,7 @@ export const HCM_DATA_KEY = Symbol('honey-css-modules-data');
 
 interface CSSModuleVirtualCode extends VirtualCode {
   [HCM_DATA_KEY]: {
-    diagnostics: Diagnostic[];
+    diagnostics: SyntacticDiagnostic[];
   };
 }
 

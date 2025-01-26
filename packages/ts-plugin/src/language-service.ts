@@ -1,5 +1,5 @@
 import type { Language } from '@volar/language-core';
-import type { Diagnostic } from 'honey-css-modules';
+import type { SyntacticDiagnostic } from 'honey-css-modules';
 import ts from 'typescript';
 import { HCM_DATA_KEY, isCSSModuleScript } from './language-plugin.js';
 
@@ -33,12 +33,17 @@ export function proxyLanguageService(
   return proxy;
 }
 
-function convertDiagnostic(diagnostic: Diagnostic, sourceFile: ts.SourceFile): ts.DiagnosticWithLocation {
+function convertDiagnostic(diagnostic: SyntacticDiagnostic, sourceFile: ts.SourceFile): ts.DiagnosticWithLocation {
+  const start = ts.getPositionOfLineAndCharacter(sourceFile, diagnostic.start.line - 1, diagnostic.start.column - 1);
+  const length =
+    diagnostic.end ?
+      ts.getPositionOfLineAndCharacter(sourceFile, diagnostic.end.line - 1, diagnostic.end.column - 1) - start
+    : 1;
   return {
     file: sourceFile,
-    start: diagnostic.start.offset,
+    start,
     category: convertErrorCategory(diagnostic.category),
-    length: diagnostic.end.offset - diagnostic.start.offset,
+    length,
     messageText: diagnostic.text,
     code: ERROR_CODE,
   };

@@ -354,14 +354,14 @@ describe('parseAtValue', () => {
             "end": {
               "column": 8,
               "line": 1,
-              "offset": 7,
             },
+            "filename": "/test/test.css",
             "start": {
               "column": 1,
               "line": 1,
-              "offset": 0,
             },
             "text": "\`@value\` is a invalid syntax.",
+            "type": "syntactic",
           },
         ],
       }
@@ -422,14 +422,14 @@ describe('parseAtValue', () => {
             "end": {
               "column": 8,
               "line": 2,
-              "offset": 15,
             },
+            "filename": "/test/test.css",
             "start": {
               "column": 8,
               "line": 2,
-              "offset": 15,
             },
             "text": "\`\` is invalid syntax.",
+            "type": "syntactic",
           },
         ],
       }

@@ -1,5 +1,5 @@
 import type { AtRule } from 'postcss';
-import type { Diagnostic } from './diagnostic.js';
+import type { DiagnosticPosition, SyntacticDiagnostic } from './diagnostic.js';
 import type { Location } from './location.js';
 
 interface ValueDeclaration {
@@ -25,7 +25,7 @@ type ParsedAtValue = ValueDeclaration | ValueImportDeclaration;
 
 interface ParseAtValueResult {
   atValue?: ParsedAtValue;
-  diagnostics: Diagnostic[];
+  diagnostics: SyntacticDiagnostic[];
 }
 
 const VALUE_IMPORT_PATTERN = /^(.+?)\s+from\s+("[^"]*"|'[^']*')$/du;
@@ -53,7 +53,7 @@ const IMPORTED_ITEM_PATTERN = /^([\w-]+)(?:\s+as\s+([\w-]+))?/du;
 // MEMO: honey-css-modules does not support `@value` with variable module name (e.g., `@value a from moduleName;`) to simplify the implementation.
 export function parseAtValue(atValue: AtRule): ParseAtValueResult {
   const matchesForValueImport = atValue.params.match(VALUE_IMPORT_PATTERN);
-  const diagnostics: Diagnostic[] = [];
+  const diagnostics: SyntacticDiagnostic[] = [];
   if (matchesForValueImport) {
     const [, importedItems, from] = matchesForValueImport as [string, string, string];
     // The length of the `@value  ` part in `@value  import1 from '...'`
@@ -97,17 +97,17 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
           values.push({ ...result, localName, localLoc: { start, end } });
         }
       } else {
-        const start = {
+        const start: DiagnosticPosition = {
           line: atValue.source!.start!.line,
           column: atValue.source!.start!.column + baseLength + currentItemIndex,
-          offset: atValue.source!.start!.offset + baseLength + currentItemIndex,
         };
-        const end = {
+        const end: DiagnosticPosition = {
           line: start.line,
           column: start.column + alias.length,
-          offset: start.offset + alias.length,
         };
         diagnostics.push({
+          type: 'syntactic',
+          filename: atValue.source!.input.file!,
           start,
           end,
           text: `\`${alias}\` is invalid syntax.`,
@@ -160,16 +160,15 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
     return { atValue: parsedAtValue, diagnostics };
   }
   diagnostics.push({
+    type: 'syntactic',
+    filename: atValue.source!.input.file!,
     start: {
       line: atValue.source!.start!.line,
       column: atValue.source!.start!.column,
-      offset: atValue.source!.start!.offset,
     },
     end: {
       line: atValue.source!.end!.line,
       column: atValue.source!.end!.column + 1,
-      // MEMO: For some reason `end.offset` is exclusive. This may be a bug in postcss.
-      offset: atValue.source!.end!.offset,
     },
     text: `\`${atValue.toString()}\` is a invalid syntax.`,
     category: 'error',
