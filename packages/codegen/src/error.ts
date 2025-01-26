@@ -1,13 +1,13 @@
-export class WriteDtsFileError extends Error {
-  code = 'WRITE_DTS_FILE_ERROR';
+import { SystemError } from 'honey-css-modules-core';
+
+export class WriteDtsFileError extends SystemError {
   constructor(filename: string, cause: unknown) {
-    super(`Failed to write .d.ts file (${filename}).`, { cause });
+    super('WRITE_DTS_FILE_ERROR', `Failed to write .d.ts file ${filename}.`, { cause });
   }
 }
 
-export class ReadCSSModuleFileError extends Error {
-  code = 'READ_CSS_MODULE_FILE_ERROR';
+export class ReadCSSModuleFileError extends SystemError {
   constructor(filename: string, cause: unknown) {
-    super(`Failed to read CSS Module file (${filename}).`, { cause });
+    super('READ_CSS_MODULE_FILE_ERROR', `Failed to read CSS Module file ${filename}.`, { cause });
   }
 }

@@ -1,8 +1,9 @@
-import type { Diagnostic } from 'honey-css-modules-core';
-import { formatDiagnostic } from './formatter.js';
+import type { Diagnostic, SystemError } from 'honey-css-modules-core';
+import { formatDiagnostic, formatSystemError } from './formatter.js';
 
 export interface Logger {
   logDiagnostics(diagnostics: Diagnostic[]): void;
+  logSystemError(error: SystemError): void;
 }
 
 export function createLogger(cwd: string): Logger {
@@ -13,6 +14,9 @@ export function createLogger(cwd: string): Logger {
         result += `${formatDiagnostic(diagnostic, cwd)}\n\n`;
       }
       process.stderr.write(result);
+    },
+    logSystemError(error: SystemError): void {
+      process.stderr.write(`${formatSystemError(error)}\n`);
     },
   };
 }

@@ -1,17 +1,25 @@
-export class ConfigNotFoundError extends Error {
-  code = 'CONFIG_NOT_FOUND';
+export class SystemError extends Error {
+  code: string;
+  constructor(code: string, message: string, cause?: unknown) {
+    super(message, { cause });
+    this.code = code;
+  }
+}
+
+export class ConfigNotFoundError extends SystemError {
   constructor() {
-    super('No config file found. Did you forget to create hcm.config.{js,mjs,cjs}?');
+    super('CONFIG_NOT_FOUND', 'No config file found. Did you forget to create hcm.config.{js,mjs,cjs}?');
   }
 }
 
-export class ConfigImportError extends Error {
-  code = 'CONFIG_IMPORT_ERROR';
+export class ConfigImportError extends SystemError {
   constructor(path: string, cause: unknown) {
-    super(`Failed to import config file (${path}).`, { cause });
+    super('CONFIG_IMPORT_ERROR', `Failed to import config file (${path}).`, { cause });
   }
 }
 
-export class ConfigValidationError extends Error {
-  code = 'CONFIG_VALIDATION_ERROR';
+export class ConfigValidationError extends SystemError {
+  constructor(message: string) {
+    super('CONFIG_VALIDATION_ERROR', message);
+  }
 }
