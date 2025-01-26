@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join, parse, relative, resolve } from 'node:path';
-import { WriteDtsFileError } from './error.js';
+import type { SystemDiagnostic } from 'honey-css-modules-core';
 
 /**
  * Get .d.ts file path.
@@ -34,18 +34,22 @@ export interface WriteDtsFileOption {
  * @param dtsCode The d.ts code to write.
  * @param cssModuleFilename The filename of the CSS module file.
  * @param options Options for writing the d.ts file.
- * @throws {WriteDtsFileError} When the file cannot be written.
  */
 export async function writeDtsFile(
   dtsCode: string,
   cssModuleFilename: string,
   options: WriteDtsFileOption,
-): Promise<void> {
+): Promise<undefined | SystemDiagnostic> {
   const dtsFilename = getDtsFilePath(cssModuleFilename, options);
   try {
     await mkdir(dirname(dtsFilename), { recursive: true });
+  } catch (error) {
+    return { type: 'system', category: 'error', text: `Failed to create directory ${dtsFilename}.`, cause: error };
+  }
+  try {
     await writeFile(dtsFilename, dtsCode);
   } catch (error) {
-    throw new WriteDtsFileError(dtsFilename, error);
+    return { type: 'system', category: 'error', text: `Failed to write file ${dtsFilename}.`, cause: error };
   }
+  return undefined;
 }

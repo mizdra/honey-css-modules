@@ -3,7 +3,6 @@ import { resolve } from 'node:path';
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { getDtsFilePath, writeDtsFile } from './dts-writer.js';
-import { WriteDtsFileError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
 describe('getDtsFilePath', () => {
@@ -45,24 +44,41 @@ describe('writeDtsFile', () => {
       export default styles;"
     `);
   });
-  test('throws an error when the file cannot be written', async () => {
+
+  test('reports a diagnostic when the directory cannot be created', async () => {
+    const iff = await createIFF({
+      // A file exists at the same path
+      generated: 'text file',
+    });
+    expect(
+      await writeDtsFile('', iff.join('src/a.module.css'), {
+        outDir: iff.join('generated'),
+        cwd: iff.rootDir,
+        arbitraryExtensions: false,
+      }),
+    ).toMatchObject({
+      type: 'system',
+      category: 'error',
+      text: expect.stringContaining('Failed to create directory'),
+      cause: expect.any(Error),
+    });
+  });
+  test('reports a diagnostic when the file cannot be written', async () => {
     const iff = await createIFF({
       // A directory exists at the same path
       'generated/src/a.module.css.d.ts': {},
     });
-    await expect(
-      writeDtsFile(
-        dedent`
-          declare const styles: { local1: string };
-          export default styles;
-        `,
-        iff.join('src/a.module.css'),
-        {
-          outDir: iff.join('generated'),
-          cwd: iff.rootDir,
-          arbitraryExtensions: false,
-        },
-      ),
-    ).rejects.toThrow(WriteDtsFileError);
+    expect(
+      await writeDtsFile('', iff.join('src/a.module.css'), {
+        outDir: iff.join('generated'),
+        cwd: iff.rootDir,
+        arbitraryExtensions: false,
+      }),
+    ).toMatchObject({
+      type: 'system',
+      category: 'error',
+      text: expect.stringContaining('Failed to write file'),
+      cause: expect.any(Error),
+    });
   });
 });

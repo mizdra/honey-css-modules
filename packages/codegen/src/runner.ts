@@ -10,7 +10,6 @@ import {
   resolveConfig,
 } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
-import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 
 /**
@@ -27,18 +26,17 @@ async function processFile(
   try {
     code = await readFile(filename, 'utf-8');
   } catch (error) {
-    throw new ReadCSSModuleFileError(filename, error);
+    return [{ type: 'system', category: 'error', text: `Failed to read file ${filename}.`, cause: error }];
   }
   const { cssModule, diagnostics } = parseCSSModuleCode(code, { filename, dashedIdents, safe: false });
-  if (diagnostics.length > 0) {
-    return diagnostics;
-  }
+  if (diagnostics.length > 0) return diagnostics;
   const { code: dtsCode } = createDts(cssModule, { resolver, isExternalFile });
-  await writeDtsFile(dtsCode, filename, {
+  const diagnostic = await writeDtsFile(dtsCode, filename, {
     outDir: dtsOutDir,
     cwd,
     arbitraryExtensions,
   });
+  if (diagnostic) return [diagnostic];
   return [];
 }
 

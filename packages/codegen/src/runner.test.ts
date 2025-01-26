@@ -1,6 +1,6 @@
-import { access, chmod, readFile } from 'node:fs/promises';
+import { access, readFile, symlink } from 'node:fs/promises';
+import type { Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
-import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 import { runHCM } from './runner.js';
 import { createIFF } from './test/fixture.js';
@@ -69,15 +69,6 @@ describe('runHCM', () => {
       "
     `);
   });
-  test.runIf(process.platform !== 'win32')('throws error when failed to read CSS Module file', async () => {
-    const iff = await createIFF({
-      'src/a.module.css': '.a1 { color: red; }',
-    });
-    await chmod(iff.paths['src/a.module.css'], 0o200); // Remove read permission
-    await expect(
-      runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy()),
-    ).rejects.toThrow(ReadCSSModuleFileError);
-  });
   test('support ./ in `pattern`', async () => {
     const iff = await createIFF({
       'src/a.module.css': `@import './b.css'; .a1 { color: red; }`,
@@ -98,13 +89,14 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 {',
       'src/b.module.css': '@value;',
     });
+    await symlink(iff.join('nonexistent.module.css'), iff.join('src/c.module.css'));
     const loggerSpy = createLoggerSpy();
     await expect(
       runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, loggerSpy),
     ).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
-    expect(loggerSpy.logDiagnostics.mock.calls[0]![0]).toStrictEqual(
-      expect.arrayContaining([
+    expect(sortDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0])).toStrictEqual(
+      sortDiagnostics([
         {
           type: 'syntactic',
           category: 'error',
@@ -129,7 +121,25 @@ describe('runHCM', () => {
           },
           text: '`@value` is a invalid syntax.',
         },
+        {
+          type: 'system',
+          category: 'error',
+          text: expect.stringContaining('Failed to read file'),
+          cause: expect.any(Error),
+        },
       ]),
     );
   });
 });
+
+function sortDiagnostics(diagnostics: Diagnostic[]) {
+  return diagnostics.sort((a, b) => {
+    const aFilename = 'filename' in a ? a.filename : '';
+    const bFilename = 'filename' in b ? b.filename : '';
+    const aLine = 'start' in a ? a.start?.line : 0;
+    const bLine = 'start' in b ? b.start?.line : 0;
+    const aColumn = 'start' in a ? a.start?.column : 0;
+    const bColumn = 'start' in b ? b.start?.column : 0;
+    return aFilename.localeCompare(bFilename) || aLine - bLine || aColumn - bColumn;
+  });
+}
