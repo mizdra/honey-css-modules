@@ -4,6 +4,7 @@
     "composite": true
   },
   "references": [
+    { "path": "packages/core/tsconfig.build.json" },
     { "path": "packages/codegen/tsconfig.build.json" },
     { "path": "packages/ts-plugin/tsconfig.build.json" },
     { "path": "packages/language-server/tsconfig.build.json" },

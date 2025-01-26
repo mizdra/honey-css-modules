@@ -1,4 +1,4 @@
-import type { Diagnostic } from '../parser/diagnostic.js';
+import type { Diagnostic } from 'honey-css-modules-core';
 import { formatDiagnostic } from './formatter.js';
 
 export interface Logger {

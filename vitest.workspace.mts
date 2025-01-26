@@ -10,7 +10,7 @@ export default defineWorkspace([
     },
     resolve: {
       alias: {
-        'honey-css-modules': resolve('packages/codegen/src/index.ts'),
+        'honey-css-modules-core': resolve('packages/core/src/index.ts'),
       },
     },
   }),

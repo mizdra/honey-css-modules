@@ -1,15 +1,17 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { globIterate } from 'glob';
-import { type HCMConfig, resolveConfig, type ResolvedHCMConfig } from './config.js';
-import { createDts } from './dts-creator.js';
+import type { Diagnostic, HCMConfig, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
+import {
+  createDts,
+  createIsExternalFile,
+  createResolver,
+  parseCSSModuleCode,
+  resolveConfig,
+} from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
-import { createIsExternalFile } from './external-file.js';
 import type { Logger } from './logger/logger.js';
-import { parseCSSModuleCode } from './parser/css-module-parser.js';
-import type { Diagnostic } from './parser/diagnostic.js';
-import { createResolver, type Resolver } from './resolver.js';
 
 /**
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.

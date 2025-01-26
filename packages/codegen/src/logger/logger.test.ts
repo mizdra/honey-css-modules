@@ -1,5 +1,5 @@
+import type { Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
-import type { Diagnostic } from '../parser/diagnostic.js';
 import { createLogger } from './logger.js';
 
 const stderrWriteSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);

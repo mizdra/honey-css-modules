@@ -1,7 +1,7 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { ResolvedHCMConfig, SyntacticDiagnostic } from 'honey-css-modules';
-import { createDts, parseCSSModuleCode, type Resolver } from 'honey-css-modules';
+import type { ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
+import { createDts, parseCSSModuleCode } from 'honey-css-modules-core';
 import ts from 'typescript';
 
 export const LANGUAGE_ID = 'css-module';

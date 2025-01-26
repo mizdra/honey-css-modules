@@ -12,6 +12,5 @@
     "rootDir": "src", // To avoid inadvertently changing the directory structure under dist/.
     "sourceMap": true,
     "declarationMap": true
-  },
-  "references": [{ "path": "../core/tsconfig.build.json" }]
+  }
 }

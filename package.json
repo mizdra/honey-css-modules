@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
+    "packages/core",
     "packages/codegen",
     "packages/ts-plugin",
     "packages/language-server",

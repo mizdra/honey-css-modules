@@ -1,5 +1,5 @@
 import { basename } from 'node:path';
-import { parseRule } from 'honey-css-modules';
+import { parseRule } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
 import { findUsedTokenNames, readTsFile } from '../util.js';
