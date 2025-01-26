@@ -1,9 +1,9 @@
 import dedent from 'dedent';
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { createIFF } from './test/fixture.js';
 import { formatPath, launchTsserver, simplifyDefinitions, sortDefinitions } from './test/tsserver.js';
 
-test('handle invalid syntax CSS without crashing', async () => {
+describe('handle invalid syntax CSS without crashing', async () => {
   const tsserver = launchTsserver();
   const iff = await createIFF({
     'index.ts': dedent`
@@ -29,17 +29,28 @@ test('handle invalid syntax CSS without crashing', async () => {
   await tsserver.sendUpdateOpen({
     openFiles: [{ file: iff.paths['index.ts'] }],
   });
-  const res = await tsserver.sendDefinitionAndBoundSpan({
-    file: iff.paths['index.ts'],
-    line: 2,
-    offset: 8,
+  test('can get definition and bound span', async () => {
+    const res = await tsserver.sendDefinitionAndBoundSpan({
+      file: iff.paths['index.ts'],
+      line: 2,
+      offset: 8,
+    });
+    const expected = [
+      {
+        file: formatPath(iff.paths['a.module.css']),
+        start: { line: 1, offset: 2 },
+        end: { line: 1, offset: 5 },
+      },
+    ];
+    expect(sortDefinitions(simplifyDefinitions(res.body?.definitions ?? []))).toStrictEqual(sortDefinitions(expected));
   });
-  const expected = [
-    {
-      file: formatPath(iff.paths['a.module.css']),
-      start: { line: 1, offset: 2 },
-      end: { line: 1, offset: 5 },
-    },
-  ];
-  expect(sortDefinitions(simplifyDefinitions(res.body?.definitions ?? []))).toStrictEqual(sortDefinitions(expected));
+  test('does not report syntactic diagnostics', async () => {
+    // NOTE: The standard CSS Language Server reports invalid syntax errors.
+    // Therefore, if ts-plugin also reports it, the same error is reported twice.
+    // To avoid this, ts-plugin does not report invalid syntax errors.
+    const res = await tsserver.sendSyntacticDiagnosticsSync({
+      file: iff.paths['a.module.css'],
+    });
+    expect(res.body).toMatchInlineSnapshot(`[]`);
+  });
 });
