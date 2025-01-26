@@ -20,6 +20,7 @@ export function formatSystemError(error: SystemError): string {
   result += styleText('gray', error.code);
   result += ': ';
   result += error.message;
+  // TODO: Include cause if exists
   return result;
 }
 

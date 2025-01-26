@@ -18,6 +18,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
   } catch (error) {
     // If the config file is not found, disable the plugin.
+    // TODO: Improve error handling
     if (error instanceof ConfigNotFoundError) {
       return { languagePlugins: [] };
     }
