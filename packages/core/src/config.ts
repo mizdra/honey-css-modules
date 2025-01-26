@@ -13,7 +13,6 @@ export interface HCMConfig {
   paths?: Record<string, string[]> | undefined;
   arbitraryExtensions?: boolean | undefined;
   dashedIdents?: boolean | undefined;
-  logLevel?: 'debug' | 'info' | 'silent' | undefined;
 }
 
 export function defineConfig(config: HCMConfig): HCMConfig {
@@ -36,12 +35,6 @@ function assertPaths(paths: unknown): asserts paths is Record<string, string[]> 
   }
 }
 
-function assertLogLevel(logLevel: unknown): asserts logLevel is 'debug' | 'info' | 'silent' {
-  if (logLevel !== 'debug' && logLevel !== 'info' && logLevel !== 'silent') {
-    throw new ConfigValidationError('`logLevel` must be one of `debug`, `info`, or `silent`.');
-  }
-}
-
 /** @throws {ConfigValidationError} */
 export function assertConfig(config: unknown): asserts config is HCMConfig {
   if (typeof config !== 'object' || config === null) {
@@ -58,7 +51,6 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
   if ('dashedIdents' in config && typeof config.dashedIdents !== 'boolean') {
     throw new ConfigValidationError('`dashedIdents` must be a boolean.');
   }
-  if ('logLevel' in config) assertLogLevel(config.logLevel);
 }
 
 /**
@@ -113,7 +105,6 @@ export interface ResolvedHCMConfig {
   paths: Record<string, string[]>;
   arbitraryExtensions: boolean;
   dashedIdents: boolean;
-  logLevel: 'debug' | 'info' | 'silent';
   cwd: string;
 }
 
@@ -123,7 +114,6 @@ export function resolveConfig(config: HCMConfig, cwd: string): ResolvedHCMConfig
     paths: config.paths ?? {},
     arbitraryExtensions: config.arbitraryExtensions ?? false,
     dashedIdents: config.dashedIdents ?? false,
-    logLevel: config.logLevel ?? 'info',
     cwd,
   };
 }
