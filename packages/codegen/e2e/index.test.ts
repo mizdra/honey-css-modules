@@ -58,3 +58,15 @@ test('generates .d.ts', async () => {
     "
   `);
 });
+
+test('reports system error', async () => {
+  const iff = await createIFF({});
+  const hcm = spawnSync('node', [binPath], {
+    cwd: iff.rootDir,
+  });
+  expect(hcm.status).toBe(1);
+  expect(hcm.stderr.toString()).toMatchInlineSnapshot(`
+    "error CONFIG_NOT_FOUND: No config file found. Did you forget to create hcm.config.{js,mjs,cjs}?
+    "
+  `);
+});

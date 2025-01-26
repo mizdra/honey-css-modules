@@ -1,8 +1,17 @@
 #!/usr/bin/env node
 
-import { readConfigFile } from 'honey-css-modules-core';
+import { readConfigFile, SystemError } from 'honey-css-modules-core';
 import { createLogger, runHCM } from '../dist/index.js';
 
 const cwd = process.cwd();
-// TODO: Improve error handling
-await runHCM(readConfigFile(cwd), cwd, createLogger(cwd));
+const logger = createLogger(cwd);
+try {
+  await runHCM(readConfigFile(cwd), cwd, logger);
+} catch (e) {
+  if (e instanceof SystemError) {
+    logger.logSystemError(e);
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+  throw e;
+}
