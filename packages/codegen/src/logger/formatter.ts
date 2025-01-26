@@ -4,12 +4,13 @@ import type { Diagnostic, DiagnosticCategory, DiagnosticPosition } from 'honey-c
 
 export function formatDiagnostic(diagnostic: Diagnostic, cwd: string): string {
   let result = '';
-  if (diagnostic.filename) {
+  if ('filename' in diagnostic) {
     result += `${formatLocation(diagnostic.filename, diagnostic.start, cwd)} - `;
   }
   result += `${formatCategory(diagnostic.category)}: `;
   result += diagnostic.text;
   // TODO: Add source code if diagnostics has a location
+  // TODO: Add `cause` if it exists
   return result;
 }
 

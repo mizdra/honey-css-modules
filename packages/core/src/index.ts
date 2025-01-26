@@ -14,6 +14,7 @@ export { type Location, type Position } from './parser/location.js';
 export { parseRule } from './parser/rule-parser.js';
 export {
   type Diagnostic,
+  type SystemDiagnostic,
   type SemanticDiagnostic,
   type SyntacticDiagnostic,
   type DiagnosticCategory,

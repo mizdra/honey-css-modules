@@ -7,13 +7,18 @@ export interface DiagnosticPosition {
   column: number;
 }
 
-export type Diagnostic = SemanticDiagnostic | SyntacticDiagnostic;
+export type Diagnostic = SystemDiagnostic | SemanticDiagnostic | SyntacticDiagnostic;
 
 interface DiagnosticBase {
   /** Text of diagnostic message. */
   text: string;
   /** The category of the diagnostic message. */
   category: DiagnosticCategory;
+}
+
+export interface SystemDiagnostic extends DiagnosticBase {
+  type: 'system';
+  cause?: unknown;
 }
 
 export interface SemanticDiagnostic extends DiagnosticBase {
