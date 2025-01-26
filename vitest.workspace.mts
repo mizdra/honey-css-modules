@@ -6,7 +6,6 @@ export default defineWorkspace([
     test: {
       name: 'unit',
       include: ['packages/*/src/**/*.test.ts'],
-      reporters: process.env['GITHUB_ACTIONS'] ? ['default', 'github-actions'] : 'default',
     },
     resolve: {
       alias: {
@@ -18,7 +17,6 @@ export default defineWorkspace([
     test: {
       name: 'e2e',
       include: ['packages/*/e2e/**/*.test.ts'],
-      reporters: process.env['GITHUB_ACTIONS'] ? ['default', 'github-actions'] : 'default',
     },
   }),
 ]);
