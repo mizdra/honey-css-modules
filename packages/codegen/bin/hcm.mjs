@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { createLogger, readConfigFile, runHCM } from '../dist/index.js';
+import { readConfigFile } from 'honey-css-modules-core';
+import { createLogger, runHCM } from '../dist/index.js';
 
 const cwd = process.cwd();
 // TODO: Improve error handling

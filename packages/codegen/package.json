@@ -46,13 +46,10 @@
     "dist"
   ],
   "dependencies": {
-    "glob": "^11.0.0",
-    "postcss": "^8.4.49",
-    "postcss-safe-parser": "^7.0.1",
-    "postcss-selector-parser": "^7.0.0",
-    "postcss-value-parser": "^4.2.0"
+    "glob": "^11.0.0"
   },
   "peerDependencies": {
+    "honey-css-modules-core": "../core",
     "typescript": "^5.7.3"
   }
 }

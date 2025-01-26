@@ -1,6 +1,6 @@
 import { relative } from 'node:path';
 import { styleText } from 'node:util';
-import type { Diagnostic, DiagnosticCategory, DiagnosticPosition } from '../parser/diagnostic.js';
+import type { Diagnostic, DiagnosticCategory, DiagnosticPosition } from 'honey-css-modules-core';
 
 export function formatDiagnostic(diagnostic: Diagnostic, cwd: string): string {
   let result = '';

@@ -1,5 +1,5 @@
+import type { SemanticDiagnostic, SyntacticDiagnostic } from 'honey-css-modules-core';
 import { describe, expect, test } from 'vitest';
-import type { SemanticDiagnostic, SyntacticDiagnostic } from '../parser/diagnostic.js';
 import { formatDiagnostic } from './formatter';
 
 const cwd = '/app';

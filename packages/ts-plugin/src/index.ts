@@ -1,7 +1,7 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
-import type { HCMConfig } from 'honey-css-modules';
-import { createIsExternalFile, createResolver, readConfigFile, resolveConfig } from 'honey-css-modules';
-import { ConfigNotFoundError } from 'honey-css-modules';
+import type { HCMConfig } from 'honey-css-modules-core';
+import { createIsExternalFile, createResolver, readConfigFile, resolveConfig } from 'honey-css-modules-core';
+import { ConfigNotFoundError } from 'honey-css-modules-core';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 import { proxyLanguageService } from './language-service.js';
 
