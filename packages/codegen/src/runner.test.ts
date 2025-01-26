@@ -20,6 +20,7 @@ vi.spyOn(process, 'exit').mockImplementation((code) => {
 function createLoggerSpy() {
   return {
     logDiagnostics: vi.fn(),
+    logSystemError: vi.fn(),
   } satisfies Logger;
 }
 

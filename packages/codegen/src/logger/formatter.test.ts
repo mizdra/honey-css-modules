@@ -1,6 +1,6 @@
-import type { SemanticDiagnostic, SyntacticDiagnostic } from 'honey-css-modules-core';
+import { type SemanticDiagnostic, type SyntacticDiagnostic, SystemError } from 'honey-css-modules-core';
 import { describe, expect, test } from 'vitest';
-import { formatDiagnostic } from './formatter';
+import { formatDiagnostic, formatSystemError } from './formatter';
 
 const cwd = '/app';
 
@@ -21,4 +21,8 @@ describe('formatDiagnostic', () => {
     const result = formatDiagnostic(diagnostic, cwd);
     expect(result.replaceAll('\\', '/')).toMatchInlineSnapshot(`"path/to/file.ts:1:2 - error: text"`);
   });
+});
+
+test('formatSystemError', () => {
+  expect(formatSystemError(new SystemError('CODE', 'message'))).toMatchInlineSnapshot(`"error CODE: message"`);
 });

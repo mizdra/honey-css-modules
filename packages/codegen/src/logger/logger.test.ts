@@ -1,4 +1,4 @@
-import type { Diagnostic } from 'honey-css-modules-core';
+import { type Diagnostic, SystemError } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
 import { createLogger } from './logger.js';
 
@@ -15,5 +15,10 @@ describe('createLogger', () => {
     ];
     logger.logDiagnostics(diagnostics);
     expect(stderrWriteSpy).toHaveBeenCalledWith('error: text1\n\nerror: text2\n\n');
+  });
+  test('logSystemError', () => {
+    const logger = createLogger(cwd);
+    logger.logSystemError(new SystemError('CODE', 'message'));
+    expect(stderrWriteSpy).toHaveBeenCalledWith('error CODE: message\n');
   });
 });
