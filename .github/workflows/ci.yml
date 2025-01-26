@@ -19,7 +19,8 @@ jobs:
         with:
           path: |
             node_modules/.cache/prettier/.prettier-cache
-            .tsconfig.tsbuildinfo
+            tsconfig.tsbuildinfo
+            packages/*/{dist,tsconfig.build.tsbuildinfo}
             .eslintcache
           key: toolcache-lint-${{ runner.os }}-${{ github.sha }}
           restore-keys: toolcache-lint-${{ runner.os }}
@@ -72,6 +73,7 @@ jobs:
         with:
           path: |
             node_modules/.vite/vitest
+            packages/*/{dist,tsconfig.build.tsbuildinfo}
           key: toolcache-e2e-${{ runner.os }}-node${{ matrix.node }}-${{ github.sha }}
           restore-keys: toolcache-e2e-${{ runner.os }}-node${{ matrix.node }}
       - run: npm install
