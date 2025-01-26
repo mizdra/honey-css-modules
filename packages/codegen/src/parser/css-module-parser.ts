@@ -1,7 +1,6 @@
 import type { AtRule, Node, Root, Rule } from 'postcss';
-import { parse } from 'postcss';
+import { CssSyntaxError, parse } from 'postcss';
 import safeParser from 'postcss-safe-parser';
-import { CSSModuleParseError } from '../error.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
 import type { SyntacticDiagnostic } from './diagnostic.js';
@@ -153,13 +152,10 @@ export interface ParseCSSModuleCodeOptions {
 }
 
 interface ParseCSSModuleCodeResult {
-  cssModule?: CSSModuleFile;
+  cssModule: CSSModuleFile;
   diagnostics: SyntacticDiagnostic[];
 }
 
-/**
- * @throws {CSSModuleParseError}
- */
 export function parseCSSModuleCode(
   code: string,
   { filename, safe }: ParseCSSModuleCodeOptions,
@@ -169,7 +165,26 @@ export function parseCSSModuleCode(
     const parser = safe ? safeParser : parse;
     ast = parser(code, { from: filename });
   } catch (e) {
-    throw new CSSModuleParseError(filename, e);
+    if (e instanceof CssSyntaxError) {
+      const start = { line: e.line ?? 1, column: e.column ?? 1 };
+      return {
+        cssModule: { filename, localTokens: [], tokenImporters: [] },
+        diagnostics: [
+          {
+            type: 'syntactic',
+            filename,
+            start,
+            ...(e.endLine !== undefined &&
+              e.endColumn !== undefined && {
+                end: { line: e.endLine, column: e.endColumn },
+              }),
+            text: e.reason,
+            category: 'error',
+          },
+        ],
+      };
+    }
+    throw e;
   }
   const { localTokens, tokenImporters, diagnostics } = collectTokens(ast);
   const cssModule = {
