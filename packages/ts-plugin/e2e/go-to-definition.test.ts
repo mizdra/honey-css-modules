@@ -46,7 +46,7 @@ describe('Go to Definition', async () => {
     'tsconfig.json': dedent`
       {
         "compilerOptions": {
-          "paths": { '@/*': ['./*'] }
+          "paths": { "@/*": ["./*"] }
         }
       }
     `,

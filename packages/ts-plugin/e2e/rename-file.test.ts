@@ -33,7 +33,7 @@ describe('Rename File', async () => {
     'tsconfig.json': dedent`
       {
         "compilerOptions": {
-          "paths": { '@/*': ['./*'] }
+          "paths": { "@/*": ["./*"] }
         }
       }
     `,
