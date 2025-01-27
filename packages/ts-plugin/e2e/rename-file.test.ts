@@ -12,6 +12,7 @@ describe('Rename File', async () => {
     'a.module.css': dedent`
       @import './b.module.css';
       @value c_1 from './c.module.css';
+      @import '@/d.module.css';
     `,
     'b.module.css': dedent`
       .b_1 { color: red; }
@@ -19,15 +20,21 @@ describe('Rename File', async () => {
     'c.module.css': dedent`
       @value c_1: red;
     `,
+    'd.module.css': dedent`
+      .d_1 { color: red; }
+    `,
     'hcm.config.mjs': dedent`
       export default {
         pattern: '**/*.module.css',
         dtsOutDir: 'generated',
+        alias: { '@': '.' },
       };
     `,
     'tsconfig.json': dedent`
       {
-        "compilerOptions": {}
+        "compilerOptions": {
+          "paths": { '@/*': ['./*'] }
+        }
       }
     `,
   });
@@ -65,6 +72,17 @@ describe('Rename File', async () => {
         {
           fileName: formatPath(iff.paths['a.module.css']),
           textChanges: [{ start: { line: 2, offset: 18 }, end: { line: 2, offset: 32 }, newText: './cc.module.css' }],
+        },
+      ],
+    },
+    {
+      name: 'd.module.css',
+      oldFilePath: iff.paths['d.module.css'],
+      newFilePath: iff.join('dd.module.css'),
+      expected: [
+        {
+          fileName: formatPath(iff.paths['a.module.css']),
+          textChanges: [{ start: { line: 3, offset: 10 }, end: { line: 3, offset: 24 }, newText: '@/dd.module.css' }],
         },
       ],
     },

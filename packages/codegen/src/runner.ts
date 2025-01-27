@@ -49,8 +49,8 @@ async function processFile(
  */
 export async function runHCM(config: HCMConfig, cwd: string, logger: Logger): Promise<void> {
   const resolvedConfig = resolveConfig(config, cwd);
-  const { pattern, paths } = resolvedConfig;
-  const resolver = createResolver(paths, cwd);
+  const { pattern, alias } = resolvedConfig;
+  const resolver = createResolver(alias, cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
   const promises: Promise<Diagnostic[]>[] = [];
