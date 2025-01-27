@@ -45,9 +45,7 @@
     "!src/test",
     "dist"
   ],
-  "dependencies": {
-    "glob": "^11.0.0"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "honey-css-modules-core": "../core",
     "typescript": "^5.7.3"

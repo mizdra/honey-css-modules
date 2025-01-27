@@ -1,6 +1,6 @@
-import { readFile } from 'node:fs/promises';
+// eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable glob API
+import { glob, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { globIterate } from 'glob';
 import type { Diagnostic, HCMConfig, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
 import {
   createDts,
@@ -54,7 +54,7 @@ export async function runHCM(config: HCMConfig, cwd: string, logger: Logger): Pr
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
   const promises: Promise<Diagnostic[]>[] = [];
-  for await (const filename of globIterate(pattern, { cwd })) {
+  for await (const filename of glob(pattern, { cwd })) {
     promises.push(
       processFile(
         join(cwd, filename), // `filename` is 'src/a.module.css', so convert it to '/project/src/a.module.css'
