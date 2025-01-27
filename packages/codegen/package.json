@@ -47,7 +47,6 @@
   ],
   "dependencies": {},
   "peerDependencies": {
-    "honey-css-modules-core": "../core",
-    "typescript": "^5.7.3"
+    "honey-css-modules-core": "../core"
   }
 }
