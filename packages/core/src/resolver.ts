@@ -1,5 +1,4 @@
-import { dirname, isAbsolute, resolve } from 'node:path';
-import ts from 'typescript';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { isPosixRelativePath } from './util.js';
 
 export interface ResolverOptions {
@@ -15,23 +14,15 @@ export interface ResolverOptions {
  */
 export type Resolver = (specifier: string, options: ResolverOptions) => string | undefined;
 
-export function createResolver(paths: Record<string, string[]>, cwd: string): Resolver {
+export function createResolver(alias: Record<string, string>, cwd: string): Resolver {
   return (_specifier: string, options: ResolverOptions) => {
     let specifier = _specifier;
-
-    const host: ts.ModuleResolutionHost = {
-      ...ts.sys,
-      fileExists: (fileName) => {
-        if (fileName.endsWith('.module.d.css.ts')) {
-          return ts.sys.fileExists(fileName.replace(/\.module\.d\.css\.ts$/u, '.module.css'));
-        }
-        return ts.sys.fileExists(fileName);
-      },
-    };
-    const { resolvedModule } = ts.resolveModuleName(specifier, options.request, { paths, pathsBasePath: cwd }, host);
-    if (resolvedModule) {
-      // TODO: Logging that the paths is used.
-      specifier = resolvedModule.resolvedFileName.replace(/\.module\.d\.css\.ts$/u, '.module.css');
+    for (const [key, value] of Object.entries(alias)) {
+      if (specifier.startsWith(key)) {
+        // TODO: Logging that the alias is used.
+        specifier = specifier.replace(key, join(cwd, value));
+        break;
+      }
     }
     // Return `undefined` if `specifier` is `'http://example.com'` or `'@scope/package'`
     // TODO: Logging that the specifier could not resolve.
