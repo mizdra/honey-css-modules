@@ -13,6 +13,8 @@ interface CodeMapping {
   lengths: number[];
   /** The generated offsets of the tokens in the *.d.ts file. */
   generatedOffsets: number[];
+  /** The lengths of the tokens in the *.d.ts file. */
+  generatedLengths: number[];
 }
 
 /** The map linking the two codes in *.d.ts */
@@ -54,7 +56,7 @@ export function createDts(
   { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsOptions,
 ): { code: string; mapping: CodeMapping; linkedCodeMapping: LinkedCodeMapping } {
-  const mapping: CodeMapping = { sourceOffsets: [], lengths: [], generatedOffsets: [] };
+  const mapping: CodeMapping = { sourceOffsets: [], lengths: [], generatedOffsets: [], generatedLengths: [] };
   const linkedCodeMapping: LinkedCodeMapping = {
     sourceOffsets: [],
     lengths: [],
@@ -75,11 +77,12 @@ export function createDts(
 
   let code = 'declare const styles = {\n';
   for (const token of localTokens) {
-    code += `  '`;
+    code += `  `;
     mapping.sourceOffsets.push(token.loc.start.offset);
     mapping.generatedOffsets.push(code.length);
     mapping.lengths.push(token.name.length);
-    code += `${token.name}': '' as readonly string,\n`;
+    mapping.generatedLengths.push(token.name.length + 2);
+    code += `'${token.name}': '' as readonly string,\n`;
   }
   for (const tokenImporter of tokenImporters) {
     if (tokenImporter.type === 'import') {
@@ -87,6 +90,7 @@ export function createDts(
       mapping.sourceOffsets.push(tokenImporter.fromLoc.start.offset - 1);
       mapping.lengths.push(tokenImporter.from.length + 2);
       mapping.generatedOffsets.push(code.length);
+      mapping.generatedLengths.push(tokenImporter.from.length + 2);
       code += `'${tokenImporter.from}')).default,\n`;
     } else {
       // eslint-disable-next-line no-loop-func
@@ -94,25 +98,28 @@ export function createDts(
         const localName = value.localName ?? value.name;
         const localLoc = value.localLoc ?? value.loc;
 
-        code += `  '`;
+        code += `  `;
         mapping.sourceOffsets.push(localLoc.start.offset);
         mapping.lengths.push(localName.length);
         mapping.generatedOffsets.push(code.length);
+        mapping.generatedLengths.push(localName.length + 2);
         linkedCodeMapping.sourceOffsets.push(code.length);
-        linkedCodeMapping.lengths.push(localName.length);
-        code += `${localName}': (await import(`;
+        linkedCodeMapping.lengths.push(localName.length + 2);
+        code += `'${localName}': (await import(`;
         if (i === 0) {
           mapping.sourceOffsets.push(tokenImporter.fromLoc.start.offset - 1);
           mapping.lengths.push(tokenImporter.from.length + 2);
           mapping.generatedOffsets.push(code.length);
+          mapping.generatedLengths.push(tokenImporter.from.length + 2);
         }
-        code += `'${tokenImporter.from}')).default['`;
+        code += `'${tokenImporter.from}')).default[`;
         mapping.sourceOffsets.push(value.loc.start.offset);
         mapping.lengths.push(value.name.length);
         mapping.generatedOffsets.push(code.length);
+        mapping.generatedLengths.push(value.name.length + 2);
         linkedCodeMapping.generatedOffsets.push(code.length);
-        linkedCodeMapping.generatedLengths.push(value.name.length);
-        code += `${value.name}'],\n`;
+        linkedCodeMapping.generatedLengths.push(value.name.length + 2);
+        code += `'${value.name}'],\n`;
       });
     }
   }

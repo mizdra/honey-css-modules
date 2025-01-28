@@ -34,6 +34,7 @@ describe('createDts', () => {
           "sourceOffsets": [],
         },
         "mapping": {
+          "generatedLengths": [],
           "generatedOffsets": [],
           "lengths": [],
           "sourceOffsets": [],
@@ -72,9 +73,13 @@ describe('createDts', () => {
           "sourceOffsets": [],
         },
         "mapping": {
+          "generatedLengths": [
+            8,
+            8,
+          ],
           "generatedOffsets": [
-            28,
-            63,
+            27,
+            62,
           ],
           "lengths": [
             6,
@@ -130,31 +135,40 @@ describe('createDts', () => {
       ",
         "linkedCodeMapping": {
           "generatedLengths": [
-            9,
-            9,
+            11,
+            11,
           ],
           "generatedOffsets": [
-            129,
-            206,
+            128,
+            205,
           ],
           "lengths": [
-            9,
-            16,
+            11,
+            18,
           ],
           "sourceOffsets": [
-            75,
-            145,
+            74,
+            144,
           ],
         },
         "mapping": {
+          "generatedLengths": [
+            16,
+            11,
+            16,
+            11,
+            18,
+            16,
+            11,
+          ],
           "generatedOffsets": [
             44,
-            75,
+            74,
             101,
-            129,
-            145,
+            128,
+            144,
             178,
-            206,
+            205,
           ],
           "lengths": [
             16,
@@ -203,8 +217,12 @@ describe('createDts', () => {
           "sourceOffsets": [],
         },
         "mapping": {
+          "generatedLengths": [
+            8,
+            16,
+          ],
           "generatedOffsets": [
-            28,
+            27,
             79,
           ],
           "lengths": [
@@ -262,31 +280,40 @@ describe('createDts', () => {
       ",
         "linkedCodeMapping": {
           "generatedLengths": [
-            9,
-            9,
+            11,
+            11,
           ],
           "generatedOffsets": [
-            129,
-            206,
+            128,
+            205,
           ],
           "lengths": [
-            9,
-            16,
+            11,
+            18,
           ],
           "sourceOffsets": [
-            75,
-            145,
+            74,
+            144,
           ],
         },
         "mapping": {
+          "generatedLengths": [
+            16,
+            11,
+            16,
+            11,
+            18,
+            16,
+            11,
+          ],
           "generatedOffsets": [
             44,
-            75,
+            74,
             101,
-            129,
-            145,
+            128,
+            144,
             178,
-            206,
+            205,
           ],
           "lengths": [
             16,
@@ -347,6 +374,7 @@ describe('createDts', () => {
           "sourceOffsets": [],
         },
         "mapping": {
+          "generatedLengths": [],
           "generatedOffsets": [],
           "lengths": [],
           "sourceOffsets": [],
@@ -377,6 +405,7 @@ describe('createDts', () => {
           "sourceOffsets": [],
         },
         "mapping": {
+          "generatedLengths": [],
           "generatedOffsets": [],
           "lengths": [],
           "sourceOffsets": [],
