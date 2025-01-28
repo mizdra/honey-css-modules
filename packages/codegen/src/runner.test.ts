@@ -33,14 +33,14 @@ describe('runHCM', () => {
     await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles = {
-        a1: '' as readonly string,
+        'a1': '' as readonly string,
       };
       export default styles;
       "
     `);
     expect(await readFile(iff.join('generated/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles = {
-        b1: '' as readonly string,
+        'b1': '' as readonly string,
       };
       export default styles;
       "
@@ -87,7 +87,7 @@ describe('runHCM', () => {
     await runHCM({ pattern: './src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles = {
-        a1: '' as readonly string,
+        'a1': '' as readonly string,
       };
       export default styles;
       "

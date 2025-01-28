@@ -60,8 +60,8 @@ describe('createDts', () => {
     ).toMatchInlineSnapshot(`
       {
         "code": "declare const styles = {
-        local1: '' as readonly string,
-        local2: '' as readonly string,
+        'local1': '' as readonly string,
+        'local2': '' as readonly string,
       };
       export default styles;
       ",
@@ -73,8 +73,8 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
-            27,
-            60,
+            28,
+            63,
           ],
           "lengths": [
             6,
@@ -123,8 +123,8 @@ describe('createDts', () => {
       {
         "code": "declare const styles = {
         ...(await import('./a.module.css')).default,
-        imported1: (await import('./b.module.css')).default.imported1,
-        aliasedImported2: (await import('./c.module.css')).default.imported2,
+        'imported1': (await import('./b.module.css')).default['imported1'],
+        'aliasedImported2': (await import('./c.module.css')).default['imported2'],
       };
       export default styles;
       ",
@@ -134,27 +134,27 @@ describe('createDts', () => {
             9,
           ],
           "generatedOffsets": [
-            126,
-            198,
+            129,
+            206,
           ],
           "lengths": [
             9,
             16,
           ],
           "sourceOffsets": [
-            74,
-            139,
+            75,
+            145,
           ],
         },
         "mapping": {
           "generatedOffsets": [
             44,
-            74,
-            99,
-            126,
-            139,
-            171,
-            198,
+            75,
+            101,
+            129,
+            145,
+            178,
+            206,
           ],
           "lengths": [
             16,
@@ -191,7 +191,7 @@ describe('createDts', () => {
     ).toMatchInlineSnapshot(`
       {
         "code": "declare const styles = {
-        local1: '' as readonly string,
+        'local1': '' as readonly string,
         ...(await import('./a.module.css')).default,
       };
       export default styles;
@@ -204,8 +204,8 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
-            27,
-            77,
+            28,
+            79,
           ],
           "lengths": [
             6,
@@ -255,8 +255,8 @@ describe('createDts', () => {
       {
         "code": "declare const styles = {
         ...(await import('@/a.module.css')).default,
-        imported1: (await import('@/b.module.css')).default.imported1,
-        aliasedImported2: (await import('@/c.module.css')).default.imported2,
+        'imported1': (await import('@/b.module.css')).default['imported1'],
+        'aliasedImported2': (await import('@/c.module.css')).default['imported2'],
       };
       export default styles;
       ",
@@ -266,27 +266,27 @@ describe('createDts', () => {
             9,
           ],
           "generatedOffsets": [
-            126,
-            198,
+            129,
+            206,
           ],
           "lengths": [
             9,
             16,
           ],
           "sourceOffsets": [
-            74,
-            139,
+            75,
+            145,
           ],
         },
         "mapping": {
           "generatedOffsets": [
             44,
-            74,
-            99,
-            126,
-            139,
-            171,
-            198,
+            75,
+            101,
+            129,
+            145,
+            178,
+            206,
           ],
           "lengths": [
             16,
