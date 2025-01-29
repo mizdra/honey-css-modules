@@ -10,6 +10,7 @@ test('Syntactic Diagnostics', async () => {
       @value;
       :local(:global(.a_1)) { color: red; }
       :local .a_2 { color: red; }
+      .a-3 { color: red; }
     `,
     'hcm.config.mjs': dedent`
       export default {
@@ -69,6 +70,19 @@ test('Syntactic Diagnostics', async () => {
           "offset": 1,
         },
         "text": "\`:local\` is not supported. Use \`:local(...)\` instead.",
+      },
+      {
+        "category": "error",
+        "code": 0,
+        "end": {
+          "line": 4,
+          "offset": 5,
+        },
+        "start": {
+          "line": 4,
+          "offset": 1,
+        },
+        "text": "\`a-3\` is not allowed because it is not a valid JavaScript identifier.",
       },
     ]
   `);

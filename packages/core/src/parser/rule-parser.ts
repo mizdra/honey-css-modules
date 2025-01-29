@@ -18,6 +18,25 @@ function flatCollectResults(results: CollectResult[]): CollectResult {
   return { classNames, diagnostics };
 }
 
+const JS_IDENTIFIER_PATTERN = /^[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*$/u;
+
+function convertClassNameToCollectResult(rule: Rule, node: selectorParser.ClassName): CollectResult {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- `raws` property is defined if `node` has escaped characters.
+  const name = (node as any).raws?.value ?? node.value;
+
+  if (!JS_IDENTIFIER_PATTERN.test(name)) {
+    const diagnostic: SyntacticDiagnostic = {
+      type: 'syntactic',
+      filename: rule.source!.input.file!,
+      ...calcDiagnosticsLocationForSelectorParserNode(rule, node),
+      text: `\`${name}\` is not allowed because it is not a valid JavaScript identifier.`,
+      category: 'error',
+    };
+    return { classNames: [], diagnostics: [diagnostic] };
+  }
+  return { classNames: [node], diagnostics: [] };
+}
+
 /**
  * Collect local class names from the AST.
  * This function is based on the behavior of postcss-modules-local-by-default.
@@ -35,14 +54,14 @@ function collectLocalClassNames(rule: Rule, root: selectorParser.Root): CollectR
         // If the class name is wrapped by `:local(...)` or `:global(...)`,
         // the scope is determined by the wrapper.
         case ':local(...)':
-          return { classNames: [node], diagnostics: [] };
+          return convertClassNameToCollectResult(rule, node);
         case ':global(...)':
           return { classNames: [], diagnostics: [] };
         // If the class name is not wrapped by `:local(...)` or `:global(...)`,
         // the scope is determined by the mode.
         default:
           // Mode is customizable in css-loader, but we don't support it for simplicity. We fix the mode to 'local'.
-          return { classNames: [node], diagnostics: [] };
+          return convertClassNameToCollectResult(rule, node);
       }
     } else if (selectorParser.isPseudo(node) && (node.value === ':local' || node.value === ':global')) {
       if (node.nodes.length === 0) {

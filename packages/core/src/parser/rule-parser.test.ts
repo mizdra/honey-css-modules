@@ -598,4 +598,50 @@ describe('parseRule', () => {
     //   expect(parseRuleSimply(':is(:global .global1, .global2) {}')).toStrictEqual([]);
     // });
   });
+  test('disallow class names that are not valid JavaScript identifiers', () => {
+    const rules = createRules(
+      createRoot(dedent`
+        .a-1 .a_\u0032 {}
+      `),
+    );
+    const result = rules.map(parseRule);
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "classSelectors": [],
+          "diagnostics": [
+            {
+              "category": "error",
+              "end": {
+                "column": 5,
+                "line": 1,
+              },
+              "filename": "/test/test.css",
+              "start": {
+                "column": 1,
+                "line": 1,
+                "offset": 0,
+              },
+              "text": "\`a-1\` is not allowed because it is not a valid JavaScript identifier.",
+              "type": "syntactic",
+            },
+            {
+              "category": "error",
+              "end": {
+                "column": 15,
+                "line": 1,
+              },
+              "filename": "/test/test.css",
+              "start": {
+                "column": 6,
+                "line": 1,
+              },
+              "text": "\`a_\\u0032\` is not allowed because it is not a valid JavaScript identifier.",
+              "type": "syntactic",
+            },
+          ],
+        },
+      ]
+    `);
+  });
 });
