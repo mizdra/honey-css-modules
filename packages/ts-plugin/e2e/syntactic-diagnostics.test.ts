@@ -8,8 +8,8 @@ test('Syntactic Diagnostics', async () => {
   const iff = await createIFF({
     'a.module.css': dedent`
       @value;
-      :local(:global(.a)) { color: red; }
-      :local .local1 { color: red; }
+      :local(:global(.a_1)) { color: red; }
+      :local .a_2 { color: red; }
     `,
     'hcm.config.mjs': dedent`
       export default {
@@ -49,7 +49,7 @@ test('Syntactic Diagnostics', async () => {
         "code": 0,
         "end": {
           "line": 2,
-          "offset": 19,
+          "offset": 21,
         },
         "start": {
           "line": 2,
