@@ -8,8 +8,9 @@ test('Syntactic Diagnostics', async () => {
   const iff = await createIFF({
     'a.module.css': dedent`
       @value;
-      :local(:global(.a)) { color: red; }
-      :local .local1 { color: red; }
+      :local(:global(.a_1)) { color: red; }
+      :local .a_2 { color: red; }
+      .a-3 { color: red; }
     `,
     'hcm.config.mjs': dedent`
       export default {
@@ -49,7 +50,7 @@ test('Syntactic Diagnostics', async () => {
         "code": 0,
         "end": {
           "line": 2,
-          "offset": 19,
+          "offset": 21,
         },
         "start": {
           "line": 2,
@@ -69,6 +70,19 @@ test('Syntactic Diagnostics', async () => {
           "offset": 1,
         },
         "text": "\`:local\` is not supported. Use \`:local(...)\` instead.",
+      },
+      {
+        "category": "error",
+        "code": 0,
+        "end": {
+          "line": 4,
+          "offset": 5,
+        },
+        "start": {
+          "line": 4,
+          "offset": 1,
+        },
+        "text": "\`a-3\` is not allowed because it is not a valid JavaScript identifier.",
       },
     ]
   `);
