@@ -11,7 +11,7 @@ const ruleName = 'honey-css-modules/no-unused-class-names';
 
 const messages = utils.ruleMessages(ruleName, {
   disallow: (className: string, componentFileName: string) =>
-    `'${className}' is defined but never used in ${basename(componentFileName)}.`,
+    `"${className}" is defined but never used in "${basename(componentFileName)}"`,
 });
 
 const meta = {
