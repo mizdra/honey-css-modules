@@ -18,23 +18,23 @@ import type { Logger } from './logger/logger.js';
  * @throws {WriteDtsFileError}
  */
 async function processFile(
-  filename: string,
+  fileName: string,
   { dashedIdents, dtsOutDir, cwd, arbitraryExtensions }: ResolvedHCMConfig,
   resolver: Resolver,
-  isExternalFile: (filename: string) => boolean,
+  isExternalFile: (fileName: string) => boolean,
 ): Promise<Diagnostic[]> {
   let code: string;
   try {
-    code = await readFile(filename, 'utf-8');
+    code = await readFile(fileName, 'utf-8');
   } catch (error) {
-    throw new ReadCSSModuleFileError(filename, error);
+    throw new ReadCSSModuleFileError(fileName, error);
   }
-  const { cssModule, diagnostics } = parseCSSModuleCode(code, { filename, dashedIdents, safe: false });
+  const { cssModule, diagnostics } = parseCSSModuleCode(code, { fileName, dashedIdents, safe: false });
   if (diagnostics.length > 0) {
     return diagnostics;
   }
   const { code: dtsCode } = createDts(cssModule, { resolver, isExternalFile });
-  await writeDtsFile(dtsCode, filename, {
+  await writeDtsFile(dtsCode, fileName, {
     outDir: dtsOutDir,
     cwd,
     arbitraryExtensions,
@@ -54,10 +54,10 @@ export async function runHCM(config: HCMConfig, cwd: string, logger: Logger): Pr
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
   const promises: Promise<Diagnostic[]>[] = [];
-  for await (const filename of glob(pattern, { cwd })) {
+  for await (const fileName of glob(pattern, { cwd })) {
     promises.push(
       processFile(
-        join(cwd, filename), // `filename` is 'src/a.module.css', so convert it to '/project/src/a.module.css'
+        join(cwd, fileName), // `fileName` is 'src/a.module.css', so convert it to '/project/src/a.module.css'
         resolvedConfig,
         resolver,
         isExternalFile,

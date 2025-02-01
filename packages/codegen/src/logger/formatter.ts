@@ -4,8 +4,8 @@ import type { Diagnostic, DiagnosticCategory, DiagnosticPosition, SystemError } 
 
 export function formatDiagnostic(diagnostic: Diagnostic, cwd: string): string {
   let result = '';
-  if (diagnostic.filename) {
-    result += `${formatLocation(diagnostic.filename, diagnostic.start, cwd)} - `;
+  if (diagnostic.fileName) {
+    result += `${formatLocation(diagnostic.fileName, diagnostic.start, cwd)} - `;
   }
   result += `${formatCategory(diagnostic.category)}: `;
   result += diagnostic.text;
@@ -24,9 +24,9 @@ export function formatSystemError(error: SystemError): string {
   return result;
 }
 
-function formatLocation(filename: string, start: DiagnosticPosition | undefined, cwd: string): string {
+function formatLocation(fileName: string, start: DiagnosticPosition | undefined, cwd: string): string {
   let result = '';
-  result += styleText('cyan', relative(cwd, filename));
+  result += styleText('cyan', relative(cwd, fileName));
   if (start !== undefined) {
     result += ':';
     result += styleText('yellow', start.line.toString());

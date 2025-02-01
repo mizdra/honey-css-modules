@@ -19,7 +19,7 @@ interface DiagnosticBase {
 export interface SemanticDiagnostic extends DiagnosticBase {
   type: 'semantic';
   /** The filename of the file in which the diagnostic occurred */
-  filename?: string;
+  fileName?: string;
   /** Starting file position at which text applies. It is inclusive. */
   start?: DiagnosticPosition;
   /**  The last file position at which the text applies. It is exclusive. */
@@ -29,7 +29,7 @@ export interface SemanticDiagnostic extends DiagnosticBase {
 export interface SyntacticDiagnostic extends DiagnosticBase {
   type: 'syntactic';
   /** The filename of the file in which the diagnostic occurred */
-  filename: string;
+  fileName: string;
   /** Starting file position at which text applies. It is inclusive. */
   start: DiagnosticPosition;
   /**  The last file position at which the text applies. It is exclusive. */

@@ -23,7 +23,7 @@ export interface CSSModuleScript extends SourceScript<string> {
 export function createCSSModuleLanguagePlugin(
   config: ResolvedHCMConfig,
   resolver: Resolver,
-  isExternalFile: (filename: string) => boolean,
+  isExternalFile: (fileName: string) => boolean,
 ): LanguagePlugin<string, VirtualCode> {
   return {
     getLanguageId(scriptId) {
@@ -36,7 +36,7 @@ export function createCSSModuleLanguagePlugin(
       const length = snapshot.getLength();
       const cssModuleCode = snapshot.getText(0, length);
       const { cssModule, diagnostics } = parseCSSModuleCode(cssModuleCode, {
-        filename: scriptId,
+        fileName: scriptId,
         dashedIdents: config.dashedIdents,
         // The CSS in the process of being written in an editor often contains invalid syntax.
         // So, ts-plugin uses a fault-tolerant Parser to parse CSS.

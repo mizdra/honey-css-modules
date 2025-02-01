@@ -5,7 +5,7 @@ export const STYLES_EXPORT_NAME = 'styles';
 
 export interface CreateDtsOptions {
   resolver: Resolver;
-  isExternalFile: (filename: string) => boolean;
+  isExternalFile: (fileName: string) => boolean;
 }
 
 interface CodeMapping {
@@ -53,7 +53,7 @@ interface LinkedCodeMapping extends CodeMapping {
  * ```
  */
 export function createDts(
-  { filename, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
+  { fileName, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
   options: CreateDtsOptions,
 ): { code: string; mapping: CodeMapping; linkedCodeMapping: LinkedCodeMapping } {
   const mapping: CodeMapping = { sourceOffsets: [], lengths: [], generatedOffsets: [] };
@@ -66,7 +66,7 @@ export function createDts(
 
   // Filter external files
   const tokenImporters = _tokenImporters.filter((tokenImporter) => {
-    const resolved = options.resolver(tokenImporter.from, { request: filename });
+    const resolved = options.resolver(tokenImporter.from, { request: fileName });
     return resolved !== undefined && !options.isExternalFile(resolved);
   });
 

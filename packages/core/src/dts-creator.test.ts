@@ -16,7 +16,7 @@ describe('createDts', () => {
     expect(
       createDts(
         {
-          filename: '/test.module.css',
+          fileName: '/test.module.css',
           localTokens: [],
           tokenImporters: [],
         },
@@ -45,7 +45,7 @@ describe('createDts', () => {
     expect(
       createDts(
         {
-          filename: '/test.module.css',
+          fileName: '/test.module.css',
           localTokens: [
             {
               name: 'local1',
@@ -92,7 +92,7 @@ describe('createDts', () => {
     expect(
       createDts(
         {
-          filename: '/test.module.css',
+          fileName: '/test.module.css',
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: './a.module.css', fromLoc: fakeLoc(0) },
@@ -182,7 +182,7 @@ describe('createDts', () => {
     expect(
       createDts(
         {
-          filename: '/test.module.css',
+          fileName: '/test.module.css',
           localTokens: [{ name: 'local1', loc: fakeLoc(0) }],
           tokenImporters: [{ type: 'import', from: './a.module.css', fromLoc: fakeLoc(1) }],
         },
@@ -224,7 +224,7 @@ describe('createDts', () => {
     expect(
       createDts(
         {
-          filename: '/src/test.module.css',
+          fileName: '/src/test.module.css',
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: '@/a.module.css', fromLoc: fakeLoc(0) },
@@ -314,7 +314,7 @@ describe('createDts', () => {
     expect(
       createDts(
         {
-          filename: '/test.module.css',
+          fileName: '/test.module.css',
           localTokens: [],
           tokenImporters: [
             { type: 'import', from: 'external.css', fromLoc: fakeLoc(0) },
@@ -359,7 +359,7 @@ describe('createDts', () => {
     expect(
       createDts(
         {
-          filename: '/src/test.module.css',
+          fileName: '/src/test.module.css',
           localTokens: [],
           tokenImporters: [{ type: 'import', from: '@/a.module.css', fromLoc: fakeLoc(0) }],
         },

@@ -2,7 +2,7 @@ import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { parseCSSModuleCode, type ParseCSSModuleCodeOptions } from './css-module-parser.js';
 
-const options: ParseCSSModuleCodeOptions = { filename: '/test.module.css', dashedIdents: false, safe: false };
+const options: ParseCSSModuleCodeOptions = { fileName: '/test.module.css', dashedIdents: false, safe: false };
 
 describe('parseCSSModuleCode', () => {
   test('collects local tokens', () => {
@@ -30,7 +30,7 @@ describe('parseCSSModuleCode', () => {
     expect(parsed).toMatchInlineSnapshot(`
       {
         "cssModule": {
-          "filename": "/test.module.css",
+          "fileName": "/test.module.css",
           "localTokens": [
             {
               "loc": {
@@ -275,7 +275,7 @@ describe('parseCSSModuleCode', () => {
     expect(parsed).toMatchInlineSnapshot(`
       {
         "cssModule": {
-          "filename": "/test.module.css",
+          "fileName": "/test.module.css",
           "localTokens": [],
           "tokenImporters": [
             {
@@ -372,7 +372,7 @@ describe('parseCSSModuleCode', () => {
     expect(parsed).toMatchInlineSnapshot(`
       {
         "cssModule": {
-          "filename": "/test.module.css",
+          "fileName": "/test.module.css",
           "localTokens": [
             {
               "loc": {
@@ -399,7 +399,7 @@ describe('parseCSSModuleCode', () => {
               "column": 7,
               "line": 1,
             },
-            "filename": "/test.module.css",
+            "fileName": "/test.module.css",
             "start": {
               "column": 1,
               "line": 1,
@@ -414,7 +414,7 @@ describe('parseCSSModuleCode', () => {
               "column": 8,
               "line": 2,
             },
-            "filename": "/test.module.css",
+            "fileName": "/test.module.css",
             "start": {
               "column": 1,
               "line": 2,
@@ -468,14 +468,14 @@ describe('parseCSSModuleCode', () => {
     ).toMatchInlineSnapshot(`
       {
         "cssModule": {
-          "filename": "/test.module.css",
+          "fileName": "/test.module.css",
           "localTokens": [],
           "tokenImporters": [],
         },
         "diagnostics": [
           {
             "category": "error",
-            "filename": "/test.module.css",
+            "fileName": "/test.module.css",
             "start": {
               "column": 1,
               "line": 1,
@@ -497,7 +497,7 @@ describe('parseCSSModuleCode', () => {
     expect(parsed).toMatchInlineSnapshot(`
       {
         "cssModule": {
-          "filename": "/test.module.css",
+          "fileName": "/test.module.css",
           "localTokens": [
             {
               "loc": {

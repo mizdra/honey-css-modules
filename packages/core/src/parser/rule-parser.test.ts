@@ -386,7 +386,7 @@ describe('parseRule', () => {
                   "column": 19,
                   "line": 1,
                 },
-                "filename": "/test/test.css",
+                "fileName": "/test/test.css",
                 "start": {
                   "column": 8,
                   "line": 1,
@@ -405,7 +405,7 @@ describe('parseRule', () => {
                   "column": 19,
                   "line": 2,
                 },
-                "filename": "/test/test.css",
+                "fileName": "/test/test.css",
                 "start": {
                   "column": 9,
                   "line": 2,
@@ -424,7 +424,7 @@ describe('parseRule', () => {
                   "column": 18,
                   "line": 3,
                 },
-                "filename": "/test/test.css",
+                "fileName": "/test/test.css",
                 "start": {
                   "column": 8,
                   "line": 3,
@@ -443,7 +443,7 @@ describe('parseRule', () => {
                   "column": 20,
                   "line": 4,
                 },
-                "filename": "/test/test.css",
+                "fileName": "/test/test.css",
                 "start": {
                   "column": 9,
                   "line": 4,
@@ -522,7 +522,7 @@ describe('parseRule', () => {
                   "column": 7,
                   "line": 1,
                 },
-                "filename": "/test/test.css",
+                "fileName": "/test/test.css",
                 "start": {
                   "column": 1,
                   "line": 1,
@@ -558,7 +558,7 @@ describe('parseRule', () => {
                   "column": 8,
                   "line": 2,
                 },
-                "filename": "/test/test.css",
+                "fileName": "/test/test.css",
                 "start": {
                   "column": 1,
                   "line": 2,
@@ -616,7 +616,7 @@ describe('parseRule', () => {
                 "column": 5,
                 "line": 1,
               },
-              "filename": "/test/test.css",
+              "fileName": "/test/test.css",
               "start": {
                 "column": 1,
                 "line": 1,
@@ -631,7 +631,7 @@ describe('parseRule', () => {
                 "column": 15,
                 "line": 1,
               },
-              "filename": "/test/test.css",
+              "fileName": "/test/test.css",
               "start": {
                 "column": 6,
                 "line": 1,

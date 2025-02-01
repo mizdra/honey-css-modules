@@ -109,7 +109,7 @@ describe('runHCM', () => {
         {
           type: 'syntactic',
           category: 'error',
-          filename: iff.paths['src/a.module.css'],
+          fileName: iff.paths['src/a.module.css'],
           start: {
             column: 1,
             line: 1,
@@ -119,7 +119,7 @@ describe('runHCM', () => {
         {
           type: 'syntactic',
           category: 'error',
-          filename: iff.paths['src/b.module.css'],
+          fileName: iff.paths['src/b.module.css'],
           start: {
             column: 1,
             line: 1,
