@@ -5,14 +5,14 @@ import { findComponentFile, findUsedTokenNames } from './util.js';
 
 test('findComponentFile', async () => {
   const iff = await createIFF({
-    'a.ts': `'a.ts'`,
+    'a.jsx': `'a.jsx'`,
     'b.tsx': `'b.tsx'`,
-    'c.ts': `'c.ts'`,
+    'c.jsx': `'c.jsx'`,
     'c.tsx': `'c.tsx'`,
   });
   expect(await findComponentFile(iff.join('a.module.css'))).toStrictEqual({
-    fileName: iff.paths['a.ts'],
-    text: `'a.ts'`,
+    fileName: iff.paths['a.jsx'],
+    text: `'a.jsx'`,
   });
   expect(await findComponentFile(iff.join('b.module.css'))).toStrictEqual({
     fileName: iff.paths['b.tsx'],

@@ -3,8 +3,7 @@ import { readFile } from 'node:fs/promises';
 export async function findComponentFile(
   cssModuleFileName: string,
 ): Promise<{ fileName: string; text: string } | undefined> {
-  // TODO: Make TypeScript file names customizable
-  const paths = [cssModuleFileName.replace('.module.css', '.tsx'), cssModuleFileName.replace('.module.css', '.ts')];
+  const paths = [cssModuleFileName.replace('.module.css', '.tsx'), cssModuleFileName.replace('.module.css', '.jsx')];
   for (const path of paths) {
     try {
       // TODO: Cache the result of readFile

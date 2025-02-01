@@ -44,7 +44,7 @@ describe('no-missing-ts-file', () => {
   test('does not warn when ts file exists', async () => {
     const iff = await createIFF({
       'a.module.css': '',
-      'a.ts': '',
+      'a.tsx': '',
     });
     const results = await lint(iff.rootDir);
     expect(formatLinterResult(results, iff.rootDir)).toMatchInlineSnapshot(`
