@@ -3,8 +3,8 @@ import { parse } from 'postcss';
 import type { ClassName } from 'postcss-selector-parser';
 import selectorParser from 'postcss-selector-parser';
 
-export function createRoot(code: string, from?: string): Root {
-  return parse(code, { from: from || '/test/test.css' });
+export function createRoot(text: string, from?: string): Root {
+  return parse(text, { from: from || '/test/test.css' });
 }
 
 export function createAtImports(root: Root): AtRule[] {

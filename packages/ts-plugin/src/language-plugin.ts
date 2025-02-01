@@ -44,13 +44,13 @@ export function createCSSModuleLanguagePlugin(
       });
       // TODO: Report diagnostics
       if (cssModule === undefined) return undefined;
-      const { code: dtsCode, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, isExternalFile });
+      const { text, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, isExternalFile });
       return {
         id: 'main',
         languageId: LANGUAGE_ID,
         snapshot: {
-          getText: (start, end) => dtsCode.slice(start, end),
-          getLength: () => dtsCode.length,
+          getText: (start, end) => text.slice(start, end),
+          getLength: () => text.length,
           getChangeRange: () => undefined,
         },
         // `mappings` are required to support "Go to Definition" and renaming

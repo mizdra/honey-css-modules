@@ -429,11 +429,11 @@ describe('parseCSSModule', () => {
   // TODO: Support local tokens by CSS variables. This is supported by lightningcss.
   // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L34
   test.fails('collects local tokens as CSS variables if dashedIdents is true', () => {
-    const code1 = ':root { --a: red; }';
-    const parsed1 = parseCSSModule(code1, { ...options, dashedIdents: false });
+    const text1 = ':root { --a: red; }';
+    const parsed1 = parseCSSModule(text1, { ...options, dashedIdents: false });
     expect(parsed1.cssModule?.localTokens).toEqual([]);
 
-    const code2 = dedent`
+    const text2 = dedent`
         :root { --a: red; }
         .a {
           color: var(--b);
@@ -441,7 +441,7 @@ describe('parseCSSModule', () => {
           background-color: var(--d from global);
         }
       `;
-    const parsed2 = parseCSSModule(code2, { ...options, dashedIdents: true });
+    const parsed2 = parseCSSModule(text2, { ...options, dashedIdents: true });
     expect(parsed2.cssModule?.localTokens).toEqual(['--a', 'a', '--b']);
   });
   // TODO: Support local tokens by animation names. This is supported by postcss-modules-local-by-default and lightningcss.

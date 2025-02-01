@@ -156,11 +156,11 @@ interface ParseCSSModuleResult {
   diagnostics: SyntacticDiagnostic[];
 }
 
-export function parseCSSModule(code: string, { fileName, safe }: ParseCSSModuleOptions): ParseCSSModuleResult {
+export function parseCSSModule(text: string, { fileName, safe }: ParseCSSModuleOptions): ParseCSSModuleResult {
   let ast: Root;
   try {
     const parser = safe ? safeParser : parse;
-    ast = parser(code, { from: fileName });
+    ast = parser(text, { from: fileName });
   } catch (e) {
     if (e instanceof CssSyntaxError) {
       const start = { line: e.line ?? 1, column: e.column ?? 1 };

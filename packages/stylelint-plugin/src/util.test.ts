@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 import { findUsedTokenNames } from './util.js';
 
 test('findUsedTokenNames', () => {
-  const code = dedent`
+  const text = dedent`
     import styles from './a.module.css';
     styles.foo;
     styles.bar;
@@ -13,5 +13,5 @@ test('findUsedTokenNames', () => {
     styles;
   `;
   const expected = new Set(['foo', 'bar']);
-  expect(findUsedTokenNames(code)).toEqual(expected);
+  expect(findUsedTokenNames(text)).toEqual(expected);
 });

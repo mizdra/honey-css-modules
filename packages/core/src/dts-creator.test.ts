@@ -24,9 +24,6 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles = {};
-      export default styles;
-      ",
         "linkedCodeMapping": {
           "generatedLengths": [],
           "generatedOffsets": [],
@@ -38,6 +35,9 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
+        "text": "declare const styles = {};
+      export default styles;
+      ",
       }
     `);
   });
@@ -59,12 +59,6 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles = {
-        local1: '' as readonly string,
-        local2: '' as readonly string,
-      };
-      export default styles;
-      ",
         "linkedCodeMapping": {
           "generatedLengths": [],
           "generatedOffsets": [],
@@ -85,6 +79,12 @@ describe('createDts', () => {
             1,
           ],
         },
+        "text": "declare const styles = {
+        local1: '' as readonly string,
+        local2: '' as readonly string,
+      };
+      export default styles;
+      ",
       }
     `);
   });
@@ -121,13 +121,6 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles = {
-        ...(await import('./a.module.css')).default,
-        imported1: (await import('./b.module.css')).default.imported1,
-        aliasedImported2: (await import('./c.module.css')).default.imported2,
-      };
-      export default styles;
-      ",
         "linkedCodeMapping": {
           "generatedLengths": [
             9,
@@ -175,6 +168,13 @@ describe('createDts', () => {
             4,
           ],
         },
+        "text": "declare const styles = {
+        ...(await import('./a.module.css')).default,
+        imported1: (await import('./b.module.css')).default.imported1,
+        aliasedImported2: (await import('./c.module.css')).default.imported2,
+      };
+      export default styles;
+      ",
       }
     `);
   });
@@ -190,12 +190,6 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles = {
-        local1: '' as readonly string,
-        ...(await import('./a.module.css')).default,
-      };
-      export default styles;
-      ",
         "linkedCodeMapping": {
           "generatedLengths": [],
           "generatedOffsets": [],
@@ -216,6 +210,12 @@ describe('createDts', () => {
             0,
           ],
         },
+        "text": "declare const styles = {
+        local1: '' as readonly string,
+        ...(await import('./a.module.css')).default,
+      };
+      export default styles;
+      ",
       }
     `);
   });
@@ -253,13 +253,6 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles = {
-        ...(await import('@/a.module.css')).default,
-        imported1: (await import('@/b.module.css')).default.imported1,
-        aliasedImported2: (await import('@/c.module.css')).default.imported2,
-      };
-      export default styles;
-      ",
         "linkedCodeMapping": {
           "generatedLengths": [
             9,
@@ -307,6 +300,13 @@ describe('createDts', () => {
             4,
           ],
         },
+        "text": "declare const styles = {
+        ...(await import('@/a.module.css')).default,
+        imported1: (await import('@/b.module.css')).default.imported1,
+        aliasedImported2: (await import('@/c.module.css')).default.imported2,
+      };
+      export default styles;
+      ",
       }
     `);
   });
@@ -337,9 +337,6 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles = {};
-      export default styles;
-      ",
         "linkedCodeMapping": {
           "generatedLengths": [],
           "generatedOffsets": [],
@@ -351,6 +348,9 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
+        "text": "declare const styles = {};
+      export default styles;
+      ",
       }
     `);
   });
@@ -367,9 +367,6 @@ describe('createDts', () => {
       ),
     ).toMatchInlineSnapshot(`
       {
-        "code": "declare const styles = {};
-      export default styles;
-      ",
         "linkedCodeMapping": {
           "generatedLengths": [],
           "generatedOffsets": [],
@@ -381,6 +378,9 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
+        "text": "declare const styles = {};
+      export default styles;
+      ",
       }
     `);
   });

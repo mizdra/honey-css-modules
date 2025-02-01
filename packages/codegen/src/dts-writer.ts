@@ -31,20 +31,20 @@ export interface WriteDtsFileOption {
 
 /**
  * Write a d.ts file to the file system.
- * @param dtsCode The d.ts code to write.
+ * @param text The d.ts text to write.
  * @param cssModuleFileName The filename of the CSS module file.
  * @param options Options for writing the d.ts file.
  * @throws {WriteDtsFileError} When the file cannot be written.
  */
 export async function writeDtsFile(
-  dtsCode: string,
+  text: string,
   cssModuleFileName: string,
   options: WriteDtsFileOption,
 ): Promise<void> {
   const dtsFileName = getDtsFilePath(cssModuleFileName, options);
   try {
     await mkdir(dirname(dtsFileName), { recursive: true });
-    await writeFile(dtsFileName, dtsCode);
+    await writeFile(dtsFileName, text);
   } catch (error) {
     throw new WriteDtsFileError(dtsFileName, error);
   }

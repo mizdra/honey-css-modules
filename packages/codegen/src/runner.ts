@@ -17,18 +17,18 @@ async function processFile(
   resolver: Resolver,
   isExternalFile: IsExternalFile,
 ): Promise<Diagnostic[]> {
-  let code: string;
+  let text: string;
   try {
-    code = await readFile(fileName, 'utf-8');
+    text = await readFile(fileName, 'utf-8');
   } catch (error) {
     throw new ReadCSSModuleFileError(fileName, error);
   }
-  const { cssModule, diagnostics } = parseCSSModule(code, { fileName, dashedIdents, safe: false });
+  const { cssModule, diagnostics } = parseCSSModule(text, { fileName, dashedIdents, safe: false });
   if (diagnostics.length > 0) {
     return diagnostics;
   }
-  const { code: dtsCode } = createDts(cssModule, { resolver, isExternalFile });
-  await writeDtsFile(dtsCode, fileName, {
+  const dts = createDts(cssModule, { resolver, isExternalFile });
+  await writeDtsFile(dts.text, fileName, {
     outDir: dtsOutDir,
     cwd,
     arbitraryExtensions,
