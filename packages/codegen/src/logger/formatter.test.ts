@@ -13,7 +13,7 @@ describe('formatDiagnostic', () => {
   test('should format diagnostic with filename and start position', () => {
     const diagnostic: SyntacticDiagnostic = {
       type: 'syntactic',
-      filename: '/app/path/to/file.ts',
+      fileName: '/app/path/to/file.ts',
       start: { line: 1, column: 2 },
       category: 'error',
       text: 'text',

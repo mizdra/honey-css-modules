@@ -1,23 +1,9 @@
 import dedent from 'dedent';
 import { expect, test } from 'vitest';
-import { createIFF } from './test/fixture.js';
-import { findUsedTokenNames, readTsFile } from './util.js';
-
-test('readTsText', async () => {
-  const iff = await createIFF({
-    'a.ts': `'a.ts'`,
-    'b.tsx': `'b.tsx'`,
-    'c.ts': `'c.ts'`,
-    'c.tsx': `'c.tsx'`,
-  });
-  expect(await readTsFile(iff.join('a.module.css'))).toStrictEqual({ path: iff.paths['a.ts'], text: `'a.ts'` });
-  expect(await readTsFile(iff.join('b.module.css'))).toStrictEqual({ path: iff.paths['b.tsx'], text: `'b.tsx'` });
-  expect(await readTsFile(iff.join('c.module.css'))).toStrictEqual({ path: iff.paths['c.tsx'], text: `'c.tsx'` });
-  expect(await readTsFile(iff.join('d.module.css'))).toBe(undefined);
-});
+import { findUsedTokenNames } from './util.js';
 
 test('findUsedTokenNames', () => {
-  const code = dedent`
+  const text = dedent`
     import styles from './a.module.css';
     styles.foo;
     styles.bar;
@@ -27,5 +13,5 @@ test('findUsedTokenNames', () => {
     styles;
   `;
   const expected = new Set(['foo', 'bar']);
-  expect(findUsedTokenNames(code)).toEqual(expected);
+  expect(findUsedTokenNames(text)).toEqual(expected);
 });

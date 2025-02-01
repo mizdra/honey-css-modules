@@ -1,8 +1,8 @@
 import { basename } from 'node:path';
-import { parseRule } from 'honey-css-modules-core';
+import { findComponentFile, isCSSModuleFile, parseRule } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
-import { findUsedTokenNames, readTsFile } from '../util.js';
+import { findUsedTokenNames, readFile } from '../util.js';
 
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
@@ -10,7 +10,8 @@ const { createPlugin, utils } = stylelint;
 const ruleName = 'honey-css-modules/no-unused-class-names';
 
 const messages = utils.ruleMessages(ruleName, {
-  disallow: (className: string, tsPath: string) => `'${className}' is defined but never used in ${basename(tsPath)}.`,
+  disallow: (className: string, componentFileName: string) =>
+    `"${className}" is defined but never used in "${basename(componentFileName)}"`,
 });
 
 const meta = {
@@ -19,19 +20,17 @@ const meta = {
 
 const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
   return async (root, result) => {
-    if (root.source?.input.file === undefined) return;
-    const cssModulePath = root.source.input.file;
+    const fileName = root.source?.input.file;
+    if (fileName === undefined || !isCSSModuleFile(fileName)) return;
 
-    if (!cssModulePath.endsWith('.module.css')) return;
+    const componentFile = await findComponentFile(fileName, readFile);
 
-    const tsFile = await readTsFile(cssModulePath);
-
-    // If the corresponding ts file is not found, it is treated as a CSS Module file shared by the entire project.
+    // If the corresponding component file is not found, it is treated as a CSS Module file shared by the entire project.
     // It is difficult to determine where class names in a shared CSS Module file are used. Therefore, it is
     // assumed that all class names are used.
-    if (tsFile === undefined) return;
+    if (componentFile === undefined) return;
 
-    const usedTokenNames = findUsedTokenNames(tsFile.text);
+    const usedTokenNames = findUsedTokenNames(componentFile.text);
 
     root.walkRules((rule) => {
       const { classSelectors } = parseRule(rule);
@@ -41,7 +40,7 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
           utils.report({
             result,
             ruleName,
-            message: messages.disallow(classSelector.name, tsFile.path),
+            message: messages.disallow(classSelector.name, componentFile.fileName),
             node: rule,
             index: classSelector.loc.start.offset,
             endIndex: classSelector.loc.end.offset,

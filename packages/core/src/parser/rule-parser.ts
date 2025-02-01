@@ -27,7 +27,7 @@ function convertClassNameToCollectResult(rule: Rule, node: selectorParser.ClassN
   if (!JS_IDENTIFIER_PATTERN.test(name)) {
     const diagnostic: SyntacticDiagnostic = {
       type: 'syntactic',
-      filename: rule.source!.input.file!,
+      fileName: rule.source!.input.file!,
       ...calcDiagnosticsLocationForSelectorParserNode(rule, node),
       text: `\`${name}\` is not allowed because it is not a valid JavaScript identifier.`,
       category: 'error',
@@ -69,7 +69,7 @@ function collectLocalClassNames(rule: Rule, root: selectorParser.Root): CollectR
         // We don't support `:local` and `:global` (without any arguments) because they are complex.
         const diagnostic: SyntacticDiagnostic = {
           type: 'syntactic',
-          filename: rule.source!.input.file!,
+          fileName: rule.source!.input.file!,
           ...calcDiagnosticsLocationForSelectorParserNode(rule, node),
           text: `\`${node.value}\` is not supported. Use \`${node.value}(...)\` instead.`,
           category: 'error',
@@ -80,7 +80,7 @@ function collectLocalClassNames(rule: Rule, root: selectorParser.Root): CollectR
         if (wrappedBy !== undefined) {
           const diagnostic: SyntacticDiagnostic = {
             type: 'syntactic',
-            filename: rule.source!.input.file!,
+            fileName: rule.source!.input.file!,
             ...calcDiagnosticsLocationForSelectorParserNode(rule, node),
             text: `A \`${node.value}(...)\` is not allowed inside of \`${wrappedBy}\`.`,
             category: 'error',

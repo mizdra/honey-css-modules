@@ -107,7 +107,7 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
         };
         diagnostics.push({
           type: 'syntactic',
-          filename: atValue.source!.input.file!,
+          fileName: atValue.source!.input.file!,
           start,
           end,
           text: `\`${alias}\` is invalid syntax.`,
@@ -161,7 +161,7 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
   }
   diagnostics.push({
     type: 'syntactic',
-    filename: atValue.source!.input.file!,
+    fileName: atValue.source!.input.file!,
     start: {
       line: atValue.source!.start!.line,
       column: atValue.source!.start!.column,

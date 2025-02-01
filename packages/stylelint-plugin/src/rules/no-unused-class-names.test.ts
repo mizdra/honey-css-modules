@@ -26,7 +26,7 @@ describe('no-unused-class-names', () => {
       .local2 {}
       .local3 {}
     `,
-      'a.ts': dedent`
+      'a.tsx': dedent`
       import styles from './a.module.css';
       styles.local1;
     `,
@@ -43,7 +43,7 @@ describe('no-unused-class-names', () => {
               "endLine": 2,
               "line": 2,
               "rule": "honey-css-modules/no-unused-class-names",
-              "text": "'local2' is defined but never used in a.ts. (honey-css-modules/no-unused-class-names)",
+              "text": ""local2" is defined but never used in "a.tsx" (honey-css-modules/no-unused-class-names)",
             },
             {
               "column": 2,
@@ -51,7 +51,7 @@ describe('no-unused-class-names', () => {
               "endLine": 3,
               "line": 3,
               "rule": "honey-css-modules/no-unused-class-names",
-              "text": "'local3' is defined but never used in a.ts. (honey-css-modules/no-unused-class-names)",
+              "text": ""local3" is defined but never used in "a.tsx" (honey-css-modules/no-unused-class-names)",
             },
           ],
         },

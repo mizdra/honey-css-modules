@@ -126,7 +126,7 @@ export type TokenImporter = AtImportTokenImporter | AtValueTokenImporter;
 
 export interface CSSModuleFile {
   /** Absolute path of the file */
-  filename: string;
+  fileName: string;
   /**
    * List of token names defined in the file.
    * @example
@@ -145,34 +145,31 @@ export interface CSSModuleFile {
   tokenImporters: TokenImporter[];
 }
 
-export interface ParseCSSModuleCodeOptions {
-  filename: string;
+export interface ParseCSSModuleOptions {
+  fileName: string;
   dashedIdents: boolean;
   safe: boolean;
 }
 
-interface ParseCSSModuleCodeResult {
+interface ParseCSSModuleResult {
   cssModule: CSSModuleFile;
   diagnostics: SyntacticDiagnostic[];
 }
 
-export function parseCSSModuleCode(
-  code: string,
-  { filename, safe }: ParseCSSModuleCodeOptions,
-): ParseCSSModuleCodeResult {
+export function parseCSSModule(text: string, { fileName, safe }: ParseCSSModuleOptions): ParseCSSModuleResult {
   let ast: Root;
   try {
     const parser = safe ? safeParser : parse;
-    ast = parser(code, { from: filename });
+    ast = parser(text, { from: fileName });
   } catch (e) {
     if (e instanceof CssSyntaxError) {
       const start = { line: e.line ?? 1, column: e.column ?? 1 };
       return {
-        cssModule: { filename, localTokens: [], tokenImporters: [] },
+        cssModule: { fileName, localTokens: [], tokenImporters: [] },
         diagnostics: [
           {
             type: 'syntactic',
-            filename,
+            fileName,
             start,
             ...(e.endLine !== undefined &&
               e.endColumn !== undefined && {
@@ -188,7 +185,7 @@ export function parseCSSModuleCode(
   }
   const { localTokens, tokenImporters, diagnostics } = collectTokens(ast);
   const cssModule = {
-    filename,
+    fileName,
     localTokens,
     tokenImporters,
   };

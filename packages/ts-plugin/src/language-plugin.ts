@@ -1,7 +1,7 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
-import { createDts, parseCSSModuleCode } from 'honey-css-modules-core';
+import type { IsExternalFile, ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
+import { createDts, parseCSSModule } from 'honey-css-modules-core';
 import ts from 'typescript';
 
 export const LANGUAGE_ID = 'css-module';
@@ -23,7 +23,7 @@ export interface CSSModuleScript extends SourceScript<string> {
 export function createCSSModuleLanguagePlugin(
   config: ResolvedHCMConfig,
   resolver: Resolver,
-  isExternalFile: (filename: string) => boolean,
+  isExternalFile: IsExternalFile,
 ): LanguagePlugin<string, VirtualCode> {
   return {
     getLanguageId(scriptId) {
@@ -35,8 +35,8 @@ export function createCSSModuleLanguagePlugin(
 
       const length = snapshot.getLength();
       const cssModuleCode = snapshot.getText(0, length);
-      const { cssModule, diagnostics } = parseCSSModuleCode(cssModuleCode, {
-        filename: scriptId,
+      const { cssModule, diagnostics } = parseCSSModule(cssModuleCode, {
+        fileName: scriptId,
         dashedIdents: config.dashedIdents,
         // The CSS in the process of being written in an editor often contains invalid syntax.
         // So, ts-plugin uses a fault-tolerant Parser to parse CSS.
@@ -44,13 +44,13 @@ export function createCSSModuleLanguagePlugin(
       });
       // TODO: Report diagnostics
       if (cssModule === undefined) return undefined;
-      const { code: dtsCode, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, isExternalFile });
+      const { text, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, isExternalFile });
       return {
         id: 'main',
         languageId: LANGUAGE_ID,
         snapshot: {
-          getText: (start, end) => dtsCode.slice(start, end),
-          getLength: () => dtsCode.length,
+          getText: (start, end) => text.slice(start, end),
+          getLength: () => text.length,
           getChangeRange: () => undefined,
         },
         // `mappings` are required to support "Go to Definition" and renaming

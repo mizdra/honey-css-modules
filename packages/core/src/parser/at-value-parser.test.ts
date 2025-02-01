@@ -355,7 +355,7 @@ describe('parseAtValue', () => {
               "column": 8,
               "line": 1,
             },
-            "filename": "/test/test.css",
+            "fileName": "/test/test.css",
             "start": {
               "column": 1,
               "line": 1,
@@ -423,7 +423,7 @@ describe('parseAtValue', () => {
               "column": 8,
               "line": 2,
             },
-            "filename": "/test/test.css",
+            "fileName": "/test/test.css",
             "start": {
               "column": 8,
               "line": 2,

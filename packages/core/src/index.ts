@@ -1,8 +1,8 @@
 export { defineConfig, type HCMConfig, readConfigFile, resolveConfig, type ResolvedHCMConfig } from './config.js';
 export { ConfigNotFoundError, ConfigImportError, ConfigValidationError, SystemError } from './error.js';
 export {
-  parseCSSModuleCode,
-  type ParseCSSModuleCodeOptions,
+  parseCSSModule,
+  type ParseCSSModuleOptions,
   type CSSModuleFile,
   type Token,
   type AtImportTokenImporter,
@@ -21,4 +21,5 @@ export {
 } from './parser/diagnostic.js';
 export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
-export { createIsExternalFile } from './external-file.js';
+export { type IsExternalFile, createIsExternalFile } from './external-file.js';
+export { isCSSModuleFile, findComponentFile } from './file.js';
