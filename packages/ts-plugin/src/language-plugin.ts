@@ -1,6 +1,6 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
+import type { IsExternalFile, ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
 import { createDts, parseCSSModuleCode } from 'honey-css-modules-core';
 import ts from 'typescript';
 
@@ -23,7 +23,7 @@ export interface CSSModuleScript extends SourceScript<string> {
 export function createCSSModuleLanguagePlugin(
   config: ResolvedHCMConfig,
   resolver: Resolver,
-  isExternalFile: (fileName: string) => boolean,
+  isExternalFile: IsExternalFile,
 ): LanguagePlugin<string, VirtualCode> {
   return {
     getLanguageId(scriptId) {

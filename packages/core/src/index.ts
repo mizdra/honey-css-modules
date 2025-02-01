@@ -21,5 +21,5 @@ export {
 } from './parser/diagnostic.js';
 export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
-export { createIsExternalFile } from './external-file.js';
+export { type IsExternalFile, createIsExternalFile } from './external-file.js';
 export { isCSSModuleFile, findComponentFile } from './file.js';

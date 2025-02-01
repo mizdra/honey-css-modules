@@ -1,7 +1,9 @@
 import path from 'node:path';
 import type { ResolvedHCMConfig } from './config.js';
 
-export function createIsExternalFile(config: ResolvedHCMConfig): (fileName: string) => boolean {
+export type IsExternalFile = (fileName: string) => boolean;
+
+export function createIsExternalFile(config: ResolvedHCMConfig): IsExternalFile {
   return (fileName: string) =>
     // eslint-disable-next-line n/no-unsupported-features/node-builtins
     !path.matchesGlob(

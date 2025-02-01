@@ -1,7 +1,7 @@
 // eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable glob API
 import { glob, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { Diagnostic, HCMConfig, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
+import type { Diagnostic, HCMConfig, IsExternalFile, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
 import {
   createDts,
   createIsExternalFile,
@@ -21,7 +21,7 @@ async function processFile(
   fileName: string,
   { dashedIdents, dtsOutDir, cwd, arbitraryExtensions }: ResolvedHCMConfig,
   resolver: Resolver,
-  isExternalFile: (fileName: string) => boolean,
+  isExternalFile: IsExternalFile,
 ): Promise<Diagnostic[]> {
   let code: string;
   try {

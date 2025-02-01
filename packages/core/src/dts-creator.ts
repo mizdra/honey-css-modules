@@ -1,3 +1,4 @@
+import type { IsExternalFile } from './external-file.js';
 import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 
@@ -5,7 +6,7 @@ export const STYLES_EXPORT_NAME = 'styles';
 
 export interface CreateDtsOptions {
   resolver: Resolver;
-  isExternalFile: (fileName: string) => boolean;
+  isExternalFile: IsExternalFile;
 }
 
 interface CodeMapping {
