@@ -28,6 +28,7 @@ interface Tsserver {
   sendCompletionInfo(
     args: server.protocol.CompletionsRequest['arguments'],
   ): Promise<server.protocol.CompletionInfoResponse>;
+  sendGetCodeFixes(args: server.protocol.CodeFixRequest['arguments']): Promise<server.protocol.GetCodeFixesResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -76,6 +77,7 @@ export function launchTsserver(): Tsserver {
       sendRequest(ts.server.protocol.CommandTypes.GetApplicableRefactors, args),
     sendGetEditsForRefactor: async (args) => sendRequest(ts.server.protocol.CommandTypes.GetEditsForRefactor, args),
     sendCompletionInfo: async (args) => sendRequest(ts.server.protocol.CommandTypes.CompletionInfo, args),
+    sendGetCodeFixes: async (args) => sendRequest(ts.server.protocol.CommandTypes.GetCodeFixes, args),
   };
 }
 

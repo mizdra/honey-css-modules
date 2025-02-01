@@ -1,5 +1,6 @@
 import type { Language } from '@volar/language-core';
 import type ts from 'typescript';
+import { getCodeFixesAtPosition } from './feature/code-fix.js';
 import { getCompletionsAtPosition } from './feature/completion.js';
 import { getApplicableRefactors, getEditsForRefactor } from './feature/refactor.js';
 import { getSyntacticDiagnostics } from './feature/syntactic-diagnostic.js';
@@ -22,6 +23,7 @@ export function proxyLanguageService(
   proxy.getApplicableRefactors = getApplicableRefactors(languageService, project);
   proxy.getEditsForRefactor = getEditsForRefactor(languageService);
   proxy.getCompletionsAtPosition = getCompletionsAtPosition(languageService);
+  proxy.getCodeFixesAtPosition = getCodeFixesAtPosition(language, languageService, project);
 
   return proxy;
 }
