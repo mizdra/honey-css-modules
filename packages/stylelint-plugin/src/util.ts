@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
 
-export async function readTsFile(cssModuleFileName: string): Promise<{ fileName: string; text: string } | undefined> {
+export async function findComponentFile(
+  cssModuleFileName: string,
+): Promise<{ fileName: string; text: string } | undefined> {
   // TODO: Make TypeScript file names customizable
   const paths = [cssModuleFileName.replace('.module.css', '.tsx'), cssModuleFileName.replace('.module.css', '.ts')];
   for (const path of paths) {
@@ -16,13 +18,13 @@ export async function readTsFile(cssModuleFileName: string): Promise<{ fileName:
   return undefined;
 }
 
-export function findUsedTokenNames(tsText: string): Set<string> {
+export function findUsedTokenNames(componentText: string): Set<string> {
   // TODO: Support `styles['foo']` and `styles["foo"]`
   // TODO: Support `otherNameStyles.foo`
   const pattern = /styles\.([$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*)/gu;
   const usedClassNames = new Set<string>();
   let match;
-  while ((match = pattern.exec(tsText)) !== null) {
+  while ((match = pattern.exec(componentText)) !== null) {
     usedClassNames.add(match[1]!);
   }
   return usedClassNames;

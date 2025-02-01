@@ -1,6 +1,6 @@
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
-import { readTsFile } from '../util.js';
+import { findComponentFile } from '../util.js';
 
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
@@ -22,7 +22,7 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
 
     if (!cssModuleFileName.endsWith('.module.css')) return;
 
-    const tsFile = await readTsFile(cssModuleFileName);
+    const tsFile = await findComponentFile(cssModuleFileName);
 
     if (tsFile === undefined) {
       utils.report({

@@ -2,7 +2,7 @@ import { basename } from 'node:path';
 import { parseRule } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
-import { findUsedTokenNames, readTsFile } from '../util.js';
+import { findComponentFile, findUsedTokenNames } from '../util.js';
 
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
@@ -10,8 +10,8 @@ const { createPlugin, utils } = stylelint;
 const ruleName = 'honey-css-modules/no-unused-class-names';
 
 const messages = utils.ruleMessages(ruleName, {
-  disallow: (className: string, tsFileName: string) =>
-    `'${className}' is defined but never used in ${basename(tsFileName)}.`,
+  disallow: (className: string, componentFileName: string) =>
+    `'${className}' is defined but never used in ${basename(componentFileName)}.`,
 });
 
 const meta = {
@@ -25,14 +25,14 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
 
     if (!cssModuleFileName.endsWith('.module.css')) return;
 
-    const tsFile = await readTsFile(cssModuleFileName);
+    const componentFile = await findComponentFile(cssModuleFileName);
 
-    // If the corresponding ts file is not found, it is treated as a CSS Module file shared by the entire project.
+    // If the corresponding component file is not found, it is treated as a CSS Module file shared by the entire project.
     // It is difficult to determine where class names in a shared CSS Module file are used. Therefore, it is
     // assumed that all class names are used.
-    if (tsFile === undefined) return;
+    if (componentFile === undefined) return;
 
-    const usedTokenNames = findUsedTokenNames(tsFile.text);
+    const usedTokenNames = findUsedTokenNames(componentFile.text);
 
     root.walkRules((rule) => {
       const { classSelectors } = parseRule(rule);
@@ -42,7 +42,7 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
           utils.report({
             result,
             ruleName,
-            message: messages.disallow(classSelector.name, tsFile.fileName),
+            message: messages.disallow(classSelector.name, componentFile.fileName),
             node: rule,
             index: classSelector.loc.start.offset,
             endIndex: classSelector.loc.end.offset,

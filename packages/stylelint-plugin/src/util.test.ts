@@ -1,19 +1,28 @@
 import dedent from 'dedent';
 import { expect, test } from 'vitest';
 import { createIFF } from './test/fixture.js';
-import { findUsedTokenNames, readTsFile } from './util.js';
+import { findComponentFile, findUsedTokenNames } from './util.js';
 
-test('readTsText', async () => {
+test('findComponentFile', async () => {
   const iff = await createIFF({
     'a.ts': `'a.ts'`,
     'b.tsx': `'b.tsx'`,
     'c.ts': `'c.ts'`,
     'c.tsx': `'c.tsx'`,
   });
-  expect(await readTsFile(iff.join('a.module.css'))).toStrictEqual({ path: iff.paths['a.ts'], text: `'a.ts'` });
-  expect(await readTsFile(iff.join('b.module.css'))).toStrictEqual({ path: iff.paths['b.tsx'], text: `'b.tsx'` });
-  expect(await readTsFile(iff.join('c.module.css'))).toStrictEqual({ path: iff.paths['c.tsx'], text: `'c.tsx'` });
-  expect(await readTsFile(iff.join('d.module.css'))).toBe(undefined);
+  expect(await findComponentFile(iff.join('a.module.css'))).toStrictEqual({
+    fileName: iff.paths['a.ts'],
+    text: `'a.ts'`,
+  });
+  expect(await findComponentFile(iff.join('b.module.css'))).toStrictEqual({
+    fileName: iff.paths['b.tsx'],
+    text: `'b.tsx'`,
+  });
+  expect(await findComponentFile(iff.join('c.module.css'))).toStrictEqual({
+    fileName: iff.paths['c.tsx'],
+    text: `'c.tsx'`,
+  });
+  expect(await findComponentFile(iff.join('d.module.css'))).toBe(undefined);
 });
 
 test('findUsedTokenNames', () => {
