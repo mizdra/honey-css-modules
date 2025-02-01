@@ -2,13 +2,7 @@
 import { glob, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Diagnostic, HCMConfig, IsExternalFile, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
-import {
-  createDts,
-  createIsExternalFile,
-  createResolver,
-  parseCSSModuleCode,
-  resolveConfig,
-} from 'honey-css-modules-core';
+import { createDts, createIsExternalFile, createResolver, parseCSSModule, resolveConfig } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
@@ -29,7 +23,7 @@ async function processFile(
   } catch (error) {
     throw new ReadCSSModuleFileError(fileName, error);
   }
-  const { cssModule, diagnostics } = parseCSSModuleCode(code, { fileName, dashedIdents, safe: false });
+  const { cssModule, diagnostics } = parseCSSModule(code, { fileName, dashedIdents, safe: false });
   if (diagnostics.length > 0) {
     return diagnostics;
   }

@@ -145,21 +145,18 @@ export interface CSSModuleFile {
   tokenImporters: TokenImporter[];
 }
 
-export interface ParseCSSModuleCodeOptions {
+export interface ParseCSSModuleOptions {
   fileName: string;
   dashedIdents: boolean;
   safe: boolean;
 }
 
-interface ParseCSSModuleCodeResult {
+interface ParseCSSModuleResult {
   cssModule: CSSModuleFile;
   diagnostics: SyntacticDiagnostic[];
 }
 
-export function parseCSSModuleCode(
-  code: string,
-  { fileName, safe }: ParseCSSModuleCodeOptions,
-): ParseCSSModuleCodeResult {
+export function parseCSSModule(code: string, { fileName, safe }: ParseCSSModuleOptions): ParseCSSModuleResult {
   let ast: Root;
   try {
     const parser = safe ? safeParser : parse;

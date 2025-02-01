@@ -1,7 +1,7 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
 import type { IsExternalFile, ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
-import { createDts, parseCSSModuleCode } from 'honey-css-modules-core';
+import { createDts, parseCSSModule } from 'honey-css-modules-core';
 import ts from 'typescript';
 
 export const LANGUAGE_ID = 'css-module';
@@ -35,7 +35,7 @@ export function createCSSModuleLanguagePlugin(
 
       const length = snapshot.getLength();
       const cssModuleCode = snapshot.getText(0, length);
-      const { cssModule, diagnostics } = parseCSSModuleCode(cssModuleCode, {
+      const { cssModule, diagnostics } = parseCSSModule(cssModuleCode, {
         fileName: scriptId,
         dashedIdents: config.dashedIdents,
         // The CSS in the process of being written in an editor often contains invalid syntax.
