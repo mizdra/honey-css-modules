@@ -18,6 +18,12 @@ interface Tsserver {
   sendGetEditsForFileRename(
     args: server.protocol.GetEditsForFileRenameRequest['arguments'],
   ): Promise<server.protocol.GetEditsForFileRenameResponse>;
+  sendGetApplicableRefactors(
+    args: server.protocol.GetApplicableRefactorsRequest['arguments'],
+  ): Promise<server.protocol.GetApplicableRefactorsResponse>;
+  sendGetEditsForRefactor(
+    args: server.protocol.GetEditsForRefactorRequest['arguments'],
+  ): Promise<server.protocol.GetEditsForRefactorResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -61,6 +67,9 @@ export function launchTsserver(): Tsserver {
     sendSyntacticDiagnosticsSync: async (args) =>
       sendRequest(ts.server.protocol.CommandTypes.SyntacticDiagnosticsSync, args),
     sendGetEditsForFileRename: async (args) => sendRequest(ts.server.protocol.CommandTypes.GetEditsForFileRename, args),
+    sendGetApplicableRefactors: async (args) =>
+      sendRequest(ts.server.protocol.CommandTypes.GetApplicableRefactors, args),
+    sendGetEditsForRefactor: async (args) => sendRequest(ts.server.protocol.CommandTypes.GetEditsForRefactor, args),
   };
 }
 

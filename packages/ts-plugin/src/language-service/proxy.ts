@@ -1,10 +1,12 @@
 import type { Language } from '@volar/language-core';
 import type ts from 'typescript';
+import { getApplicableRefactors, getEditsForRefactor } from './feature/refactor.js';
 import { getSyntacticDiagnostics } from './feature/syntactic-diagnostic.js';
 
 export function proxyLanguageService(
   language: Language<string>,
   languageService: ts.LanguageService,
+  project: ts.server.Project,
 ): ts.LanguageService {
   const proxy: ts.LanguageService = Object.create(null);
 
@@ -16,6 +18,8 @@ export function proxyLanguageService(
   }
 
   proxy.getSyntacticDiagnostics = getSyntacticDiagnostics(language, languageService);
+  proxy.getApplicableRefactors = getApplicableRefactors(languageService, project);
+  proxy.getEditsForRefactor = getEditsForRefactor(languageService);
 
   return proxy;
 }
