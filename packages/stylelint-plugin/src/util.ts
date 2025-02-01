@@ -1,20 +1,7 @@
-import { readFile } from 'node:fs/promises';
+import fs from 'node:fs/promises';
 
-export async function findComponentFile(
-  cssModuleFileName: string,
-): Promise<{ fileName: string; text: string } | undefined> {
-  const paths = [cssModuleFileName.replace('.module.css', '.tsx'), cssModuleFileName.replace('.module.css', '.jsx')];
-  for (const path of paths) {
-    try {
-      // TODO: Cache the result of readFile
-      // eslint-disable-next-line no-await-in-loop
-      const text = await readFile(path, 'utf-8');
-      return { fileName: path, text };
-    } catch {
-      continue;
-    }
-  }
-  return undefined;
+export async function readFile(path: string): Promise<string> {
+  return fs.readFile(path, 'utf-8');
 }
 
 export function findUsedTokenNames(componentText: string): Set<string> {

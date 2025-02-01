@@ -1,8 +1,8 @@
 import { basename } from 'node:path';
-import { parseRule } from 'honey-css-modules-core';
+import { findComponentFile, parseRule } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
-import { findComponentFile, findUsedTokenNames } from '../util.js';
+import { findUsedTokenNames, readFile } from '../util.js';
 
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
@@ -25,7 +25,7 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
 
     if (!cssModuleFileName.endsWith('.module.css')) return;
 
-    const componentFile = await findComponentFile(cssModuleFileName);
+    const componentFile = await findComponentFile(cssModuleFileName, readFile);
 
     // If the corresponding component file is not found, it is treated as a CSS Module file shared by the entire project.
     // It is difficult to determine where class names in a shared CSS Module file are used. Therefore, it is

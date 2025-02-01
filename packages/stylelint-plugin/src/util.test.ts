@@ -1,29 +1,6 @@
 import dedent from 'dedent';
 import { expect, test } from 'vitest';
-import { createIFF } from './test/fixture.js';
-import { findComponentFile, findUsedTokenNames } from './util.js';
-
-test('findComponentFile', async () => {
-  const iff = await createIFF({
-    'a.jsx': `'a.jsx'`,
-    'b.tsx': `'b.tsx'`,
-    'c.jsx': `'c.jsx'`,
-    'c.tsx': `'c.tsx'`,
-  });
-  expect(await findComponentFile(iff.join('a.module.css'))).toStrictEqual({
-    fileName: iff.paths['a.jsx'],
-    text: `'a.jsx'`,
-  });
-  expect(await findComponentFile(iff.join('b.module.css'))).toStrictEqual({
-    fileName: iff.paths['b.tsx'],
-    text: `'b.tsx'`,
-  });
-  expect(await findComponentFile(iff.join('c.module.css'))).toStrictEqual({
-    fileName: iff.paths['c.tsx'],
-    text: `'c.tsx'`,
-  });
-  expect(await findComponentFile(iff.join('d.module.css'))).toBe(undefined);
-});
+import { findUsedTokenNames } from './util.js';
 
 test('findUsedTokenNames', () => {
   const code = dedent`

@@ -1,6 +1,7 @@
+import { findComponentFile } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
-import { findComponentFile } from '../util.js';
+import { readFile } from '../util.js';
 
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
@@ -22,7 +23,7 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
 
     if (!cssModuleFileName.endsWith('.module.css')) return;
 
-    const componentFile = await findComponentFile(cssModuleFileName);
+    const componentFile = await findComponentFile(cssModuleFileName, readFile);
 
     if (componentFile === undefined) {
       utils.report({

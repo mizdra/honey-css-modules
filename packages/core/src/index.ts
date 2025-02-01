@@ -22,3 +22,4 @@ export {
 export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
 export { createIsExternalFile } from './external-file.js';
+export { findComponentFile } from './file.js';
