@@ -18,11 +18,11 @@ const meta = {
 const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
   return async (root, result) => {
     if (root.source?.input.file === undefined) return;
-    const cssModulePath = root.source.input.file;
+    const cssModuleFileName = root.source.input.file;
 
-    if (!cssModulePath.endsWith('.module.css')) return;
+    if (!cssModuleFileName.endsWith('.module.css')) return;
 
-    const tsFile = await readTsFile(cssModulePath);
+    const tsFile = await readTsFile(cssModuleFileName);
 
     if (tsFile === undefined) {
       utils.report({

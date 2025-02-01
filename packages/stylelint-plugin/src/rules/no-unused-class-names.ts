@@ -10,7 +10,8 @@ const { createPlugin, utils } = stylelint;
 const ruleName = 'honey-css-modules/no-unused-class-names';
 
 const messages = utils.ruleMessages(ruleName, {
-  disallow: (className: string, tsPath: string) => `'${className}' is defined but never used in ${basename(tsPath)}.`,
+  disallow: (className: string, tsFileName: string) =>
+    `'${className}' is defined but never used in ${basename(tsFileName)}.`,
 });
 
 const meta = {
@@ -20,11 +21,11 @@ const meta = {
 const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
   return async (root, result) => {
     if (root.source?.input.file === undefined) return;
-    const cssModulePath = root.source.input.file;
+    const cssModuleFileName = root.source.input.file;
 
-    if (!cssModulePath.endsWith('.module.css')) return;
+    if (!cssModuleFileName.endsWith('.module.css')) return;
 
-    const tsFile = await readTsFile(cssModulePath);
+    const tsFile = await readTsFile(cssModuleFileName);
 
     // If the corresponding ts file is not found, it is treated as a CSS Module file shared by the entire project.
     // It is difficult to determine where class names in a shared CSS Module file are used. Therefore, it is
@@ -41,7 +42,7 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
           utils.report({
             result,
             ruleName,
-            message: messages.disallow(classSelector.name, tsFile.path),
+            message: messages.disallow(classSelector.name, tsFile.fileName),
             node: rule,
             index: classSelector.loc.start.offset,
             endIndex: classSelector.loc.end.offset,
