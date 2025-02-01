@@ -2,14 +2,14 @@ import stylelint from 'stylelint';
 import { describe, expect, test } from 'vitest';
 import { createIFF } from '../test/fixture.js';
 import { formatLinterResult } from '../test/stylelint.js';
-import { noMissingTsFile } from './no-missing-ts-file.js';
+import { noMissingComponentFile } from './no-missing-component-file.js';
 
 async function lint(rootDir: string) {
   return stylelint.lint({
     config: {
-      plugins: [noMissingTsFile],
+      plugins: [noMissingComponentFile],
       rules: {
-        'honey-css-modules/no-missing-ts-file': true,
+        'honey-css-modules/no-missing-component-file': true,
       },
     },
     files: ['**/*.module.css'],
@@ -17,8 +17,8 @@ async function lint(rootDir: string) {
   });
 }
 
-describe('no-missing-ts-file', () => {
-  test('warns missing ts file', async () => {
+describe('no-missing-component-file', () => {
+  test('warns missing component file', async () => {
     const iff = await createIFF({
       'a.module.css': '.foo {}',
     });
@@ -33,15 +33,15 @@ describe('no-missing-ts-file', () => {
               "endColumn": 2,
               "endLine": 1,
               "line": 1,
-              "rule": "honey-css-modules/no-missing-ts-file",
-              "text": "The corresponding TypeScript file is not found. (honey-css-modules/no-missing-ts-file)",
+              "rule": "honey-css-modules/no-missing-component-file",
+              "text": "The corresponding component file is not found. (honey-css-modules/no-missing-component-file)",
             },
           ],
         },
       ]
     `);
   });
-  test('does not warn when ts file exists', async () => {
+  test('does not warn when component file exists', async () => {
     const iff = await createIFF({
       'a.module.css': '',
       'a.tsx': '',

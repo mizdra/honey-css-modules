@@ -5,14 +5,14 @@ import { findComponentFile } from '../util.js';
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
 
-const ruleName = 'honey-css-modules/no-missing-ts-file';
+const ruleName = 'honey-css-modules/no-missing-component-file';
 
 const messages = utils.ruleMessages(ruleName, {
-  disallow: () => `The corresponding TypeScript file is not found.`,
+  disallow: () => `The corresponding component file is not found.`,
 });
 
 const meta = {
-  url: 'https://github.com/mizdra/honey-css-modules/blob/main/packages/stylelint-plugin-honey-css-modules/docs/rules/no-missing-ts-file.md',
+  url: 'https://github.com/mizdra/honey-css-modules/blob/main/packages/stylelint-plugin-honey-css-modules/docs/rules/no-missing-component-file.md',
 };
 
 const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
@@ -22,9 +22,9 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
 
     if (!cssModuleFileName.endsWith('.module.css')) return;
 
-    const tsFile = await findComponentFile(cssModuleFileName);
+    const componentFile = await findComponentFile(cssModuleFileName);
 
-    if (tsFile === undefined) {
+    if (componentFile === undefined) {
       utils.report({
         result,
         ruleName,
@@ -41,4 +41,4 @@ ruleFunction.ruleName = ruleName;
 ruleFunction.messages = messages;
 ruleFunction.meta = meta;
 
-export const noMissingTsFile = createPlugin(ruleName, ruleFunction);
+export const noMissingComponentFile = createPlugin(ruleName, ruleFunction);
