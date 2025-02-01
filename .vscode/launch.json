@@ -28,7 +28,17 @@
         "${workspaceFolder}/packages/vscode/dist/**/*.cjs",
         "${workspaceFolder}/packages/vscode/dist/**/*.mjs"
       ],
-      "preLaunchTask": "npm: build - packages/vscode"
+      "preLaunchTask": "npm: build - packages/vscode",
+      "env": {
+        "TSS_DEBUG": "5859"
+      }
+    },
+    {
+      "name": "Attach debugger to tsserver",
+      "type": "node",
+      "request": "attach",
+      "port": 5859,
+      "sourceMaps": true
     },
     {
       "name": "stylelint-plugin: debug",
@@ -39,6 +49,13 @@
       "runtimeArgs": ["stylelint", "src/**/*.css"],
       "console": "integratedTerminal",
       "preLaunchTask": "npm: build - packages/stylelint-plugin"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "vscode: debug + Attach debugger to tsserver",
+      "configurations": ["vscode: debug", "Attach debugger to tsserver"],
+      "stopAll": true
     }
   ]
 }

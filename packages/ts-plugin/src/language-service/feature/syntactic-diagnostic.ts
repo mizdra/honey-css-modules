@@ -1,36 +1,29 @@
 import type { Language } from '@volar/language-core';
 import type { SyntacticDiagnostic } from 'honey-css-modules-core';
 import ts from 'typescript';
-import { HCM_DATA_KEY, isCSSModuleScript } from './language-plugin.js';
+import { HCM_DATA_KEY, isCSSModuleScript } from '../../language-plugin.js';
 
-const ERROR_CODE = 0;
+/** The error code used by tsserver to display the honey-css-modules error in the editor. */
+// NOTE: Use any other number than 1002 or later, as they are reserved by TypeScript's built-in errors.
+// ref: https://github.com/microsoft/TypeScript/blob/220706eb0320ff46fad8bf80a5e99db624ee7dfb/src/compiler/diagnosticMessages.json
+const TS_ERROR_CODE_FOR_HCM_ERROR = 0;
 
-export function proxyLanguageService(
+export function getSyntacticDiagnostics(
   language: Language<string>,
   languageService: ts.LanguageService,
-): ts.LanguageService {
-  const proxy: ts.LanguageService = Object.create(null);
-
-  for (const k of Object.keys(languageService) as (keyof ts.LanguageService)[]) {
-    const x = languageService[k]!;
-    // @ts-expect-error - JS runtime trickery which is tricky to type tersely
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    proxy[k] = (...args: {}[]) => x.apply(languageService, args);
-  }
-
-  proxy.getSyntacticDiagnostics = (fileName: string) => {
+): ts.LanguageService['getSyntacticDiagnostics'] {
+  return (fileName: string) => {
     const prior = languageService.getSyntacticDiagnostics(fileName);
     const script = language.scripts.get(fileName);
-    if (!isCSSModuleScript(script)) return prior;
-
-    const virtualCode = script.generated.root;
-    const diagnostics = virtualCode[HCM_DATA_KEY].diagnostics;
-    const sourceFile = languageService.getProgram()!.getSourceFile(fileName)!;
-    const tsDiagnostics = diagnostics.map((diagnostic) => convertDiagnostic(diagnostic, sourceFile));
-    return [...prior, ...tsDiagnostics];
+    if (isCSSModuleScript(script)) {
+      const virtualCode = script.generated.root;
+      const diagnostics = virtualCode[HCM_DATA_KEY].diagnostics;
+      const sourceFile = languageService.getProgram()!.getSourceFile(fileName)!;
+      const tsDiagnostics = diagnostics.map((diagnostic) => convertDiagnostic(diagnostic, sourceFile));
+      prior.push(...tsDiagnostics);
+    }
+    return prior;
   };
-
-  return proxy;
 }
 
 function convertDiagnostic(diagnostic: SyntacticDiagnostic, sourceFile: ts.SourceFile): ts.DiagnosticWithLocation {
@@ -45,7 +38,7 @@ function convertDiagnostic(diagnostic: SyntacticDiagnostic, sourceFile: ts.Sourc
     category: convertErrorCategory(diagnostic.category),
     length,
     messageText: diagnostic.text,
-    code: ERROR_CODE,
+    code: TS_ERROR_CODE_FOR_HCM_ERROR,
   };
 }
 

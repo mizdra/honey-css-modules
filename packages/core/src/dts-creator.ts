@@ -1,6 +1,8 @@
 import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 
+export const STYLES_EXPORT_NAME = 'styles';
+
 export interface CreateDtsOptions {
   resolver: Resolver;
   isExternalFile: (filename: string) => boolean;
@@ -70,10 +72,14 @@ export function createDts(
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
-    return { code: `declare const styles = {};\nexport default styles;\n`, mapping, linkedCodeMapping };
+    return {
+      code: `declare const ${STYLES_EXPORT_NAME} = {};\nexport default ${STYLES_EXPORT_NAME};\n`,
+      mapping,
+      linkedCodeMapping,
+    };
   }
 
-  let code = 'declare const styles = {\n';
+  let code = `declare const ${STYLES_EXPORT_NAME} = {\n`;
   for (const token of localTokens) {
     code += `  `;
     mapping.sourceOffsets.push(token.loc.start.offset);
@@ -116,6 +122,6 @@ export function createDts(
       });
     }
   }
-  code += '};\nexport default styles;\n';
+  code += `};\nexport default ${STYLES_EXPORT_NAME};\n`;
   return { code, mapping, linkedCodeMapping };
 }
