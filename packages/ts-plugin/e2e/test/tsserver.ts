@@ -4,6 +4,7 @@ import ts from 'typescript';
 
 interface Tsserver {
   sendUpdateOpen(args: server.protocol.UpdateOpenRequest['arguments']): Promise<server.protocol.Response>;
+  sendConfigure(args: server.protocol.ConfigureRequest['arguments']): Promise<server.protocol.ConfigureResponse>;
   sendDefinitionAndBoundSpan(
     args: server.protocol.FileLocationRequestArgs,
   ): Promise<server.protocol.DefinitionInfoAndBoundSpanResponse>;
@@ -24,6 +25,9 @@ interface Tsserver {
   sendGetEditsForRefactor(
     args: server.protocol.GetEditsForRefactorRequest['arguments'],
   ): Promise<server.protocol.GetEditsForRefactorResponse>;
+  sendCompletionInfo(
+    args: server.protocol.CompletionsRequest['arguments'],
+  ): Promise<server.protocol.CompletionInfoResponse>;
 }
 
 export function launchTsserver(): Tsserver {
@@ -58,6 +62,7 @@ export function launchTsserver(): Tsserver {
 
   return {
     sendUpdateOpen: async (args) => sendRequest(ts.server.protocol.CommandTypes.UpdateOpen, args),
+    sendConfigure: async (args) => sendRequest(ts.server.protocol.CommandTypes.Configure, args),
     sendDefinitionAndBoundSpan: async (args) =>
       sendRequest(ts.server.protocol.CommandTypes.DefinitionAndBoundSpan, args),
     sendReferences: async (args) => sendRequest(ts.server.protocol.CommandTypes.References, args),
@@ -70,6 +75,7 @@ export function launchTsserver(): Tsserver {
     sendGetApplicableRefactors: async (args) =>
       sendRequest(ts.server.protocol.CommandTypes.GetApplicableRefactors, args),
     sendGetEditsForRefactor: async (args) => sendRequest(ts.server.protocol.CommandTypes.GetEditsForRefactor, args),
+    sendCompletionInfo: async (args) => sendRequest(ts.server.protocol.CommandTypes.CompletionInfo, args),
   };
 }
 
