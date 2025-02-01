@@ -1,3 +1,7 @@
+export function isCSSModuleFile(fileName: string): boolean {
+  return fileName.endsWith('.module.css');
+}
+
 export async function findComponentFile(
   cssModuleFileName: string,
   readFile: (path: string) => Promise<string>,

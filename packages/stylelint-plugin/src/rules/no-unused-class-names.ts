@@ -1,5 +1,5 @@
 import { basename } from 'node:path';
-import { findComponentFile, parseRule } from 'honey-css-modules-core';
+import { findComponentFile, isCSSModuleFile, parseRule } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
 import { findUsedTokenNames, readFile } from '../util.js';
@@ -20,12 +20,10 @@ const meta = {
 
 const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
   return async (root, result) => {
-    if (root.source?.input.file === undefined) return;
-    const cssModuleFileName = root.source.input.file;
+    const fileName = root.source?.input.file;
+    if (fileName === undefined || !isCSSModuleFile(fileName)) return;
 
-    if (!cssModuleFileName.endsWith('.module.css')) return;
-
-    const componentFile = await findComponentFile(cssModuleFileName, readFile);
+    const componentFile = await findComponentFile(fileName, readFile);
 
     // If the corresponding component file is not found, it is treated as a CSS Module file shared by the entire project.
     // It is difficult to determine where class names in a shared CSS Module file are used. Therefore, it is
