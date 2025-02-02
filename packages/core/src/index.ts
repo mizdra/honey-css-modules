@@ -22,4 +22,5 @@ export {
 export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
 export { type IsExternalFile, createIsExternalFile } from './external-file.js';
-export { isCSSModuleFile, findComponentFile } from './file.js';
+export { getCssModuleFileName, isComponentFileName, isCSSModuleFile, findComponentFile } from './file.js';
+export { TOKEN_CONSUMER_PATTERN } from './util.js';
