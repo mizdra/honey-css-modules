@@ -99,13 +99,17 @@ describe('no-unused-class-names', () => {
 test('findUsedTokenNames', () => {
   const text = dedent`
     import styles from './a.module.css';
-    styles.foo;
-    styles.bar;
-    styles['baz'];
-    styles["qux"];
-    styles[\`quux\`];
+    styles.a_1;
+    styles.a_1;
+    styles.a_2;
+    styles['a_3'];
+    styles["a_4"];
+    styles[\`a_5\`];
+    // styles.a_6; // false positive, but it is acceptable for simplicity of implementation
+    styles['a_7;
+    styles['a_8"];
     styles;
   `;
-  const expected = new Set(['foo', 'bar']);
+  const expected = new Set(['a_1', 'a_2', 'a_6']);
   expect(findUsedTokenNamesForTest(text)).toEqual(expected);
 });
