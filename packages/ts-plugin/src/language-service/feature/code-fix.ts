@@ -1,6 +1,7 @@
 import type { Language } from '@volar/language-core';
-import { isComponentFileName, TOKEN_CONSUMER_PATTERN } from 'honey-css-modules-core';
+import { isComponentFileName } from 'honey-css-modules-core';
 import ts from 'typescript';
+import { isCSSModuleScript } from '../../language-plugin.js';
 
 // ref: https://github.com/microsoft/TypeScript/blob/220706eb0320ff46fad8bf80a5e99db624ee7dfb/src/compiler/diagnosticMessages.json#L2051-L2054
 export const PROPERTY_DOES_NOT_EXIST_ERROR_CODE = 2339;
@@ -19,7 +20,7 @@ export function getCodeFixesAtPosition(
     if (isComponentFileName(fileName)) {
       // If a user is trying to use a non-existent token (e.g. `styles.nonExistToken`), provide a code fix to add the token.
       if (errorCodes.includes(PROPERTY_DOES_NOT_EXIST_ERROR_CODE)) {
-        const tokenConsumer = getTokenConsumerAtPosition(fileName, start, project, languageService);
+        const tokenConsumer = getTokenConsumerAtPosition(fileName, start, language, languageService, project);
         if (tokenConsumer) {
           prior.push({
             fixName: 'fixMissingCSSRule',
@@ -48,41 +49,42 @@ interface TokenConsumer {
 function getTokenConsumerAtPosition(
   fileName: string,
   position: number,
-  project: ts.server.Project,
+  language: Language<string>,
   languageService: ts.LanguageService,
+  project: ts.server.Project,
 ): TokenConsumer | undefined {
   const sourceFile = project.getSourceFile(project.projectService.toPath(fileName));
   if (!sourceFile) return undefined;
-  const stylesPropertyAccessExpression = getStylesPropertyAccessExpression(sourceFile, position);
-  if (!stylesPropertyAccessExpression) return undefined;
-  const definitions = languageService.getDefinitionAtPosition(
-    fileName,
-    stylesPropertyAccessExpression.expression.getStart(),
-  );
+  const propertyAccessExpression = getPropertyAccessExpressionAtPosition(sourceFile, position);
+  if (!propertyAccessExpression) return undefined;
+
+  // Check if the expression of property access expression (e.g. `styles` in `styles.foo`) is imported from a CSS module.
+
+  // `expression` is the expression of the property access expression (e.g. `styles` in `styles.foo`).
+  const expression = propertyAccessExpression.expression;
+
+  const definitions = languageService.getDefinitionAtPosition(fileName, expression.getStart());
   if (definitions && definitions[0]) {
-    return { tokenName: stylesPropertyAccessExpression.name.text, from: definitions[0].fileName };
-  } else {
-    return undefined;
+    const script = language.scripts.get(definitions[0].fileName);
+    if (isCSSModuleScript(script)) {
+      return { tokenName: propertyAccessExpression.name.text, from: definitions[0].fileName };
+    }
   }
+  return undefined;
 }
 
-/** Get the `styles` property access expression at the specified position. (e.g. `styles.foo`) */
-function getStylesPropertyAccessExpression(
+/** Get the property access expression at the specified position. (e.g. `obj.foo`, `styles.foo`) */
+function getPropertyAccessExpressionAtPosition(
   sourceFile: ts.SourceFile,
   position: number,
 ): ts.PropertyAccessExpression | undefined {
-  function getStylesPropertyAccessExpressionImpl(node: ts.Node): ts.PropertyAccessExpression | undefined {
-    if (
-      node.pos <= position &&
-      position <= node.end &&
-      ts.isPropertyAccessExpression(node) &&
-      TOKEN_CONSUMER_PATTERN.test(node.getText())
-    ) {
+  function getPropertyAccessExpressionImpl(node: ts.Node): ts.PropertyAccessExpression | undefined {
+    if (node.pos <= position && position <= node.end && ts.isPropertyAccessExpression(node)) {
       return node;
     }
-    return ts.forEachChild(node, getStylesPropertyAccessExpressionImpl);
+    return ts.forEachChild(node, getPropertyAccessExpressionImpl);
   }
-  return getStylesPropertyAccessExpressionImpl(sourceFile);
+  return getPropertyAccessExpressionImpl(sourceFile);
 }
 
 function createInsertRuleFileChange(

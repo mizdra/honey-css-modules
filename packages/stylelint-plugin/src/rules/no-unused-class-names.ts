@@ -2,7 +2,7 @@ import { basename } from 'node:path';
 import { findComponentFile, isCSSModuleFile, parseRule } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
-import { findUsedTokenNames, readFile } from '../util.js';
+import { readFile } from '../util.js';
 
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
@@ -52,8 +52,27 @@ const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
   };
 };
 
+/**
+ * The syntax pattern for consuming tokens imported from CSS Module.
+ * @example `styles.foo`
+ */
+// TODO: Support `styles['foo']` and `styles["foo"]`
+// MEMO: The `xxxStyles.foo` format is not supported, because the css module file for current component file is usually imported with `styles`.
+//       It is sufficient to support only the `styles.foo` format.
+const TOKEN_CONSUMER_PATTERN = /styles\.([$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*)/gu;
+
+function findUsedTokenNames(componentText: string): Set<string> {
+  const usedClassNames = new Set<string>();
+  let match;
+  while ((match = TOKEN_CONSUMER_PATTERN.exec(componentText)) !== null) {
+    usedClassNames.add(match[1]!);
+  }
+  return usedClassNames;
+}
+
 ruleFunction.ruleName = ruleName;
 ruleFunction.messages = messages;
 ruleFunction.meta = meta;
 
 export const noUnusedClassNames = createPlugin(ruleName, ruleFunction);
+export { findUsedTokenNames as findUsedTokenNamesForTest };

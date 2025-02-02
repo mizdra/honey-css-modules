@@ -11,10 +11,14 @@ describe('Get Code Fixes', async () => {
       import styles from './a.module.css';
       import bStyles from './b.module.css';
       styles.a_1;
-      bStyles.b_1;
+      bStyles.b_2;
     `,
     'a.module.css': '',
-    'b.module.css': '',
+    'b.module.css': dedent`
+      .b_1 {
+        color: red;
+      }
+    `,
     'hcm.config.mjs': dedent`
       export default {
         pattern: '**/*.module.css',
@@ -49,25 +53,24 @@ describe('Get Code Fixes', async () => {
         },
       ],
     },
-    // TODO: Pass this test
-    // {
-    //   name: 'bStyles.b_1',
-    //   file: iff.paths['a.tsx'],
-    //   line: 4,
-    //   offset: 12,
-    //   expected: [
-    //     {
-    //       fixName: 'fixMissingCSSRule',
-    //       description: `Add missing CSS rule '.b_1'`,
-    //       changes: [
-    //         {
-    //           fileName: formatPath(iff.paths['b.module.css']),
-    //           textChanges: [{ start: { line: 1, offset: 0 }, end: { line: 1, offset: 0 }, newText: '\n.b_1 {\n  \n}' }],
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
+    {
+      name: 'bStyles.b_2',
+      file: iff.paths['a.tsx'],
+      line: 4,
+      offset: 12,
+      expected: [
+        {
+          fixName: 'fixMissingCSSRule',
+          description: `Add missing CSS rule '.b_2'`,
+          changes: [
+            {
+              fileName: formatPath(iff.paths['b.module.css']),
+              textChanges: [{ start: { line: 3, offset: 2 }, end: { line: 3, offset: 2 }, newText: '\n.b_2 {\n  \n}' }],
+            },
+          ],
+        },
+      ],
+    },
   ])('$name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendGetCodeFixes({
       errorCodes: [PROPERTY_DOES_NOT_EXIST_ERROR_CODE],
