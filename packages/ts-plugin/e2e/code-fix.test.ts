@@ -49,25 +49,24 @@ describe('Get Code Fixes', async () => {
         },
       ],
     },
-    // TODO: Pass this test
-    // {
-    //   name: 'bStyles.b_1',
-    //   file: iff.paths['a.tsx'],
-    //   line: 4,
-    //   offset: 12,
-    //   expected: [
-    //     {
-    //       fixName: 'fixMissingCSSRule',
-    //       description: `Add missing CSS rule '.b_1'`,
-    //       changes: [
-    //         {
-    //           fileName: formatPath(iff.paths['b.module.css']),
-    //           textChanges: [{ start: { line: 1, offset: 0 }, end: { line: 1, offset: 0 }, newText: '\n.b_1 {\n  \n}' }],
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
+    {
+      name: 'bStyles.b_1',
+      file: iff.paths['a.tsx'],
+      line: 4,
+      offset: 12,
+      expected: [
+        {
+          fixName: 'fixMissingCSSRule',
+          description: `Add missing CSS rule '.b_1'`,
+          changes: [
+            {
+              fileName: formatPath(iff.paths['b.module.css']),
+              textChanges: [{ start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 }, newText: '\n.b_1 {\n  \n}' }],
+            },
+          ],
+        },
+      ],
+    },
   ])('$name', async ({ file, line, offset, expected }) => {
     const res = await tsserver.sendGetCodeFixes({
       errorCodes: [PROPERTY_DOES_NOT_EXIST_ERROR_CODE],
