@@ -11,10 +11,14 @@ describe('Get Code Fixes', async () => {
       import styles from './a.module.css';
       import bStyles from './b.module.css';
       styles.a_1;
-      bStyles.b_1;
+      bStyles.b_2;
     `,
     'a.module.css': '',
-    'b.module.css': '',
+    'b.module.css': dedent`
+      .b_1 {
+        color: red;
+      }
+    `,
     'hcm.config.mjs': dedent`
       export default {
         pattern: '**/*.module.css',
@@ -50,18 +54,18 @@ describe('Get Code Fixes', async () => {
       ],
     },
     {
-      name: 'bStyles.b_1',
+      name: 'bStyles.b_2',
       file: iff.paths['a.tsx'],
       line: 4,
       offset: 12,
       expected: [
         {
           fixName: 'fixMissingCSSRule',
-          description: `Add missing CSS rule '.b_1'`,
+          description: `Add missing CSS rule '.b_2'`,
           changes: [
             {
               fileName: formatPath(iff.paths['b.module.css']),
-              textChanges: [{ start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 }, newText: '\n.b_1 {\n  \n}' }],
+              textChanges: [{ start: { line: 3, offset: 2 }, end: { line: 3, offset: 2 }, newText: '\n.b_2 {\n  \n}' }],
             },
           ],
         },
