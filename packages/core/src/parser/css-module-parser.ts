@@ -1,9 +1,9 @@
 import type { AtRule, Node, Root, Rule } from 'postcss';
 import { CssSyntaxError, parse } from 'postcss';
 import safeParser from 'postcss-safe-parser';
+import type { SyntacticDiagnostic } from '../diagnostic.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
-import type { SyntacticDiagnostic } from './diagnostic.js';
 import { type Location } from './location.js';
 import { parseRule } from './rule-parser.js';
 
