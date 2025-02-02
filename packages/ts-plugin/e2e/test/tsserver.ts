@@ -1,6 +1,6 @@
 import serverHarness from '@typescript/server-harness';
 import type { server } from 'typescript';
-import type ts from 'typescript';
+import ts from 'typescript';
 
 interface Tsserver {
   sendUpdateOpen(args: server.protocol.UpdateOpenRequest['arguments']): Promise<server.protocol.Response>;
@@ -51,13 +51,16 @@ export function launchTsserver(): Tsserver {
   }
 
   return {
-    sendUpdateOpen: async (args) => sendRequest('updateOpen', args),
-    sendDefinitionAndBoundSpan: async (args) => sendRequest('definitionAndBoundSpan', args),
-    sendReferences: async (args) => sendRequest('references', args),
-    sendRename: async (args) => sendRequest('rename', args),
-    sendSemanticDiagnosticsSync: async (args) => sendRequest('semanticDiagnosticsSync', args),
-    sendSyntacticDiagnosticsSync: async (args) => sendRequest('syntacticDiagnosticsSync', args),
-    sendGetEditsForFileRename: async (args) => sendRequest('getEditsForFileRename', args),
+    sendUpdateOpen: async (args) => sendRequest(ts.server.protocol.CommandTypes.UpdateOpen, args),
+    sendDefinitionAndBoundSpan: async (args) =>
+      sendRequest(ts.server.protocol.CommandTypes.DefinitionAndBoundSpan, args),
+    sendReferences: async (args) => sendRequest(ts.server.protocol.CommandTypes.References, args),
+    sendRename: async (args) => sendRequest(ts.server.protocol.CommandTypes.Rename, args),
+    sendSemanticDiagnosticsSync: async (args) =>
+      sendRequest(ts.server.protocol.CommandTypes.SemanticDiagnosticsSync, args),
+    sendSyntacticDiagnosticsSync: async (args) =>
+      sendRequest(ts.server.protocol.CommandTypes.SyntacticDiagnosticsSync, args),
+    sendGetEditsForFileRename: async (args) => sendRequest(ts.server.protocol.CommandTypes.GetEditsForFileRename, args),
   };
 }
 
