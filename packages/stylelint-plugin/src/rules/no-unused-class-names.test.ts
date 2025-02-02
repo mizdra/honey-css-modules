@@ -3,7 +3,7 @@ import stylelint from 'stylelint';
 import { describe, expect, test } from 'vitest';
 import { createIFF } from '../test/fixture.js';
 import { formatLinterResult } from '../test/stylelint.js';
-import { noUnusedClassNames } from './no-unused-class-names.js';
+import { findUsedTokenNamesForTest, noUnusedClassNames } from './no-unused-class-names.js';
 
 async function lint(rootDir: string) {
   return stylelint.lint({
@@ -94,4 +94,18 @@ describe('no-unused-class-names', () => {
       ]
     `);
   });
+});
+
+test('findUsedTokenNames', () => {
+  const text = dedent`
+    import styles from './a.module.css';
+    styles.foo;
+    styles.bar;
+    styles['baz'];
+    styles["qux"];
+    styles[\`quux\`];
+    styles;
+  `;
+  const expected = new Set(['foo', 'bar']);
+  expect(findUsedTokenNamesForTest(text)).toEqual(expected);
 });
