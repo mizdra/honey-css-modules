@@ -18,7 +18,7 @@ export {
   type SyntacticDiagnostic,
   type DiagnosticCategory,
   type DiagnosticPosition,
-} from './parser/diagnostic.js';
+} from './diagnostic.js';
 export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
 export { type IsExternalFile, createIsExternalFile } from './external-file.js';
