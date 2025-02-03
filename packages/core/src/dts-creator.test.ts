@@ -35,7 +35,8 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
-        "text": "declare const styles = {};
+        "text": "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {};
       export default styles;
       ",
       }
@@ -67,8 +68,8 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
-            27,
-            60,
+            87,
+            120,
           ],
           "lengths": [
             6,
@@ -79,7 +80,8 @@ describe('createDts', () => {
             1,
           ],
         },
-        "text": "declare const styles = {
+        "text": "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
         local1: '' as readonly string,
         local2: '' as readonly string,
       };
@@ -127,27 +129,27 @@ describe('createDts', () => {
             9,
           ],
           "generatedOffsets": [
-            126,
-            198,
+            196,
+            268,
           ],
           "lengths": [
             9,
             16,
           ],
           "sourceOffsets": [
-            74,
-            139,
+            144,
+            209,
           ],
         },
         "mapping": {
           "generatedOffsets": [
-            44,
-            74,
-            99,
-            126,
-            139,
-            171,
-            198,
+            113,
+            144,
+            169,
+            196,
+            209,
+            241,
+            268,
           ],
           "lengths": [
             16,
@@ -168,8 +170,9 @@ describe('createDts', () => {
             4,
           ],
         },
-        "text": "declare const styles = {
-        ...(await import('./a.module.css')).default,
+        "text": "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
+        ...anyGuard((await import('./a.module.css')).default),
         imported1: (await import('./b.module.css')).default.imported1,
         aliasedImported2: (await import('./c.module.css')).default.imported2,
       };
@@ -198,8 +201,8 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
-            27,
-            77,
+            87,
+            146,
           ],
           "lengths": [
             6,
@@ -210,9 +213,10 @@ describe('createDts', () => {
             0,
           ],
         },
-        "text": "declare const styles = {
+        "text": "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
         local1: '' as readonly string,
-        ...(await import('./a.module.css')).default,
+        ...anyGuard((await import('./a.module.css')).default),
       };
       export default styles;
       ",
@@ -259,27 +263,27 @@ describe('createDts', () => {
             9,
           ],
           "generatedOffsets": [
-            126,
-            198,
+            196,
+            268,
           ],
           "lengths": [
             9,
             16,
           ],
           "sourceOffsets": [
-            74,
-            139,
+            144,
+            209,
           ],
         },
         "mapping": {
           "generatedOffsets": [
-            44,
-            74,
-            99,
-            126,
-            139,
-            171,
-            198,
+            113,
+            144,
+            169,
+            196,
+            209,
+            241,
+            268,
           ],
           "lengths": [
             16,
@@ -300,8 +304,9 @@ describe('createDts', () => {
             4,
           ],
         },
-        "text": "declare const styles = {
-        ...(await import('@/a.module.css')).default,
+        "text": "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
+        ...anyGuard((await import('@/a.module.css')).default),
         imported1: (await import('@/b.module.css')).default.imported1,
         aliasedImported2: (await import('@/c.module.css')).default.imported2,
       };
@@ -348,7 +353,8 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
-        "text": "declare const styles = {};
+        "text": "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {};
       export default styles;
       ",
       }
@@ -378,7 +384,8 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
-        "text": "declare const styles = {};
+        "text": "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {};
       export default styles;
       ",
       }

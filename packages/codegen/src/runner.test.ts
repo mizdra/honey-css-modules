@@ -32,14 +32,16 @@ describe('runHCM', () => {
     });
     await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
+      "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
         a1: '' as readonly string,
       };
       export default styles;
       "
     `);
     expect(await readFile(iff.join('generated/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
+      "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
         b1: '' as readonly string,
       };
       export default styles;
@@ -63,8 +65,9 @@ describe('runHCM', () => {
     });
     await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
-        ...(await import('./b.module.css')).default,
+      "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
+        ...anyGuard((await import('./b.module.css')).default),
       };
       export default styles;
       "
@@ -86,7 +89,8 @@ describe('runHCM', () => {
     });
     await runHCM({ pattern: './src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
+      "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+      declare const styles = {
         a1: '' as readonly string,
       };
       export default styles;

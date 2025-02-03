@@ -43,10 +43,11 @@ interface LinkedCodeMapping extends CodeMapping {
  * ```
  * The d.ts file would be:
  * ```ts
+ * function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
  * const styles = {
  *   local1: '' as readonly string,
  *   local2: '' as readonly string,
- *   ...(await import('./a.module.css')).default,
+ *   ...anyGuard((await import('./a.module.css')).default),
  *   imported1: (await import('./b.module.css')).default.imported1,
  *   aliasedImported2: (await import('./b.module.css')).default.imported2,
  * };
@@ -74,13 +75,13 @@ export function createDts(
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
   if (localTokens.length === 0 && tokenImporters.length === 0) {
     return {
-      text: `declare const ${STYLES_EXPORT_NAME} = {};\nexport default ${STYLES_EXPORT_NAME};\n`,
+      text: `function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;\ndeclare const ${STYLES_EXPORT_NAME} = {};\nexport default ${STYLES_EXPORT_NAME};\n`,
       mapping,
       linkedCodeMapping,
     };
   }
 
-  let text = `declare const ${STYLES_EXPORT_NAME} = {\n`;
+  let text = `function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;\ndeclare const ${STYLES_EXPORT_NAME} = {\n`;
   for (const token of localTokens) {
     text += `  `;
     mapping.sourceOffsets.push(token.loc.start.offset);
@@ -90,11 +91,11 @@ export function createDts(
   }
   for (const tokenImporter of tokenImporters) {
     if (tokenImporter.type === 'import') {
-      text += `  ...(await import(`;
+      text += `  ...anyGuard((await import(`;
       mapping.sourceOffsets.push(tokenImporter.fromLoc.start.offset - 1);
       mapping.lengths.push(tokenImporter.from.length + 2);
       mapping.generatedOffsets.push(text.length);
-      text += `'${tokenImporter.from}')).default,\n`;
+      text += `'${tokenImporter.from}')).default),\n`;
     } else {
       // eslint-disable-next-line no-loop-func
       tokenImporter.values.forEach((value, i) => {

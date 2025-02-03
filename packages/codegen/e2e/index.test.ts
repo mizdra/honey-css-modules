@@ -35,23 +35,26 @@ test('generates .d.ts', async () => {
   expect(hcm.stderr.toString()).toBe('');
   expect(hcm.status).toBe(0);
   expect(await readFile(iff.join('dist/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles = {
+    "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+    declare const styles = {
       a1: '' as readonly string,
-      ...(await import('./b.module.css')).default,
-      ...(await import('@/c.module.css')).default,
+      ...anyGuard((await import('./b.module.css')).default),
+      ...anyGuard((await import('@/c.module.css')).default),
     };
     export default styles;
     "
   `);
   expect(await readFile(iff.join('dist/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles = {
+    "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+    declare const styles = {
       b1: '' as readonly string,
     };
     export default styles;
     "
   `);
   expect(await readFile(iff.join('dist/src/c.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles = {
+    "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+    declare const styles = {
       c1: '' as readonly string,
     };
     export default styles;
@@ -102,25 +105,28 @@ test('generates .d.ts with circular import', async () => {
   expect(hcm.stderr.toString()).toBe('');
   expect(hcm.status).toBe(0);
   expect(await readFile(iff.join('dist/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles = {
+    "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+    declare const styles = {
       a1: '' as readonly string,
-      ...(await import('./b.module.css')).default,
+      ...anyGuard((await import('./b.module.css')).default),
     };
     export default styles;
     "
   `);
   expect(await readFile(iff.join('dist/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles = {
+    "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+    declare const styles = {
       b1: '' as readonly string,
-      ...(await import('./a.module.css')).default,
+      ...anyGuard((await import('./a.module.css')).default),
     };
     export default styles;
     "
   `);
   expect(await readFile(iff.join('dist/src/c.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-    "declare const styles = {
+    "function anyGuard<T>(value: T): 0 extends (1 & T) ? {} : T;
+    declare const styles = {
       c1: '' as readonly string,
-      ...(await import('./c.module.css')).default,
+      ...anyGuard((await import('./c.module.css')).default),
     };
     export default styles;
     "
