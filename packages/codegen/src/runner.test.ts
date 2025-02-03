@@ -98,39 +98,52 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'src/a.module.css': '.a1 {',
       'src/b.module.css': '@value;',
+      'src/c.module.css': "@import './non-existent.module.css';",
     });
     const loggerSpy = createLoggerSpy();
     await expect(
       runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, loggerSpy),
     ).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
-    expect(loggerSpy.logDiagnostics.mock.calls[0]![0]).toStrictEqual(
-      expect.arrayContaining([
-        {
-          type: 'syntactic',
-          category: 'error',
-          fileName: iff.paths['src/a.module.css'],
-          start: {
-            column: 1,
-            line: 1,
-          },
-          text: 'Unclosed block',
+    expect(loggerSpy.logDiagnostics.mock.calls[0]![0]).toStrictEqual([
+      {
+        type: 'syntactic',
+        category: 'error',
+        fileName: iff.paths['src/a.module.css'],
+        start: {
+          column: 1,
+          line: 1,
         },
-        {
-          type: 'syntactic',
-          category: 'error',
-          fileName: iff.paths['src/b.module.css'],
-          start: {
-            column: 1,
-            line: 1,
-          },
-          end: {
-            column: 8,
-            line: 1,
-          },
-          text: '`@value` is a invalid syntax.',
+        text: 'Unclosed block',
+      },
+      {
+        type: 'syntactic',
+        category: 'error',
+        fileName: iff.paths['src/b.module.css'],
+        start: {
+          column: 1,
+          line: 1,
         },
-      ]),
-    );
+        end: {
+          column: 8,
+          line: 1,
+        },
+        text: '`@value` is a invalid syntax.',
+      },
+      {
+        type: 'semantic',
+        category: 'error',
+        fileName: iff.paths['src/c.module.css'],
+        start: {
+          column: 10,
+          line: 1,
+        },
+        end: {
+          column: 35,
+          line: 1,
+        },
+        text: "Cannot find module './non-existent.module.css'.",
+      },
+    ]);
   });
 });

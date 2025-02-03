@@ -1,8 +1,22 @@
 // eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable glob API
 import { glob, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { Diagnostic, HCMConfig, IsExternalFile, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
-import { createDts, createIsExternalFile, createResolver, parseCSSModule, resolveConfig } from 'honey-css-modules-core';
+import type {
+  Diagnostic,
+  FileExists,
+  HCMConfig,
+  IsExternalFile,
+  ResolvedHCMConfig,
+  Resolver,
+} from 'honey-css-modules-core';
+import {
+  checkCSSModule,
+  createDts,
+  createIsExternalFile,
+  createResolver,
+  parseCSSModule,
+  resolveConfig,
+} from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
@@ -16,6 +30,7 @@ async function processFile(
   { dashedIdents, dtsOutDir, cwd, arbitraryExtensions }: ResolvedHCMConfig,
   resolver: Resolver,
   isExternalFile: IsExternalFile,
+  fileExists: FileExists,
 ): Promise<Diagnostic[]> {
   let text: string;
   try {
@@ -23,7 +38,13 @@ async function processFile(
   } catch (error) {
     throw new ReadCSSModuleFileError(fileName, error);
   }
-  const { cssModule, diagnostics } = parseCSSModule(text, { fileName, dashedIdents, safe: false });
+  const { cssModule, diagnostics: syntacticDiagnostics } = parseCSSModule(text, {
+    fileName,
+    dashedIdents,
+    safe: false,
+  });
+  const semanticDiagnostics = checkCSSModule(cssModule, resolver, isExternalFile, fileExists);
+  const diagnostics = [...syntacticDiagnostics, ...semanticDiagnostics];
   if (diagnostics.length > 0) {
     return diagnostics;
   }
@@ -47,18 +68,16 @@ export async function runHCM(config: HCMConfig, cwd: string, logger: Logger): Pr
   const resolver = createResolver(alias, cwd);
   const isExternalFile = createIsExternalFile(resolvedConfig);
 
-  const promises: Promise<Diagnostic[]>[] = [];
-  for await (const fileName of glob(pattern, { cwd })) {
-    promises.push(
-      processFile(
-        join(cwd, fileName), // `fileName` is 'src/a.module.css', so convert it to '/project/src/a.module.css'
-        resolvedConfig,
-        resolver,
-        isExternalFile,
-      ),
-    );
-  }
-  const diagnostics = (await Promise.all(promises)).flat();
+  const fileNames = (await Array.fromAsync(glob(pattern, { cwd })))
+    // Convert 'src/a.module.css' to '/project/src/a.module.css'
+    .map((fileName) => join(cwd, fileName));
+  const fileExists: FileExists = (path: string) => fileNames.includes(path);
+
+  const processFilePromises = fileNames.map(async (fileName) =>
+    processFile(fileName, resolvedConfig, resolver, isExternalFile, fileExists),
+  );
+
+  const diagnostics = (await Promise.all(processFilePromises)).flat();
   if (diagnostics.length > 0) {
     logger.logDiagnostics(diagnostics);
     // eslint-disable-next-line n/no-process-exit

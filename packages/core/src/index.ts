@@ -23,3 +23,4 @@ export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-crea
 export { createResolver, type Resolver } from './resolver.js';
 export { type IsExternalFile, createIsExternalFile } from './external-file.js';
 export { getCssModuleFileName, isComponentFileName, isCSSModuleFile, findComponentFile } from './file.js';
+export { checkCSSModule, type FileExists } from './checker.js';
