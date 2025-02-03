@@ -76,8 +76,8 @@ export interface AtImportTokenImporter {
   type: 'import';
   /**
    * The specifier of the file from which the token is imported.
-   * This is a string before being resolved and surrounded by quotes.
-   * @example `@import './a.module.css'` would have `from` as `"'./a.module.css'"`.
+   * This is a string before being resolved and unquoted.
+   * @example `@import './a.module.css'` would have `from` as `'./a.module.css'`.
    */
   from: string;
   /** The location of the `from` in *.module.css file. */
@@ -91,8 +91,8 @@ export interface AtValueTokenImporter {
   values: AtValueTokenImporterValue[];
   /**
    * The specifier of the file from which the token is imported.
-   * This is a string before being resolved and surrounded by quotes.
-   * @example `@value a from './a.module.css'` would have `from` as `"'./a.module.css'"`.
+   * This is a string before being resolved and unquoted.
+   * @example `@value a from './a.module.css'` would have `from` as `'./a.module.css'`.
    */
   from: string;
   /** The location of the `from` in *.module.css file. */
