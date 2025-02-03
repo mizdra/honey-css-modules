@@ -26,6 +26,9 @@ test('Semantic Diagnostics', async () => {
       @value c_1: red;
       @value c_2: red;
     `,
+    'd.module.css': dedent`
+      @import './non-exist.module.css';
+    `,
     'hcm.config.mjs': dedent`
       export default {
         pattern: '**/*.module.css',
@@ -41,10 +44,10 @@ test('Semantic Diagnostics', async () => {
   await tsserver.sendUpdateOpen({
     openFiles: [{ file: iff.paths['index.ts'] }],
   });
-  const res = await tsserver.sendSemanticDiagnosticsSync({
+  const res1 = await tsserver.sendSemanticDiagnosticsSync({
     file: iff.paths['index.ts'],
   });
-  expect(res.body).toMatchInlineSnapshot(`
+  expect(res1.body).toMatchInlineSnapshot(`
     [
       {
         "category": "error",
@@ -58,6 +61,26 @@ test('Semantic Diagnostics', async () => {
           "offset": 8,
         },
         "text": "Property 'unknown' does not exist on type '{ c_1: string; c_alias: string; b_1: string; a_1: string; a_2: string; }'.",
+      },
+    ]
+  `);
+  const res2 = await tsserver.sendSemanticDiagnosticsSync({
+    file: iff.paths['d.module.css'],
+  });
+  expect(res2.body).toMatchInlineSnapshot(`
+    [
+      {
+        "category": "error",
+        "code": 0,
+        "end": {
+          "line": 1,
+          "offset": 32,
+        },
+        "start": {
+          "line": 1,
+          "offset": 10,
+        },
+        "text": "Cannot find module './non-exist.module.css'.",
       },
     ]
   `);

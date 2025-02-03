@@ -1,6 +1,12 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { IsExternalFile, ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
+import type {
+  CSSModuleFile,
+  IsExternalFile,
+  ResolvedHCMConfig,
+  Resolver,
+  SyntacticDiagnostic,
+} from 'honey-css-modules-core';
 import { createDts, parseCSSModule } from 'honey-css-modules-core';
 import ts from 'typescript';
 
@@ -10,6 +16,7 @@ export const HCM_DATA_KEY = Symbol('honey-css-modules-data');
 
 interface CSSModuleVirtualCode extends VirtualCode {
   [HCM_DATA_KEY]: {
+    cssModule: CSSModuleFile;
     diagnostics: SyntacticDiagnostic[];
   };
 }
@@ -58,6 +65,7 @@ export function createCSSModuleLanguagePlugin(
         // `linkedCodeMappings` are required to support "Go to Definition" and renaming for the imported tokens
         linkedCodeMappings: [{ ...linkedCodeMapping, data: undefined }],
         [HCM_DATA_KEY]: {
+          cssModule,
           diagnostics,
         },
       };
