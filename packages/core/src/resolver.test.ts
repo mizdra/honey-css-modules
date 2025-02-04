@@ -4,7 +4,7 @@ import { createResolver } from './resolver.js';
 
 describe('createResolver', () => {
   describe('resolves relative path', () => {
-    const resolve = createResolver({}, '/app');
+    const resolve = createResolver({});
     test.each([
       ['./a.module.css', '/app/request.module.css', '/app/a.module.css'],
       ['./dir/a.module.css', '/app/request.module.css', '/app/dir/a.module.css'],
@@ -13,7 +13,7 @@ describe('createResolver', () => {
     });
   });
   describe('resolves absolute path', () => {
-    const resolve = createResolver({}, '/app');
+    const resolve = createResolver({});
     test.each([
       ['/app/a.module.css', '/app/request.module.css', '/app/a.module.css'],
       ['/app/dir/a.module.css', '/app/request.module.css', '/app/dir/a.module.css'],
@@ -23,7 +23,7 @@ describe('createResolver', () => {
   });
   describe('resolves alias', () => {
     describe('alias is used if import specifiers start with alias', () => {
-      const resolve = createResolver({ '@': './alias', '#': 'alias' }, '/app');
+      const resolve = createResolver({ '@': '/app/alias', '#': '/app/alias' });
       test.each([
         ['@/a.module.css', '/app/request.module.css', '/app/alias/a.module.css'],
         ['./@/a.module.css', '/app/request.module.css', '/app/@/a.module.css'],
@@ -35,14 +35,14 @@ describe('createResolver', () => {
       });
     });
     test('the first alias is used if multiple aliases match', () => {
-      const resolve = createResolver({ '@': './alias1', '@@': './alias2' }, '/app');
+      const resolve = createResolver({ '@': '/app/alias1', '@@': '/app/alias2' });
       expect(resolve('@/a.module.css', { request: '/app/request.module.css' })).toBe(
         path.resolve('/app/alias1/a.module.css'),
       );
     });
   });
   describe('does not resolve invalid path', () => {
-    const resolve = createResolver({}, '/app');
+    const resolve = createResolver({});
     test.each([
       ['http://example.com', '/app/request.module.css'],
       ['package', '/app/request.module.css'],

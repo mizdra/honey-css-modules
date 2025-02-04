@@ -26,7 +26,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   }
 
   const resolvedConfig = resolveConfig(config, cwd);
-  const resolver = createResolver(resolvedConfig.alias, resolvedConfig.cwd);
+  const resolver = createResolver(resolvedConfig.alias);
   const isProjectFile = createIsProjectFile(resolvedConfig);
 
   return {

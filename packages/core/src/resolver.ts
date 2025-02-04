@@ -1,4 +1,4 @@
-import { isAbsolute, join, normalize } from 'node:path';
+import { isAbsolute, normalize } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export interface ResolverOptions {
@@ -14,13 +14,13 @@ export interface ResolverOptions {
  */
 export type Resolver = (specifier: string, options: ResolverOptions) => string | undefined;
 
-export function createResolver(alias: Record<string, string>, cwd: string): Resolver {
+export function createResolver(alias: Record<string, string>): Resolver {
   return (specifier: string, options: ResolverOptions) => {
     for (const [key, value] of Object.entries(alias)) {
       if (specifier.startsWith(key)) {
         // NOTE: On Windows, `normalize(...)` to replace `/` with `\\` and then resolve the alias.
         // TODO: Logging that the alias is used.
-        return normalize(specifier).replace(key, join(cwd, value));
+        return normalize(specifier).replace(key, value);
       }
     }
     if (isAbsolute(specifier)) {

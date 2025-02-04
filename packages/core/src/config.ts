@@ -103,10 +103,20 @@ export interface ResolvedHCMConfig {
   cwd: string;
 }
 
+function resolveAlias(alias: Record<string, string> | undefined, cwd: string): Record<string, string> {
+  if (alias === undefined) return {};
+  const resolvedAlias: Record<string, string> = {};
+  for (const [key, value] of Object.entries(alias)) {
+    resolvedAlias[key] = join(cwd, value);
+  }
+  return resolvedAlias;
+}
+
 export function resolveConfig(config: HCMConfig, cwd: string): ResolvedHCMConfig {
   return {
-    ...config,
-    alias: config.alias ?? {},
+    pattern: join(cwd, config.pattern),
+    dtsOutDir: join(cwd, config.dtsOutDir),
+    alias: resolveAlias(config.alias, cwd),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
     dashedIdents: config.dashedIdents ?? false,
     cwd,

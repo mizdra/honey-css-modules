@@ -10,7 +10,7 @@ import { WriteDtsFileError } from './error.js';
  */
 export function getDtsFilePath(cssModuleFileName: string, options: WriteDtsFileOption): string {
   const relativePath = relative(options.cwd, cssModuleFileName);
-  const outputFilePath = resolve(options.cwd, options.outDir, relativePath);
+  const outputFilePath = resolve(options.outDir, relativePath);
 
   if (options.arbitraryExtensions) {
     const { dir, name, ext } = parse(outputFilePath);
@@ -21,7 +21,7 @@ export function getDtsFilePath(cssModuleFileName: string, options: WriteDtsFileO
 }
 
 export interface WriteDtsFileOption {
-  /** Directory to write the d.ts file. This is relative to {@link cwd}. */
+  /** Directory to write the d.ts file. This is an absolute path. */
   outDir: string;
   /** Current working directory. */
   cwd: string;
