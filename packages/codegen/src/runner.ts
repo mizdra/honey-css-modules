@@ -12,7 +12,7 @@ import type { Logger } from './logger/logger.js';
  */
 async function processFile(
   fileName: string,
-  { dashedIdents, dtsOutDir, cwd, arbitraryExtensions }: ResolvedHCMConfig,
+  { dashedIdents, dtsOutDir, rootDir, arbitraryExtensions }: ResolvedHCMConfig,
   resolver: Resolver,
   isProjectFile: IsProjectFile,
 ): Promise<Diagnostic[]> {
@@ -29,7 +29,7 @@ async function processFile(
   const dts = createDts(cssModule, { resolver, isProjectFile });
   await writeDtsFile(dts.text, fileName, {
     outDir: dtsOutDir,
-    cwd,
+    rootDir,
     arbitraryExtensions,
   });
   return [];
@@ -40,8 +40,8 @@ async function processFile(
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(config: HCMConfig, cwd: string, logger: Logger): Promise<void> {
-  const resolvedConfig = resolveConfig(config, cwd);
+export async function runHCM(config: HCMConfig, rootDir: string, logger: Logger): Promise<void> {
+  const resolvedConfig = resolveConfig(config, rootDir);
   const { pattern, alias } = resolvedConfig;
   const resolver = createResolver(alias);
   const isProjectFile = createIsProjectFile(resolvedConfig);

@@ -9,7 +9,7 @@ import { WriteDtsFileError } from './error.js';
  * @returns The path to the .d.ts file. It is absolute.
  */
 export function getDtsFilePath(cssModuleFileName: string, options: WriteDtsFileOption): string {
-  const relativePath = relative(options.cwd, cssModuleFileName);
+  const relativePath = relative(options.rootDir, cssModuleFileName);
   const outputFilePath = resolve(options.outDir, relativePath);
 
   if (options.arbitraryExtensions) {
@@ -23,8 +23,7 @@ export function getDtsFilePath(cssModuleFileName: string, options: WriteDtsFileO
 export interface WriteDtsFileOption {
   /** Directory to write the d.ts file. This is an absolute path. */
   outDir: string;
-  /** Current working directory. */
-  cwd: string;
+  rootDir: string;
   /** Generate `.d.css.ts` instead of `.css.d.ts`. */
   arbitraryExtensions: boolean;
 }
