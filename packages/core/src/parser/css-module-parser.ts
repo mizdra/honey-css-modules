@@ -124,7 +124,7 @@ export interface AtValueTokenImporterValue {
 
 export type TokenImporter = AtImportTokenImporter | AtValueTokenImporter;
 
-export interface CSSModuleFile {
+export interface CSSModule {
   /** Absolute path of the file */
   fileName: string;
   /**
@@ -152,7 +152,7 @@ export interface ParseCSSModuleOptions {
 }
 
 interface ParseCSSModuleResult {
-  cssModule: CSSModuleFile;
+  cssModule: CSSModule;
   diagnostics: SyntacticDiagnostic[];
 }
 

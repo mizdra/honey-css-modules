@@ -3,7 +3,7 @@ export { ConfigNotFoundError, ConfigImportError, ConfigValidationError, SystemEr
 export {
   parseCSSModule,
   type ParseCSSModuleOptions,
-  type CSSModuleFile,
+  type CSSModule,
   type Token,
   type AtImportTokenImporter,
   type TokenImporter,

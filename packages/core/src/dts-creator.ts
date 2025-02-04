@@ -1,5 +1,5 @@
 import type { IsProjectFile } from './external-file.js';
-import type { CSSModuleFile } from './parser/css-module-parser.js';
+import type { CSSModule } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 
 export const STYLES_EXPORT_NAME = 'styles';
@@ -54,7 +54,7 @@ interface LinkedCodeMapping extends CodeMapping {
  * ```
  */
 export function createDts(
-  { fileName, localTokens, tokenImporters: _tokenImporters }: CSSModuleFile,
+  { fileName, localTokens, tokenImporters: _tokenImporters }: CSSModule,
   options: CreateDtsOptions,
 ): { text: string; mapping: CodeMapping; linkedCodeMapping: LinkedCodeMapping } {
   const mapping: CodeMapping = { sourceOffsets: [], lengths: [], generatedOffsets: [] };
