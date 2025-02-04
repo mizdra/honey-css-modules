@@ -4,7 +4,7 @@ import { createDts, type CreateDtsOptions } from './dts-creator.js';
 
 const options: CreateDtsOptions = {
   resolver: (specifier, { request }) => resolve(dirname(request), specifier),
-  isExternalFile: () => false,
+  isProjectFile: () => true,
 };
 
 function fakeLoc(offset: number) {
@@ -333,7 +333,7 @@ describe('createDts', () => {
             },
           ],
         },
-        { ...options, isExternalFile: () => true },
+        { ...options, isProjectFile: () => false },
       ),
     ).toMatchInlineSnapshot(`
       {

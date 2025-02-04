@@ -1,4 +1,4 @@
-import type { IsExternalFile } from './external-file.js';
+import type { IsProjectFile } from './external-file.js';
 import type { CSSModuleFile } from './parser/css-module-parser.js';
 import type { Resolver } from './resolver.js';
 
@@ -6,7 +6,7 @@ export const STYLES_EXPORT_NAME = 'styles';
 
 export interface CreateDtsOptions {
   resolver: Resolver;
-  isExternalFile: IsExternalFile;
+  isProjectFile: IsProjectFile;
 }
 
 interface CodeMapping {
@@ -68,7 +68,7 @@ export function createDts(
   // Filter external files
   const tokenImporters = _tokenImporters.filter((tokenImporter) => {
     const resolved = options.resolver(tokenImporter.from, { request: fileName });
-    return resolved !== undefined && !options.isExternalFile(resolved);
+    return resolved !== undefined && options.isProjectFile(resolved);
   });
 
   // If the CSS module file has no tokens, return an .d.ts file with an empty object.
