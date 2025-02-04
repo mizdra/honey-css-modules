@@ -1,8 +1,7 @@
 // eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable glob API
 import { glob, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import type { Diagnostic, HCMConfig, IsExternalFile, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
-import { createDts, createIsExternalFile, createResolver, parseCSSModule, resolveConfig } from 'honey-css-modules-core';
+import type { Diagnostic, HCMConfig, IsProjectFile, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
+import { createDts, createIsProjectFile, createResolver, parseCSSModule, resolveConfig } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
@@ -13,9 +12,9 @@ import type { Logger } from './logger/logger.js';
  */
 async function processFile(
   fileName: string,
-  { dashedIdents, dtsOutDir, cwd, arbitraryExtensions }: ResolvedHCMConfig,
+  { dashedIdents, dtsOutDir, rootDir, arbitraryExtensions }: ResolvedHCMConfig,
   resolver: Resolver,
-  isExternalFile: IsExternalFile,
+  isProjectFile: IsProjectFile,
 ): Promise<Diagnostic[]> {
   let text: string;
   try {
@@ -27,10 +26,10 @@ async function processFile(
   if (diagnostics.length > 0) {
     return diagnostics;
   }
-  const dts = createDts(cssModule, { resolver, isExternalFile });
+  const dts = createDts(cssModule, { resolver, isProjectFile });
   await writeDtsFile(dts.text, fileName, {
     outDir: dtsOutDir,
-    cwd,
+    rootDir,
     arbitraryExtensions,
   });
   return [];
@@ -41,22 +40,15 @@ async function processFile(
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(config: HCMConfig, cwd: string, logger: Logger): Promise<void> {
-  const resolvedConfig = resolveConfig(config, cwd);
+export async function runHCM(config: HCMConfig, rootDir: string, logger: Logger): Promise<void> {
+  const resolvedConfig = resolveConfig(config, rootDir);
   const { pattern, alias } = resolvedConfig;
-  const resolver = createResolver(alias, cwd);
-  const isExternalFile = createIsExternalFile(resolvedConfig);
+  const resolver = createResolver(alias);
+  const isProjectFile = createIsProjectFile(resolvedConfig);
 
   const promises: Promise<Diagnostic[]>[] = [];
-  for await (const fileName of glob(pattern, { cwd })) {
-    promises.push(
-      processFile(
-        join(cwd, fileName), // `fileName` is 'src/a.module.css', so convert it to '/project/src/a.module.css'
-        resolvedConfig,
-        resolver,
-        isExternalFile,
-      ),
-    );
+  for await (const fileName of glob(pattern)) {
+    promises.push(processFile(fileName, resolvedConfig, resolver, isProjectFile));
   }
   const diagnostics = (await Promise.all(promises)).flat();
   if (diagnostics.length > 0) {

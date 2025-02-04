@@ -1,5 +1,5 @@
-import { dirname, isAbsolute, join, resolve } from 'node:path';
-import { isPosixRelativePath } from './util.js';
+import { isAbsolute, normalize } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export interface ResolverOptions {
   /** The file that imports the specifier. It is a absolute path. */
@@ -14,21 +14,34 @@ export interface ResolverOptions {
  */
 export type Resolver = (specifier: string, options: ResolverOptions) => string | undefined;
 
-export function createResolver(alias: Record<string, string>, cwd: string): Resolver {
-  return (_specifier: string, options: ResolverOptions) => {
-    let specifier = _specifier;
+export function createResolver(alias: Record<string, string>): Resolver {
+  return (specifier: string, options: ResolverOptions) => {
     for (const [key, value] of Object.entries(alias)) {
       if (specifier.startsWith(key)) {
+        // NOTE: On Windows, `normalize(...)` to replace `/` with `\\` and then resolve the alias.
         // TODO: Logging that the alias is used.
-        specifier = specifier.replace(key, join(cwd, value));
-        break;
+        return normalize(specifier).replace(key, value);
       }
     }
-    // Return `undefined` if `specifier` is `'http://example.com'` or `'@scope/package'`
-    // TODO: Logging that the specifier could not resolve.
-    if (!isPosixRelativePath(specifier) && !isAbsolute(specifier)) return undefined;
-
-    // Convert the specifier to an absolute path
-    return resolve(dirname(options.request), specifier);
+    if (isAbsolute(specifier)) {
+      return specifier;
+    } else if (isRelativeSpecifier(specifier)) {
+      // Convert the specifier to an absolute path
+      // NOTE: Node.js resolves relative specifier with standard relative URL resolution semantics. So we will follow that here as well.
+      // ref: https://nodejs.org/docs/latest-v23.x/api/esm.html#terminology
+      return fileURLToPath(new URL(specifier, pathToFileURL(options.request)).href);
+    } else {
+      // Do not support URL or bare specifiers
+      // TODO: Logging that the specifier could not resolve.
+      return undefined;
+    }
   };
+}
+
+/**
+ * Check if the specifier is a relative specifier.
+ * @see https://nodejs.org/docs/latest-v23.x/api/esm.html#terminology
+ */
+function isRelativeSpecifier(specifier: string): boolean {
+  return specifier.startsWith('./') || specifier.startsWith('../');
 }

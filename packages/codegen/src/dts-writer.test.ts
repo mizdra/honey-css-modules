@@ -7,14 +7,14 @@ import { WriteDtsFileError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
 describe('getDtsFilePath', () => {
-  const options = { cwd: '/app', outDir: 'dist', arbitraryExtensions: false };
+  const options = { rootDir: '/app', outDir: '/app/dist', arbitraryExtensions: false };
   test('cwd', () => {
-    expect(getDtsFilePath('/app1/src/dir/a.module.css', { ...options, cwd: '/app1' })).toBe(
-      resolve('/app1/dist/src/dir/a.module.css.d.ts'),
+    expect(getDtsFilePath('/app1/src/dir/a.module.css', { ...options, rootDir: '/app1' })).toBe(
+      resolve('/app/dist/src/dir/a.module.css.d.ts'),
     );
   });
   test('outDir', () => {
-    expect(getDtsFilePath('/app/src/dir/a.module.css', { ...options, outDir: 'dist/dir' })).toBe(
+    expect(getDtsFilePath('/app/src/dir/a.module.css', { ...options, outDir: '/app/dist/dir' })).toBe(
       resolve('/app/dist/dir/src/dir/a.module.css.d.ts'),
     );
   });
@@ -36,7 +36,7 @@ describe('writeDtsFile', () => {
       iff.join('src/a.module.css'),
       {
         outDir: iff.join('generated'),
-        cwd: iff.rootDir,
+        rootDir: iff.rootDir,
         arbitraryExtensions: false,
       },
     );
@@ -59,7 +59,7 @@ describe('writeDtsFile', () => {
         iff.join('src/a.module.css'),
         {
           outDir: iff.join('generated'),
-          cwd: iff.rootDir,
+          rootDir: iff.rootDir,
           arbitraryExtensions: false,
         },
       ),

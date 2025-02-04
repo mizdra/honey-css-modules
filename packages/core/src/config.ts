@@ -12,7 +12,7 @@ export interface HCMConfig {
   dtsOutDir: string;
   alias?: Record<string, string> | undefined;
   arbitraryExtensions?: boolean | undefined;
-  dashedIdents?: boolean | undefined;
+  // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
 }
 
 export function defineConfig(config: HCMConfig): HCMConfig {
@@ -100,15 +100,60 @@ export interface ResolvedHCMConfig {
   alias: Record<string, string>;
   arbitraryExtensions: boolean;
   dashedIdents: boolean;
-  cwd: string;
+  /**
+   * The root directory of the project. This is used to determine the output directory of the d.ts file.
+   *
+   * For example, let’s say you have some input files:
+   * ```
+   * .
+   * ├── hcm.config.js
+   * ├── src
+   * │   ├── a.module.css
+   * │   ├── b.module.css
+   * │   ├── sub
+   * │   │   ├── c.module.css
+   * ```
+   *
+   * If you set `rootDir` to `src`, the output files will be:
+   * ```
+   * .
+   * ├── dist
+   * │   ├── a.module.css.d.ts
+   * │   ├── b.module.css.d.ts
+   * │   ├── sub
+   * │   │   ├── c.module.css.d.ts
+   * ```
+   *
+   * If you set `rootDir` to `.` (the project root), the output files will be:
+   * ```
+   * .
+   * ├── dist
+   * │   ├── src
+   * │   │   ├── a.module.css.d.ts
+   * │   │   ├── b.module.css.d.ts
+   * │   │   ├── sub
+   * │   │   │   ├── c.module.css.d.ts
+   * ```
+   */
+  rootDir: string;
 }
 
-export function resolveConfig(config: HCMConfig, cwd: string): ResolvedHCMConfig {
+function resolveAlias(alias: Record<string, string> | undefined, cwd: string): Record<string, string> {
+  if (alias === undefined) return {};
+  const resolvedAlias: Record<string, string> = {};
+  for (const [key, value] of Object.entries(alias)) {
+    resolvedAlias[key] = join(cwd, value);
+  }
+  return resolvedAlias;
+}
+
+export function resolveConfig(config: HCMConfig, rootDir: string): ResolvedHCMConfig {
   return {
-    ...config,
-    alias: config.alias ?? {},
+    pattern: join(rootDir, config.pattern),
+    dtsOutDir: join(rootDir, config.dtsOutDir),
+    alias: resolveAlias(config.alias, rootDir),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
-    dashedIdents: config.dashedIdents ?? false,
-    cwd,
+    dashedIdents: false, // TODO: Support dashedIdents
+    rootDir,
   };
 }
