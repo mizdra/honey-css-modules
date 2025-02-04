@@ -1,10 +1,10 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
-import { assertConfig, readConfigFile } from './config.js';
+import { assertConfig, readRawConfigFile } from './config.js';
 import { ConfigImportError, ConfigNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
-describe('readConfigFile', () => {
+describe('readRawConfigFile', () => {
   test('returns a config object', async () => {
     const iff = await createIFF({
       'hcm.config.js': dedent`
@@ -15,7 +15,7 @@ describe('readConfigFile', () => {
       `,
       'package.json': '{ "type": "module" }',
     });
-    expect(readConfigFile(iff.rootDir)).toEqual({
+    expect(readRawConfigFile(iff.rootDir)).toEqual({
       pattern: 'src/**/*.module.css',
       dtsOutDir: 'generated/hcm',
     });
@@ -29,7 +29,7 @@ describe('readConfigFile', () => {
         };
       `,
     });
-    expect(readConfigFile(iff.rootDir)).toEqual({
+    expect(readRawConfigFile(iff.rootDir)).toEqual({
       pattern: 'src/**/*.module.css',
       dtsOutDir: 'generated/hcm',
     });
@@ -41,14 +41,14 @@ describe('readConfigFile', () => {
         };
       `,
     });
-    expect(readConfigFile(iff.rootDir)).toEqual({
+    expect(readRawConfigFile(iff.rootDir)).toEqual({
       pattern: 'src/**/*.module.css',
       dtsOutDir: 'generated/hcm',
     });
   });
   test('throws a ConfigNotFoundError if no config file is found', async () => {
     const iff = await createIFF({});
-    expect(() => readConfigFile(iff.rootDir)).toThrow(ConfigNotFoundError);
+    expect(() => readRawConfigFile(iff.rootDir)).toThrow(ConfigNotFoundError);
   });
   test('throws error if config file has syntax errors', async () => {
     const iff = await createIFF({
@@ -56,13 +56,13 @@ describe('readConfigFile', () => {
         export SYNTAX_ERROR;
       `,
     });
-    expect(() => readConfigFile(iff.rootDir)).toThrow(ConfigImportError);
+    expect(() => readRawConfigFile(iff.rootDir)).toThrow(ConfigImportError);
   });
   test('throws error if config file has no default export', async () => {
     const iff = await createIFF({
       'hcm.config.mjs': 'export const config = {};',
     });
-    expect(() => readConfigFile(iff.rootDir)).toThrowErrorMatchingInlineSnapshot(
+    expect(() => readRawConfigFile(iff.rootDir)).toThrowErrorMatchingInlineSnapshot(
       `[Error: Config must be a default export.]`,
     );
   });

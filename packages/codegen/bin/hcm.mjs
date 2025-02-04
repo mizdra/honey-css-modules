@@ -6,7 +6,7 @@ import { createLogger, runHCM } from '../dist/index.js';
 const cwd = process.cwd();
 const logger = createLogger(cwd);
 try {
-  await runHCM(readConfigFile(cwd), cwd, logger);
+  await runHCM(readConfigFile(cwd), logger);
 } catch (e) {
   if (e instanceof SystemError) {
     logger.logSystemError(e);

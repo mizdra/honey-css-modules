@@ -53,7 +53,17 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
  * @throws {ConfigImportError}
  * @throws {ConfigValidationError}
  */
-export function readConfigFile(cwd: string): HCMConfig {
+export function readConfigFile(cwd: string): ResolvedHCMConfig {
+  const rawConfig = readRawConfigFile(cwd);
+  return resolveConfig(rawConfig, cwd);
+}
+
+/**
+ * @throws {ConfigNotFoundError}
+ * @throws {ConfigImportError}
+ * @throws {ConfigValidationError}
+ */
+export function readRawConfigFile(cwd: string): HCMConfig {
   for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
     const path = join(cwd, `hcm.config.${ext}`);
     try {

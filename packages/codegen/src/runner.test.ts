@@ -1,5 +1,6 @@
 import { access, chmod, readFile } from 'node:fs/promises';
 import { describe, expect, test, vi } from 'vitest';
+import { resolveConfig } from '../../core/src/config.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 import { runHCM } from './runner.js';
@@ -30,7 +31,10 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.module.css': '.b1 { color: blue; }',
     });
-    await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
+    await runHCM(
+      resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir),
+      createLoggerSpy(),
+    );
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
@@ -51,7 +55,10 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
+    await runHCM(
+      resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir),
+      createLoggerSpy(),
+    );
     await expect(access(iff.join('generated/src/a.module.css.d.ts'))).resolves.not.toThrow();
     await expect(access(iff.join('generated/src/b.css.d.ts'))).rejects.toThrow();
   });
@@ -61,7 +68,10 @@ describe('runHCM', () => {
       'src/b.module.css': '.b1 { color: blue; }',
       'src/c.css': '.c1 { color: red; }',
     });
-    await runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
+    await runHCM(
+      resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir),
+      createLoggerSpy(),
+    );
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles = {
         ...(await import('./b.module.css')).default,
@@ -76,7 +86,7 @@ describe('runHCM', () => {
     });
     await chmod(iff.paths['src/a.module.css'], 0o200); // Remove read permission
     await expect(
-      runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy()),
+      runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), createLoggerSpy()),
     ).rejects.toThrow(ReadCSSModuleFileError);
   });
   test('support ./ in `pattern`', async () => {
@@ -84,7 +94,10 @@ describe('runHCM', () => {
       'src/a.module.css': `@import './b.css'; .a1 { color: red; }`,
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM({ pattern: './src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, createLoggerSpy());
+    await runHCM(
+      resolveConfig({ pattern: './src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir),
+      createLoggerSpy(),
+    );
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
@@ -101,7 +114,7 @@ describe('runHCM', () => {
     });
     const loggerSpy = createLoggerSpy();
     await expect(
-      runHCM({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir, loggerSpy),
+      runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), loggerSpy),
     ).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
     expect(loggerSpy.logDiagnostics.mock.calls[0]![0]).toStrictEqual(
