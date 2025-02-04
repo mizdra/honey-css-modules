@@ -1,7 +1,7 @@
 // eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable glob API
 import { glob, readFile } from 'node:fs/promises';
-import type { Diagnostic, HCMConfig, IsProjectFile, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
-import { createDts, createIsProjectFile, createResolver, parseCSSModule, resolveConfig } from 'honey-css-modules-core';
+import type { Diagnostic, IsProjectFile, ResolvedHCMConfig, Resolver } from 'honey-css-modules-core';
+import { createDts, createIsProjectFile, createResolver, parseCSSModule } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
@@ -40,15 +40,13 @@ async function processFile(
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(config: HCMConfig, rootDir: string, logger: Logger): Promise<void> {
-  const resolvedConfig = resolveConfig(config, rootDir);
-  const { pattern, alias } = resolvedConfig;
-  const resolver = createResolver(alias);
-  const isProjectFile = createIsProjectFile(resolvedConfig);
+export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise<void> {
+  const resolver = createResolver(config.alias);
+  const isProjectFile = createIsProjectFile(config);
 
   const promises: Promise<Diagnostic[]>[] = [];
-  for await (const fileName of glob(pattern)) {
-    promises.push(processFile(fileName, resolvedConfig, resolver, isProjectFile));
+  for await (const fileName of glob(config.pattern)) {
+    promises.push(processFile(fileName, config, resolver, isProjectFile));
   }
   const diagnostics = (await Promise.all(promises)).flat();
   if (diagnostics.length > 0) {
