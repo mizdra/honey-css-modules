@@ -12,6 +12,15 @@ describe('createResolver', () => {
       expect(resolve(specifier, { request })).toBe(path.resolve(expected));
     });
   });
+  describe('resolves absolute path', () => {
+    const resolve = createResolver({}, '/app');
+    test.each([
+      ['/app/a.module.css', '/app/request.module.css', '/app/a.module.css'],
+      ['/app/dir/a.module.css', '/app/request.module.css', '/app/dir/a.module.css'],
+    ])('resolves %s from %s', (specifier, request, expected) => {
+      expect(resolve(specifier, { request })).toBe(path.resolve(expected));
+    });
+  });
   describe('resolves alias', () => {
     describe('alias is used if import specifiers start with alias', () => {
       const resolve = createResolver({ '@': './alias', '#': 'alias' }, '/app');
@@ -39,6 +48,7 @@ describe('createResolver', () => {
       ['package', '/app/request.module.css'],
       ['@scope/package', '/app/request.module.css'],
       ['~package', '/app/request.module.css'],
+      ['file:///app/a.module.css', '/app/request.module.css'],
     ])('does not resolve %s from %s', (specifier, request) => {
       expect(resolve(specifier, { request })).toBe(undefined);
     });
