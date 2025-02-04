@@ -1,56 +1,56 @@
-import path from 'node:path';
+import { resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { createResolver } from './resolver.js';
 
 describe('createResolver', () => {
   describe('resolves relative path', () => {
-    const resolve = createResolver({});
+    const resolver = createResolver({});
     test.each([
-      ['./a.module.css', '/app/request.module.css', '/app/a.module.css'],
-      ['./dir/a.module.css', '/app/request.module.css', '/app/dir/a.module.css'],
+      ['./a.module.css', resolve('/app/request.module.css'), resolve('/app/a.module.css')],
+      ['./dir/a.module.css', resolve('/app/request.module.css'), resolve('/app/dir/a.module.css')],
     ])('resolves %s from %s', (specifier, request, expected) => {
-      expect(resolve(specifier, { request })).toBe(path.resolve(expected));
+      expect(resolver(specifier, { request })).toBe(expected);
     });
   });
   describe('resolves absolute path', () => {
-    const resolve = createResolver({});
+    const resolver = createResolver({});
     test.each([
-      ['/app/a.module.css', '/app/request.module.css', '/app/a.module.css'],
-      ['/app/dir/a.module.css', '/app/request.module.css', '/app/dir/a.module.css'],
+      [resolve('/app/a.module.css'), resolve('/app/request.module.css'), resolve('/app/a.module.css')],
+      [resolve('/app/dir/a.module.css'), resolve('/app/request.module.css'), resolve('/app/dir/a.module.css')],
     ])('resolves %s from %s', (specifier, request, expected) => {
-      expect(resolve(specifier, { request })).toBe(path.resolve(expected));
+      expect(resolver(specifier, { request })).toBe(expected);
     });
   });
   describe('resolves alias', () => {
     describe('alias is used if import specifiers start with alias', () => {
-      const resolve = createResolver({ '@': '/app/alias', '#': '/app/alias' });
+      const resolver = createResolver({ '@': resolve('/app/alias'), '#': resolve('/app/alias') });
       test.each([
-        ['@/a.module.css', '/app/request.module.css', '/app/alias/a.module.css'],
-        ['./@/a.module.css', '/app/request.module.css', '/app/@/a.module.css'],
-        ['@/dir/a.module.css', '/app/request.module.css', '/app/alias/dir/a.module.css'],
-        ['@/a.module.css', '/app/dir/request.module.css', '/app/alias/a.module.css'],
-        ['#/a.module.css', '/app/request.module.css', '/app/alias/a.module.css'],
+        ['@/a.module.css', resolve('/app/request.module.css'), resolve('/app/alias/a.module.css')],
+        ['./@/a.module.css', resolve('/app/request.module.css'), resolve('/app/@/a.module.css')],
+        ['@/dir/a.module.css', resolve('/app/request.module.css'), resolve('/app/alias/dir/a.module.css')],
+        ['@/a.module.css', resolve('/app/dir/request.module.css'), resolve('/app/alias/a.module.css')],
+        ['#/a.module.css', resolve('/app/request.module.css'), resolve('/app/alias/a.module.css')],
       ])('resolves %s from %s', (specifier, request, expected) => {
-        expect(resolve(specifier, { request })).toBe(path.resolve(expected));
+        expect(resolver(specifier, { request })).toBe(expected);
       });
     });
     test('the first alias is used if multiple aliases match', () => {
-      const resolve = createResolver({ '@': '/app/alias1', '@@': '/app/alias2' });
-      expect(resolve('@/a.module.css', { request: '/app/request.module.css' })).toBe(
-        path.resolve('/app/alias1/a.module.css'),
+      const resolver = createResolver({ '@': resolve('/app/alias1'), '@@': resolve('/app/alias2') });
+      expect(resolver('@/a.module.css', { request: resolve('/app/request.module.css') })).toBe(
+        resolve('/app/alias1/a.module.css'),
       );
     });
   });
   describe('does not resolve invalid path', () => {
-    const resolve = createResolver({});
+    const resolver = createResolver({});
     test.each([
-      ['http://example.com', '/app/request.module.css'],
-      ['package', '/app/request.module.css'],
-      ['@scope/package', '/app/request.module.css'],
-      ['~package', '/app/request.module.css'],
-      ['file:///app/a.module.css', '/app/request.module.css'],
+      ['http://example.com', resolve('/app/request.module.css')],
+      ['package', resolve('/app/request.module.css')],
+      ['@scope/package', resolve('/app/request.module.css')],
+      ['~package', resolve('/app/request.module.css')],
+      ['file:///app/a.module.css', resolve('/app/request.module.css')],
     ])('does not resolve %s from %s', (specifier, request) => {
-      expect(resolve(specifier, { request })).toBe(undefined);
+      expect(resolver(specifier, { request })).toBe(undefined);
     });
   });
 });
