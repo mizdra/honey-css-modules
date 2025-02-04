@@ -12,7 +12,7 @@ export interface HCMConfig {
   dtsOutDir: string;
   alias?: Record<string, string> | undefined;
   arbitraryExtensions?: boolean | undefined;
-  dashedIdents?: boolean | undefined;
+  // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
 }
 
 export function defineConfig(config: HCMConfig): HCMConfig {
@@ -118,7 +118,7 @@ export function resolveConfig(config: HCMConfig, cwd: string): ResolvedHCMConfig
     dtsOutDir: join(cwd, config.dtsOutDir),
     alias: resolveAlias(config.alias, cwd),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
-    dashedIdents: config.dashedIdents ?? false,
+    dashedIdents: false, // TODO: Support dashedIdents
     cwd,
   };
 }
