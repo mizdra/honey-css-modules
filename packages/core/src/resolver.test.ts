@@ -3,31 +3,27 @@ import { describe, expect, test } from 'vitest';
 import { createResolver } from './resolver.js';
 
 describe('createResolver', () => {
-  test('resolves relative path', () => {
+  describe('resolves relative path', () => {
     const resolve = createResolver({}, '/app');
-    expect(resolve('./a.module.css', { request: '/app/request.module.css' })).toBe(path.resolve('/app/a.module.css'));
-    expect(resolve('./dir/a.module.css', { request: '/app/request.module.css' })).toBe(
-      path.resolve('/app/dir/a.module.css'),
-    );
+    test.each([
+      ['./a.module.css', '/app/request.module.css', '/app/a.module.css'],
+      ['./dir/a.module.css', '/app/request.module.css', '/app/dir/a.module.css'],
+    ])('resolves %s from %s', (specifier, request, expected) => {
+      expect(resolve(specifier, { request })).toBe(path.resolve(expected));
+    });
   });
   describe('resolves alias', () => {
-    test('alias is used if import specifiers start with alias', () => {
+    describe('alias is used if import specifiers start with alias', () => {
       const resolve = createResolver({ '@': './alias', '#': 'alias' }, '/app');
-      expect(resolve('@/a.module.css', { request: '/app/request.module.css' })).toBe(
-        path.resolve('/app/alias/a.module.css'),
-      );
-      expect(resolve('./@/a.module.css', { request: '/app/request.module.css' })).toBe(
-        path.resolve('/app/@/a.module.css'),
-      );
-      expect(resolve('@/dir/a.module.css', { request: '/app/request.module.css' })).toBe(
-        path.resolve('/app/alias/dir/a.module.css'),
-      );
-      expect(resolve('@/a.module.css', { request: '/app/dir/request.module.css' })).toBe(
-        path.resolve('/app/alias/a.module.css'),
-      );
-      expect(resolve('#/a.module.css', { request: '/app/request.module.css' })).toBe(
-        path.resolve('/app/alias/a.module.css'),
-      );
+      test.each([
+        ['@/a.module.css', '/app/request.module.css', '/app/alias/a.module.css'],
+        ['./@/a.module.css', '/app/request.module.css', '/app/@/a.module.css'],
+        ['@/dir/a.module.css', '/app/request.module.css', '/app/alias/dir/a.module.css'],
+        ['@/a.module.css', '/app/dir/request.module.css', '/app/alias/a.module.css'],
+        ['#/a.module.css', '/app/request.module.css', '/app/alias/a.module.css'],
+      ])('resolves %s from %s', (specifier, request, expected) => {
+        expect(resolve(specifier, { request })).toBe(path.resolve(expected));
+      });
     });
     test('the first alias is used if multiple aliases match', () => {
       const resolve = createResolver({ '@': './alias1', '@@': './alias2' }, '/app');
@@ -36,11 +32,15 @@ describe('createResolver', () => {
       );
     });
   });
-  test('does not resolve invalid path', () => {
+  describe('does not resolve invalid path', () => {
     const resolve = createResolver({}, '/app');
-    expect(resolve('http://example.com', { request: '/app/request.module.css' })).toBe(undefined);
-    expect(resolve('package', { request: '/app/request.module.css' })).toBe(undefined);
-    expect(resolve('@scope/package', { request: '/app/request.module.css' })).toBe(undefined);
-    expect(resolve('~package', { request: '/app/request.module.css' })).toBe(undefined);
+    test.each([
+      ['http://example.com', '/app/request.module.css'],
+      ['package', '/app/request.module.css'],
+      ['@scope/package', '/app/request.module.css'],
+      ['~package', '/app/request.module.css'],
+    ])('does not resolve %s from %s', (specifier, request) => {
+      expect(resolve(specifier, { request })).toBe(undefined);
+    });
   });
 });
