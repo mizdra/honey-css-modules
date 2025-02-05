@@ -1,6 +1,6 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { IsProjectFile, ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
+import type { MatchesPattern, ResolvedHCMConfig, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
 import { createDts, parseCSSModule } from 'honey-css-modules-core';
 import ts from 'typescript';
 
@@ -23,11 +23,11 @@ export interface CSSModuleScript extends SourceScript<string> {
 export function createCSSModuleLanguagePlugin(
   config: ResolvedHCMConfig,
   resolver: Resolver,
-  isProjectFile: IsProjectFile,
+  matchesPattern: MatchesPattern,
 ): LanguagePlugin<string, VirtualCode> {
   return {
     getLanguageId(scriptId) {
-      if (!isProjectFile(scriptId)) return undefined;
+      if (!matchesPattern(scriptId)) return undefined;
       return LANGUAGE_ID;
     },
     createVirtualCode(scriptId, languageId, snapshot): CSSModuleVirtualCode | undefined {
@@ -44,7 +44,7 @@ export function createCSSModuleLanguagePlugin(
       });
       // TODO: Report diagnostics
       if (cssModule === undefined) return undefined;
-      const { text, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, isProjectFile });
+      const { text, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, matchesPattern });
       return {
         id: 'main',
         languageId: LANGUAGE_ID,

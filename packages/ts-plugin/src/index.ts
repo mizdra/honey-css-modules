@@ -1,6 +1,6 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
 import type { ResolvedHCMConfig } from 'honey-css-modules-core';
-import { createIsProjectFile, createResolver, readConfigFile } from 'honey-css-modules-core';
+import { createMatchesPattern, createResolver, readConfigFile } from 'honey-css-modules-core';
 import { ConfigNotFoundError } from 'honey-css-modules-core';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 import { proxyLanguageService } from './language-service/proxy.js';
@@ -26,10 +26,10 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   }
 
   const resolver = createResolver(config.alias);
-  const isProjectFile = createIsProjectFile(config);
+  const matchesPattern = createMatchesPattern(config);
 
   return {
-    languagePlugins: [createCSSModuleLanguagePlugin(config, resolver, isProjectFile)],
+    languagePlugins: [createCSSModuleLanguagePlugin(config, resolver, matchesPattern)],
     setup: (language) => {
       info.languageService = proxyLanguageService(language, info.languageService, info.project);
     },
