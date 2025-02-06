@@ -19,10 +19,12 @@
     "lint:tsc": "tsc -b",
     "lint:eslint": "eslint --cache --cache-strategy content .",
     "lint:prettier": "prettier --cache --check .",
-    "test": "vitest --project unit",
-    "e2e": "run-s -c e2e:build e2e:vitest",
-    "e2e:build": "npm run build",
-    "e2e:vitest": "vitest --project e2e"
+    "test": "run-s -c test:build test:vitest",
+    "test:build": "npm run build",
+    "test:vitest": "vitest --no-watch",
+    "test-watch": "run-p test-watch:*",
+    "test-watch:build": "npm run build -- --watch --preserveWatchOutput",
+    "test-watch:vitest": "vitest --watch"
   },
   "prettier": "@mizdra/prettier-config-mizdra",
   "devDependencies": {

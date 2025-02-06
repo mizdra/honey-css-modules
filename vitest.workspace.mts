@@ -17,6 +17,13 @@ export default defineWorkspace([
     test: {
       name: 'e2e',
       include: ['packages/*/e2e/**/*.test.ts'],
+      forceRerunTriggers: [
+        '**/package.json/**',
+        '**/vitest.config.*/**',
+        '**/vite.config.*/**',
+        'packages/codegen/bin/hcm.js',
+        'packages/ts-plugin/dist/index.js',
+      ],
     },
   }),
 ]);
