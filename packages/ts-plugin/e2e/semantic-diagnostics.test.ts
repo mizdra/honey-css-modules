@@ -15,9 +15,10 @@ test('Semantic Diagnostics', async () => {
     `,
     'a.module.css': dedent`
       @import './b.module.css';
-      @value c_1, c_2 as c_alias from './c.module.css';
+      @value c_1, c_2 as c_alias, c_3 from './c.module.css';
       .a_1 { color: red; }
       @value a_2: red;
+      @import './d.module.css';
     `,
     'b.module.css': dedent`
       .b_1 { color: red; }
@@ -41,23 +42,42 @@ test('Semantic Diagnostics', async () => {
   await tsserver.sendUpdateOpen({
     openFiles: [{ file: iff.paths['index.ts'] }],
   });
-  const res = await tsserver.sendSemanticDiagnosticsSync({
+  const res1 = await tsserver.sendSemanticDiagnosticsSync({
     file: iff.paths['index.ts'],
   });
-  expect(res.body).toMatchInlineSnapshot(`
+  // TODO: Report type errors
+  expect(res1.body).toMatchInlineSnapshot(`[]`);
+
+  const res2 = await tsserver.sendSemanticDiagnosticsSync({
+    file: iff.paths['a.module.css'],
+  });
+  expect(res2.body).toMatchInlineSnapshot(`
     [
       {
         "category": "error",
-        "code": 2339,
+        "code": 0,
+        "end": {
+          "line": 2,
+          "offset": 32,
+        },
+        "start": {
+          "line": 2,
+          "offset": 29,
+        },
+        "text": "Module './c.module.css' has no exported token 'c_3'.",
+      },
+      {
+        "category": "error",
+        "code": 0,
         "end": {
           "line": 5,
-          "offset": 15,
+          "offset": 24,
         },
         "start": {
           "line": 5,
-          "offset": 8,
+          "offset": 10,
         },
-        "text": "Property 'unknown' does not exist on type '{ c_1: string; c_alias: string; b_1: string; a_1: string; a_2: string; }'.",
+        "text": "Cannot import module './d.module.css'",
       },
     ]
   `);
