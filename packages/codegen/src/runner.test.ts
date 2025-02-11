@@ -1,10 +1,24 @@
 import { access, chmod, readFile } from 'node:fs/promises';
+import dedent from 'dedent';
+import type { Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
 import { resolveConfig } from '../../core/src/config.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 import { runHCM } from './runner.js';
 import { createIFF } from './test/fixture.js';
+
+function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
+  return {
+    ...diagnostic,
+    ...(diagnostic.fileName ?
+      { fileName: diagnostic.fileName.replace(rootDir, '<rootDir>').replace(/\\/gu, '/') }
+    : {}),
+  };
+}
+function formatDiagnostics(diagnostics: Diagnostic[], rootDir: string) {
+  return diagnostics.map((diagnostic) => formatDiagnostic(diagnostic, rootDir));
+}
 
 class ProcessExitError extends Error {
   exitCode: string | number | null | undefined;
@@ -107,7 +121,7 @@ describe('runHCM', () => {
     `);
     await expect(access(iff.join('generated/src/b.css.d.ts'))).rejects.toThrow();
   });
-  test('reports diagnostics', async () => {
+  test('reports syntactic diagnostics', async () => {
     const iff = await createIFF({
       'src/a.module.css': '.a1 {',
       'src/b.module.css': '@value;',
@@ -117,33 +131,81 @@ describe('runHCM', () => {
       runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), loggerSpy),
     ).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
-    expect(loggerSpy.logDiagnostics.mock.calls[0]![0]).toStrictEqual(
-      expect.arrayContaining([
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+      [
         {
-          type: 'syntactic',
-          category: 'error',
-          fileName: iff.paths['src/a.module.css'],
-          start: {
-            column: 1,
-            line: 1,
+          "category": "error",
+          "fileName": "<rootDir>/src/a.module.css",
+          "start": {
+            "column": 1,
+            "line": 1,
           },
-          text: 'Unclosed block',
+          "text": "Unclosed block",
+          "type": "syntactic",
         },
         {
-          type: 'syntactic',
-          category: 'error',
-          fileName: iff.paths['src/b.module.css'],
-          start: {
-            column: 1,
-            line: 1,
+          "category": "error",
+          "end": {
+            "column": 8,
+            "line": 1,
           },
-          end: {
-            column: 8,
-            line: 1,
+          "fileName": "<rootDir>/src/b.module.css",
+          "start": {
+            "column": 1,
+            "line": 1,
           },
-          text: '`@value` is a invalid syntax.',
+          "text": "\`@value\` is a invalid syntax.",
+          "type": "syntactic",
         },
-      ]),
-    );
+      ]
+    `);
+  });
+  test('reports semantic diagnostics', async () => {
+    const iff = await createIFF({
+      'src/a.module.css': dedent`
+        @value b_1, b_2 from "./b.module.css";
+      `,
+      'src/b.module.css': dedent`
+        @value b_1: red;
+        @import "./c.module.css";
+      `,
+    });
+    const loggerSpy = createLoggerSpy();
+    await expect(
+      runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), loggerSpy),
+    ).rejects.toThrow(ProcessExitError);
+    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+      [
+        {
+          "category": "error",
+          "end": {
+            "column": 16,
+            "line": 1,
+          },
+          "fileName": "<rootDir>/src/a.module.css",
+          "start": {
+            "column": 13,
+            "line": 1,
+          },
+          "text": "Module './b.module.css' has no exported token 'b_2'.",
+          "type": "semantic",
+        },
+        {
+          "category": "error",
+          "end": {
+            "column": 24,
+            "line": 2,
+          },
+          "fileName": "<rootDir>/src/b.module.css",
+          "start": {
+            "column": 10,
+            "line": 2,
+          },
+          "text": "Cannot import module './c.module.css'",
+          "type": "semantic",
+        },
+      ]
+    `);
   });
 });

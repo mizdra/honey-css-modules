@@ -31,7 +31,13 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   return {
     languagePlugins: [createCSSModuleLanguagePlugin(config, resolver, matchesPattern)],
     setup: (language) => {
-      info.languageService = proxyLanguageService(language, info.languageService, info.project);
+      info.languageService = proxyLanguageService(
+        language,
+        info.languageService,
+        info.project,
+        resolver,
+        matchesPattern,
+      );
     },
   };
 });

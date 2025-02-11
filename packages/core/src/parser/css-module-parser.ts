@@ -151,7 +151,7 @@ export interface ParseCSSModuleOptions {
   safe: boolean;
 }
 
-interface ParseCSSModuleResult {
+export interface ParseCSSModuleResult {
   cssModule: CSSModule;
   diagnostics: SyntacticDiagnostic[];
 }
