@@ -1,4 +1,5 @@
 import { access, chmod, readFile } from 'node:fs/promises';
+import dedent from 'dedent';
 import type { Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
 import { resolveConfig } from '../../core/src/config.js';
@@ -155,6 +156,54 @@ describe('runHCM', () => {
           },
           "text": "\`@value\` is a invalid syntax.",
           "type": "syntactic",
+        },
+      ]
+    `);
+  });
+  test('reports semantic diagnostics', async () => {
+    const iff = await createIFF({
+      'src/a.module.css': dedent`
+        @value b_1, b_2 from "./b.module.css";
+      `,
+      'src/b.module.css': dedent`
+        @value b_1: red;
+        @import "./c.module.css";
+      `,
+    });
+    const loggerSpy = createLoggerSpy();
+    await expect(
+      runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), loggerSpy),
+    ).rejects.toThrow(ProcessExitError);
+    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+      [
+        {
+          "category": "error",
+          "end": {
+            "column": 16,
+            "line": 1,
+          },
+          "fileName": "<rootDir>/src/a.module.css",
+          "start": {
+            "column": 13,
+            "line": 1,
+          },
+          "text": "Module './b.module.css' has no exported token 'b_2'.",
+          "type": "semantic",
+        },
+        {
+          "category": "error",
+          "end": {
+            "column": 24,
+            "line": 2,
+          },
+          "fileName": "<rootDir>/src/b.module.css",
+          "start": {
+            "column": 10,
+            "line": 2,
+          },
+          "text": "Cannot import module './c.module.css'",
+          "type": "semantic",
         },
       ]
     `);

@@ -3,12 +3,20 @@ import { glob, readFile } from 'node:fs/promises';
 import type {
   CSSModule,
   MatchesPattern,
+  ParseCSSModuleResult,
   ResolvedHCMConfig,
   Resolver,
+  SemanticDiagnostic,
   SyntacticDiagnostic,
 } from 'honey-css-modules-core';
-import { createDts, createMatchesPattern, createResolver, parseCSSModule } from 'honey-css-modules-core';
-import type { ParseCSSModuleResult } from '../../core/src/parser/css-module-parser.js';
+import {
+  checkCSSModule,
+  createDts,
+  createExportBuilder,
+  createMatchesPattern,
+  createResolver,
+  parseCSSModule,
+} from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
@@ -68,6 +76,20 @@ export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise
 
   if (syntacticDiagnostics.length > 0) {
     logger.logDiagnostics(syntacticDiagnostics);
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+
+  const getCSSModule = (path: string) => cssModuleMap.get(path);
+  const exportBuilder = createExportBuilder({ getCSSModule, matchesPattern, resolver });
+  const semanticDiagnostics: SemanticDiagnostic[] = [];
+  for (const { cssModule } of parseResults) {
+    const diagnostics = checkCSSModule(cssModule, exportBuilder, matchesPattern, resolver, getCSSModule);
+    semanticDiagnostics.push(...diagnostics);
+  }
+
+  if (semanticDiagnostics.length > 0) {
+    logger.logDiagnostics(semanticDiagnostics);
     // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }

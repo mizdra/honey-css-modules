@@ -9,6 +9,7 @@ export {
   type TokenImporter,
   type AtValueTokenImporter,
   type AtValueTokenImporterValue,
+  type ParseCSSModuleResult,
 } from './parser/css-module-parser.js';
 export { type Location, type Position } from './parser/location.js';
 export { parseRule } from './parser/rule-parser.js';
@@ -29,3 +30,5 @@ export {
   type MatchesPattern,
   createMatchesPattern,
 } from './file.js';
+export { checkCSSModule } from './checker.js';
+export { type ExportBuilder, createExportBuilder } from './export-builder.js';
