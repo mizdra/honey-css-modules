@@ -18,7 +18,7 @@ import {
   parseCSSModule,
 } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
-import { ReadCSSModuleFileError } from './error.js';
+import { GlobError, ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 
 /**
@@ -56,6 +56,7 @@ async function writeDtsByCSSModule(
 
 /**
  * Run honey-css-modules .d.ts generation.
+ * @throws {GlobError} When failed to retrieve files by glob pattern.
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
@@ -66,8 +67,22 @@ export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise
   const cssModuleMap = new Map<string, CSSModule>();
   const syntacticDiagnostics: SyntacticDiagnostic[] = [];
 
-  // TODO: Handle errors for glob
-  const fileNames = await Array.fromAsync(glob(config.pattern));
+  let fileNames: string[];
+  try {
+    fileNames = await Array.fromAsync(glob(config.pattern));
+  } catch (error) {
+    throw new GlobError(config.pattern, error);
+  }
+  if (fileNames.length === 0) {
+    logger.logDiagnostics([
+      {
+        type: 'semantic',
+        category: 'warning',
+        text: `No files found by pattern ${config.pattern}.`,
+      },
+    ]);
+    return;
+  }
   const parseResults = await Promise.all(fileNames.map(async (fileName) => parseCSSModuleByFileName(fileName, config)));
   for (const parseResult of parseResults) {
     cssModuleMap.set(parseResult.cssModule.fileName, parseResult.cssModule);
@@ -99,5 +114,4 @@ export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise
       writeDtsByCSSModule(parseResult.cssModule, config, resolver, matchesPattern),
     ),
   );
-  // TODO: Logging completion message
 }

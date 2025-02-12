@@ -3,7 +3,7 @@ import dedent from 'dedent';
 import type { Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
 import { resolveConfig } from '../../core/src/config.js';
-import { ReadCSSModuleFileError } from './error.js';
+import { GlobError, ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 import { runHCM } from './runner.js';
 import { createIFF } from './test/fixture.js';
@@ -11,6 +11,7 @@ import { createIFF } from './test/fixture.js';
 function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
   return {
     ...diagnostic,
+    text: diagnostic.text.replace(rootDir, '<rootDir>').replace(/\\/gu, '/'),
     ...(diagnostic.fileName ?
       { fileName: diagnostic.fileName.replace(rootDir, '<rootDir>').replace(/\\/gu, '/') }
     : {}),
@@ -93,6 +94,30 @@ describe('runHCM', () => {
       export default styles;
       "
     `);
+  });
+  test('warns when no files found by `pattern`', async () => {
+    const iff = await createIFF({});
+    const loggerSpy = createLoggerSpy();
+    await runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), loggerSpy);
+    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+      [
+        {
+          "category": "warning",
+          "text": "No files found by pattern <rootDir>/src/**/*.module.css.",
+          "type": "semantic",
+        },
+      ]
+    `);
+  });
+  test.runIf(process.platform !== 'win32')('throws error when failed to retrieve files by glob pattern', async () => {
+    const iff = await createIFF({
+      'src/a.module.css': '.a1 { color: red; }',
+    });
+    await chmod(iff.paths['src'], 0o200); // Remove read permission
+    await expect(
+      runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), createLoggerSpy()),
+    ).rejects.toThrow(GlobError);
   });
   test.runIf(process.platform !== 'win32')('throws error when failed to read CSS Module file', async () => {
     const iff = await createIFF({

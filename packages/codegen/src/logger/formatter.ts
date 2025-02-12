@@ -40,6 +40,8 @@ function formatCategory(category: DiagnosticCategory): string {
   switch (category) {
     case 'error':
       return styleText('red', 'error');
+    case 'warning':
+      return styleText('yellow', 'warning');
     default:
       throw new Error(`Unknown diagnostic category: ${String(category)}`);
   }
