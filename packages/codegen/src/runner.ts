@@ -114,5 +114,4 @@ export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise
       writeDtsByCSSModule(parseResult.cssModule, config, resolver, matchesPattern),
     ),
   );
-  // TODO: Logging completion message
 }
