@@ -49,8 +49,6 @@ export function createCSSModuleLanguagePlugin(
         // So, ts-plugin uses a fault-tolerant Parser to parse CSS.
         safe: true,
       });
-      // TODO: Report diagnostics
-      if (cssModule === undefined) return undefined;
       const { text, mapping, linkedCodeMapping } = createDts(cssModule, { resolver, matchesPattern });
       return {
         id: 'main',

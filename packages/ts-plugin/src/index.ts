@@ -7,7 +7,7 @@ import { proxyLanguageService } from './language-service/proxy.js';
 
 const plugin = createLanguageServicePlugin((ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
-    info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] tsconfig.json not found`);
+    info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] info: Project is not configured`);
     return { languagePlugins: [] };
   }
   const cwd = info.project.getCurrentDirectory();
@@ -15,14 +15,23 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   let config: ResolvedHCMConfig;
   try {
     config = readConfigFile(cwd);
-    info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] Loaded config: ${JSON.stringify(config)}`);
+    // TODO: Print the config file path
+    info.project.projectService.logger.info(
+      `[ts-honey-css-modules-plugin] info: Config file is found in '${config.rootDir}'`,
+    );
   } catch (error) {
     // If the config file is not found, disable the plugin.
-    // TODO: Improve error handling
     if (error instanceof ConfigNotFoundError) {
       return { languagePlugins: [] };
+    } else {
+      let msg = `[ts-honey-css-modules-plugin] error: Fail to read config file`;
+      if (error instanceof Error) {
+        msg += `\n: ${error.message}`;
+        msg += `\n${error.stack}`;
+      }
+      info.project.projectService.logger.info(msg);
+      return { languagePlugins: [] };
     }
-    throw error;
   }
 
   const resolver = createResolver(config.alias);
