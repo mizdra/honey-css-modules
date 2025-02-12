@@ -8,7 +8,7 @@ test('Semantic Diagnostics', async () => {
   const iff = await createIFF({
     'index.ts': dedent`
       import styles from './a.module.css';
-      type Expected = { a_1: string, a_2: string, b_1: string, c_1: string, c_alias: string };
+      type Expected = { a_1: string, a_2: string, b_1: string, c_1: string, c_alias: string, c_3: unknown };
       const t1: Expected = styles;
       const t2: typeof styles = 0 as any as Expected;
       styles.unknown;
@@ -45,8 +45,23 @@ test('Semantic Diagnostics', async () => {
   const res1 = await tsserver.sendSemanticDiagnosticsSync({
     file: iff.paths['index.ts'],
   });
-  // TODO: Report type errors
-  expect(res1.body).toMatchInlineSnapshot(`[]`);
+  expect(res1.body).toMatchInlineSnapshot(`
+    [
+      {
+        "category": "error",
+        "code": 2339,
+        "end": {
+          "line": 5,
+          "offset": 15,
+        },
+        "start": {
+          "line": 5,
+          "offset": 8,
+        },
+        "text": "Property 'unknown' does not exist on type '{ c_1: string; c_alias: string; c_3: any; b_1: string; a_1: string; a_2: string; }'.",
+      },
+    ]
+  `);
 
   const res2 = await tsserver.sendSemanticDiagnosticsSync({
     file: iff.paths['a.module.css'],

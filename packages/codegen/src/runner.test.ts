@@ -51,14 +51,18 @@ describe('runHCM', () => {
       createLoggerSpy(),
     );
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
+      "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
         a1: '' as readonly string,
       };
       export default styles;
       "
     `);
     expect(await readFile(iff.join('generated/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
+      "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
         b1: '' as readonly string,
       };
       export default styles;
@@ -88,8 +92,10 @@ describe('runHCM', () => {
       createLoggerSpy(),
     );
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
-        ...(await import('./b.module.css')).default,
+      "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
+        ...anyToEmptyObject((await import('./b.module.css')).default),
       };
       export default styles;
       "
@@ -138,7 +144,9 @@ describe('runHCM', () => {
       createLoggerSpy(),
     );
     expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
-      "declare const styles = {
+      "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
         a1: '' as readonly string,
       };
       export default styles;
