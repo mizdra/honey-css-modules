@@ -35,7 +35,9 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
-        "text": "declare const styles = {};
+        "text": "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {};
       export default styles;
       ",
       }
@@ -67,8 +69,8 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
-            27,
-            60,
+            156,
+            189,
           ],
           "lengths": [
             6,
@@ -79,7 +81,9 @@ describe('createDts', () => {
             1,
           ],
         },
-        "text": "declare const styles = {
+        "text": "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
         local1: '' as readonly string,
         local2: '' as readonly string,
       };
@@ -127,27 +131,27 @@ describe('createDts', () => {
             9,
           ],
           "generatedOffsets": [
-            126,
-            198,
+            286,
+            372,
           ],
           "lengths": [
             9,
             16,
           ],
           "sourceOffsets": [
-            74,
-            139,
+            221,
+            300,
           ],
         },
         "mapping": {
           "generatedOffsets": [
-            44,
-            74,
-            99,
-            126,
-            139,
-            171,
-            198,
+            190,
+            221,
+            259,
+            286,
+            300,
+            345,
+            372,
           ],
           "lengths": [
             16,
@@ -168,10 +172,12 @@ describe('createDts', () => {
             4,
           ],
         },
-        "text": "declare const styles = {
-        ...(await import('./a.module.css')).default,
-        imported1: (await import('./b.module.css')).default.imported1,
-        aliasedImported2: (await import('./c.module.css')).default.imported2,
+        "text": "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
+        ...anyToEmptyObject((await import('./a.module.css')).default),
+        imported1: anyToUnknown((await import('./b.module.css')).default.imported1),
+        aliasedImported2: anyToUnknown((await import('./c.module.css')).default.imported2),
       };
       export default styles;
       ",
@@ -198,8 +204,8 @@ describe('createDts', () => {
         },
         "mapping": {
           "generatedOffsets": [
-            27,
-            77,
+            156,
+            223,
           ],
           "lengths": [
             6,
@@ -210,9 +216,11 @@ describe('createDts', () => {
             0,
           ],
         },
-        "text": "declare const styles = {
+        "text": "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
         local1: '' as readonly string,
-        ...(await import('./a.module.css')).default,
+        ...anyToEmptyObject((await import('./a.module.css')).default),
       };
       export default styles;
       ",
@@ -259,27 +267,27 @@ describe('createDts', () => {
             9,
           ],
           "generatedOffsets": [
-            126,
-            198,
+            286,
+            372,
           ],
           "lengths": [
             9,
             16,
           ],
           "sourceOffsets": [
-            74,
-            139,
+            221,
+            300,
           ],
         },
         "mapping": {
           "generatedOffsets": [
-            44,
-            74,
-            99,
-            126,
-            139,
-            171,
-            198,
+            190,
+            221,
+            259,
+            286,
+            300,
+            345,
+            372,
           ],
           "lengths": [
             16,
@@ -300,10 +308,12 @@ describe('createDts', () => {
             4,
           ],
         },
-        "text": "declare const styles = {
-        ...(await import('@/a.module.css')).default,
-        imported1: (await import('@/b.module.css')).default.imported1,
-        aliasedImported2: (await import('@/c.module.css')).default.imported2,
+        "text": "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {
+        ...anyToEmptyObject((await import('@/a.module.css')).default),
+        imported1: anyToUnknown((await import('@/b.module.css')).default.imported1),
+        aliasedImported2: anyToUnknown((await import('@/c.module.css')).default.imported2),
       };
       export default styles;
       ",
@@ -348,7 +358,9 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
-        "text": "declare const styles = {};
+        "text": "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {};
       export default styles;
       ",
       }
@@ -378,7 +390,9 @@ describe('createDts', () => {
           "lengths": [],
           "sourceOffsets": [],
         },
-        "text": "declare const styles = {};
+        "text": "function anyToEmptyObject<T>(val: T): 0 extends 1 & T ? {} : T;
+      function anyToUnknown<T>(val: T): 0 extends 1 & T ? unknown : T;
+      declare const styles = {};
       export default styles;
       ",
       }
