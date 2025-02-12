@@ -1,4 +1,4 @@
-export type DiagnosticCategory = 'error';
+export type DiagnosticCategory = 'error' | 'warning';
 
 export interface DiagnosticPosition {
   /** The line number in the source file. It is 1-based. */

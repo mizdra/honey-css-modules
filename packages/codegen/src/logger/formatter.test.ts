@@ -21,6 +21,24 @@ describe('formatDiagnostic', () => {
     const result = formatDiagnostic(diagnostic, cwd);
     expect(result.replaceAll('\\', '/')).toMatchInlineSnapshot(`"path/to/file.ts:1:2 - error: text"`);
   });
+  test('should format diagnostic with error category', () => {
+    const diagnostic: SemanticDiagnostic = {
+      type: 'semantic',
+      category: 'error',
+      text: 'error text',
+    };
+    const result = formatDiagnostic(diagnostic, cwd);
+    expect(result.replaceAll('\\', '/')).toMatchInlineSnapshot(`"error: error text"`);
+  });
+  test('should format diagnostic with warning category', () => {
+    const diagnostic: SemanticDiagnostic = {
+      type: 'semantic',
+      category: 'warning',
+      text: 'warning text',
+    };
+    const result = formatDiagnostic(diagnostic, cwd);
+    expect(result.replaceAll('\\', '/')).toMatchInlineSnapshot(`"warning: warning text"`);
+  });
 });
 
 test('formatSystemError', () => {
