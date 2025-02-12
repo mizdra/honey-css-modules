@@ -73,6 +73,16 @@ export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise
   } catch (error) {
     throw new GlobError(config.pattern, error);
   }
+  if (fileNames.length === 0) {
+    logger.logDiagnostics([
+      {
+        type: 'semantic',
+        category: 'warning',
+        text: `No files found by pattern ${config.pattern}.`,
+      },
+    ]);
+    return;
+  }
   const parseResults = await Promise.all(fileNames.map(async (fileName) => parseCSSModuleByFileName(fileName, config)));
   for (const parseResult of parseResults) {
     cssModuleMap.set(parseResult.cssModule.fileName, parseResult.cssModule);

@@ -11,6 +11,7 @@ import { createIFF } from './test/fixture.js';
 function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
   return {
     ...diagnostic,
+    text: diagnostic.text.replace(rootDir, '<rootDir>').replace(/\\/gu, '/'),
     ...(diagnostic.fileName ?
       { fileName: diagnostic.fileName.replace(rootDir, '<rootDir>').replace(/\\/gu, '/') }
     : {}),
@@ -92,6 +93,21 @@ describe('runHCM', () => {
       };
       export default styles;
       "
+    `);
+  });
+  test('warns when no files found by `pattern`', async () => {
+    const iff = await createIFF({});
+    const loggerSpy = createLoggerSpy();
+    await runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), loggerSpy);
+    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+      [
+        {
+          "category": "warning",
+          "text": "No files found by pattern <rootDir>/src/**/*.module.css.",
+          "type": "semantic",
+        },
+      ]
     `);
   });
   test.runIf(process.platform !== 'win32')('throws error when failed to retrieve files by glob pattern', async () => {
