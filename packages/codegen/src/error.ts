@@ -11,3 +11,9 @@ export class ReadCSSModuleFileError extends SystemError {
     super('READ_CSS_MODULE_FILE_ERROR', `Failed to read CSS Module file ${fileName}.`, { cause });
   }
 }
+
+export class GlobError extends SystemError {
+  constructor(pattern: string, cause: unknown) {
+    super('GLOB_ERROR', `Failed to retrieve files by glob pattern ${pattern}.`, { cause });
+  }
+}

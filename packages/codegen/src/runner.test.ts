@@ -3,7 +3,7 @@ import dedent from 'dedent';
 import type { Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
 import { resolveConfig } from '../../core/src/config.js';
-import { ReadCSSModuleFileError } from './error.js';
+import { GlobError, ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 import { runHCM } from './runner.js';
 import { createIFF } from './test/fixture.js';
@@ -93,6 +93,15 @@ describe('runHCM', () => {
       export default styles;
       "
     `);
+  });
+  test.runIf(process.platform !== 'win32')('throws error when failed to retrieve files by glob pattern', async () => {
+    const iff = await createIFF({
+      'src/a.module.css': '.a1 { color: red; }',
+    });
+    await chmod(iff.paths['src'], 0o200); // Remove read permission
+    await expect(
+      runHCM(resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir), createLoggerSpy()),
+    ).rejects.toThrow(GlobError);
   });
   test.runIf(process.platform !== 'win32')('throws error when failed to read CSS Module file', async () => {
     const iff = await createIFF({
