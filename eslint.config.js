@@ -34,6 +34,10 @@ export default [
           name: 'node:buffer',
           message: 'Use Uint8Array instead.',
         },
+        {
+          name: 'node:path',
+          message: 'Use original path package instead.',
+        },
       ],
       // Disable because it does not work in the workspace
       // ref: https://github.com/eslint-community/eslint-plugin-n/issues/209
