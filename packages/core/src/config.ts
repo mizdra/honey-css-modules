@@ -59,6 +59,9 @@ export function readConfigFile(cwd: string): ResolvedHCMConfig {
  * @throws {TsConfigFileError}
  * @throws {ConfigValidationError}
  */
+// TODO: Read `compilerOptions.paths` instead of `hcmOptions.paths`
+// TODO: Read `include`/`exclude`/`files` instead of `hcmOptions.pattern`
+// TODO: Allow `extends` options to inherit `hcmOptions`
 export function readRawConfigFile(searchPath: string): HCMConfig {
   const configFileName = ts.findConfigFile(searchPath, ts.sys.fileExists.bind(ts.sys));
   if (!configFileName) throw new TsConfigFileNotFoundError();
