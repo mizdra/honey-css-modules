@@ -84,7 +84,7 @@ export function findConfigFile(project: string): string | undefined {
 export function readRawConfigFile(project: string): { configFileName: string; rawConfig: HCMConfig } {
   const configFileName = findConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
-  const configFile = ts.readConfigFile(configFileName, ts.sys.readFile.bind(ts.sys));
+  const configFile = ts.readConfigFile(configFileName.replaceAll('\\', '/'), ts.sys.readFile.bind(ts.sys));
   if (configFile.error) throw new TsConfigFileError(configFile.error);
 
   const config = ts.parseJsonConfigFileContent(
