@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
-import { join } from 'node:path';
 import dedent from 'dedent';
+import { join } from 'honey-css-modules-core';
 import { expect, test } from 'vitest';
 import { createIFF } from '../src/test/fixture.js';
 

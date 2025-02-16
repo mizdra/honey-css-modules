@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises';
-import { resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { findComponentFile, getCssModuleFileName, isComponentFileName, isCSSModuleFile } from './file.js';
 import { createIFF } from './test/fixture.js';
@@ -17,8 +16,8 @@ describe('isCSSModuleFile', () => {
 });
 
 test('getCssModuleFileName', () => {
-  expect(getCssModuleFileName(resolve('/path/to/file.tsx'))).toBe(resolve('/path/to/file.module.css'));
-  expect(getCssModuleFileName(resolve('/path/to/file.ts'))).toBe(resolve('/path/to/file.module.css'));
+  expect(getCssModuleFileName('/path/to/file.tsx')).toBe('/path/to/file.module.css');
+  expect(getCssModuleFileName('/path/to/file.ts')).toBe('/path/to/file.module.css');
 });
 
 describe('isComponentFileName', () => {

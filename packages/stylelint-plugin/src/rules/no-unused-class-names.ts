@@ -1,5 +1,4 @@
-import { basename } from 'node:path';
-import { findComponentFile, isCSSModuleFile, parseRule } from 'honey-css-modules-core';
+import { basename, findComponentFile, isCSSModuleFile, parseRule } from 'honey-css-modules-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
 import { readFile } from '../util.js';

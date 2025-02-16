@@ -1,5 +1,5 @@
-import { join } from 'node:path';
 import dedent from 'dedent';
+import { join } from 'honey-css-modules-core';
 import type ts from 'typescript';
 import { describe, expect, test } from 'vitest';
 import { createIFF } from './test/fixture.js';
@@ -31,7 +31,7 @@ describe('Completion', async () => {
       {
         "compilerOptions": {
           "jsx": "react-jsx",
-          "types": ["${formatPath(reactDtsPath)}"]
+          "types": ["${reactDtsPath}"]
         },
         "hcmOptions": {
           "pattern": "**/*.module.css",

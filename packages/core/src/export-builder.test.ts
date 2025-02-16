@@ -1,7 +1,7 @@
-import { resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { createExportBuilder } from './export-builder.js';
 import type { CSSModule } from './parser/css-module-parser.js';
+import { resolve } from './path.js';
 import { createResolver } from './resolver.js';
 import { createAtImportTokenImporter, createAtValueTokenImporter, createToken } from './test/token.js';
 

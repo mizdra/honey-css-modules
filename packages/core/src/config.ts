@@ -1,6 +1,6 @@
-import { basename, dirname, join, resolve } from 'node:path';
 import ts from 'typescript';
 import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
+import { basename, dirname, join, resolve } from './path.js';
 
 export interface HCMConfig {
   pattern: string;

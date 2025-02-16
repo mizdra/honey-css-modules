@@ -1,6 +1,11 @@
-import { relative } from 'node:path';
 import { styleText } from 'node:util';
-import type { Diagnostic, DiagnosticCategory, DiagnosticPosition, SystemError } from 'honey-css-modules-core';
+import {
+  type Diagnostic,
+  type DiagnosticCategory,
+  type DiagnosticPosition,
+  relative,
+  type SystemError,
+} from 'honey-css-modules-core';
 
 export function formatDiagnostic(diagnostic: Diagnostic, cwd: string): string {
   let result = '';

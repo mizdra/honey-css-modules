@@ -1,6 +1,6 @@
-import path, { isAbsolute } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import ts from 'typescript';
+import { isAbsolute, resolve } from './path.js';
 
 export interface ResolverOptions {
   /** The file that imports the specifier. It is a absolute path. */
@@ -31,15 +31,15 @@ export function createResolver(paths: Record<string, string[]>): Resolver {
     const { resolvedModule } = ts.resolveModuleName(specifier, options.request, { paths }, host);
     if (resolvedModule) {
       // TODO: Logging that the paths is used.
-      specifier = path.resolve(resolvedModule.resolvedFileName.replace(/\.module\.d\.css\.ts$/u, '.module.css'));
+      specifier = resolvedModule.resolvedFileName.replace(/\.module\.d\.css\.ts$/u, '.module.css');
     }
     if (isAbsolute(specifier)) {
-      return specifier;
+      return resolve(specifier);
     } else if (isRelativeSpecifier(specifier)) {
       // Convert the specifier to an absolute path
       // NOTE: Node.js resolves relative specifier with standard relative URL resolution semantics. So we will follow that here as well.
       // ref: https://nodejs.org/docs/latest-v23.x/api/esm.html#terminology
-      return fileURLToPath(new URL(specifier, pathToFileURL(options.request)).href);
+      return resolve(fileURLToPath(new URL(specifier, pathToFileURL(options.request)).href));
     } else {
       // Do not support URL or bare specifiers
       // TODO: Logging that the specifier could not resolve.

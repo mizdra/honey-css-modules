@@ -1,5 +1,5 @@
-import path, { join } from 'node:path';
 import type { ResolvedHCMConfig } from './config.js';
+import { join, matchesGlob, parse } from './path.js';
 
 const CSS_MODULE_EXTENSION = '.module.css';
 const COMPONENT_EXTENSIONS = ['.tsx', '.jsx'];
@@ -9,7 +9,7 @@ export function isCSSModuleFile(fileName: string): boolean {
 }
 
 export function getCssModuleFileName(tsFileName: string): string {
-  const { dir, name } = path.parse(tsFileName);
+  const { dir, name } = parse(tsFileName);
   return join(dir, `${name}${CSS_MODULE_EXTENSION}`);
 }
 
@@ -39,7 +39,5 @@ export async function findComponentFile(
 export type MatchesPattern = (fileName: string) => boolean;
 
 export function createMatchesPattern(config: ResolvedHCMConfig): MatchesPattern {
-  return (fileName: string) =>
-    // eslint-disable-next-line n/no-unsupported-features/node-builtins
-    path.matchesGlob(fileName, config.pattern);
+  return (fileName: string) => matchesGlob(fileName, config.pattern);
 }

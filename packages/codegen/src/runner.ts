@@ -16,6 +16,7 @@ import {
   createMatchesPattern,
   createResolver,
   parseCSSModule,
+  resolve,
 } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { GlobError, ReadCSSModuleFileError } from './error.js';
@@ -69,7 +70,7 @@ export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise
 
   let fileNames: string[];
   try {
-    fileNames = await Array.fromAsync(glob(config.pattern));
+    fileNames = (await Array.fromAsync(glob(config.pattern))).map((path) => resolve(path));
   } catch (error) {
     throw new GlobError(config.pattern, error);
   }
