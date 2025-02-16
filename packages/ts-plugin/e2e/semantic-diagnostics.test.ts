@@ -27,15 +27,13 @@ test('Semantic Diagnostics', async () => {
       @value c_1: red;
       @value c_2: red;
     `,
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: '**/*.module.css',
-        dtsOutDir: 'generated',
-      };
-    `,
     'tsconfig.json': dedent`
       {
-        "compilerOptions": {}
+        "compilerOptions": {},
+        "hcmOptions": {
+          "pattern": "**/*.module.css",
+          "dtsOutDir": "generated"
+        }
       }
     `,
   });

@@ -1,7 +1,7 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
 import type { ResolvedHCMConfig } from 'honey-css-modules-core';
 import { createMatchesPattern, createResolver, readConfigFile } from 'honey-css-modules-core';
-import { ConfigNotFoundError } from 'honey-css-modules-core';
+import { TsConfigFileNotFoundError } from 'honey-css-modules-core';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 import { proxyLanguageService } from './language-service/proxy.js';
 
@@ -21,7 +21,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     );
   } catch (error) {
     // If the config file is not found, disable the plugin.
-    if (error instanceof ConfigNotFoundError) {
+    if (error instanceof TsConfigFileNotFoundError) {
       return { languagePlugins: [] };
     } else {
       let msg = `[ts-honey-css-modules-plugin] error: Fail to read config file`;

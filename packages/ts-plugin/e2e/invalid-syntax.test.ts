@@ -14,15 +14,13 @@ describe('handle invalid syntax CSS without crashing', async () => {
       .a_1 { color: red; }
       .a_2 {
     `,
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: '**/*.module.css',
-        dtsOutDir: 'generated',
-      };
-    `,
     'tsconfig.json': dedent`
       {
-        "compilerOptions": {}
+        "compilerOptions": {},
+        "hcmOptions": {
+          "pattern": "**/*.module.css",
+          "dtsOutDir": "generated"
+        }
       }
     `,
   });

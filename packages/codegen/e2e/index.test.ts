@@ -17,12 +17,14 @@ test('generates .d.ts', async () => {
     `,
     'src/b.module.css': `.b1 { color: red; }`,
     'src/c.module.css': `.c1 { color: red; }`,
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: 'src/**/*.module.css',
-        dtsOutDir: 'dist',
-        paths: { '@/*': ['./src/*'] },
-      };
+    'tsconfig.json': dedent`
+      {
+        "hcmOptions": {
+          "pattern": "src/**/*.module.css",
+          "dtsOutDir": "dist",
+          "paths": { "@/*": ["./src/*"] }
+        }
+      }
     `,
   });
   const hcm = spawnSync('node', [binPath], {
@@ -66,7 +68,7 @@ test('reports system error', async () => {
   });
   expect(hcm.status).toBe(1);
   expect(hcm.stderr.toString()).toMatchInlineSnapshot(`
-    "error CONFIG_NOT_FOUND: No config file found. Did you forget to create hcm.config.{js,mjs,cjs}?
+    "error TS_CONFIG_NOT_FOUND: No tsconfig.json found.
     "
   `);
 });
@@ -85,11 +87,13 @@ test('generates .d.ts with circular import', async () => {
       @import './c.module.css';
       .c1 { color: red; }
     `,
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: 'src/**/*.module.css',
-        dtsOutDir: 'dist',
-      };
+    'tsconfig.json': dedent`
+      {
+        "hcmOptions": {
+          "pattern": "src/**/*.module.css",
+          "dtsOutDir": "dist"
+        }
+      }
     `,
   });
   const hcm = spawnSync('node', [binPath], {

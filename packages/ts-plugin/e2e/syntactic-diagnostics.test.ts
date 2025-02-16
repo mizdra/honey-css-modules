@@ -12,15 +12,13 @@ test('Syntactic Diagnostics', async () => {
       :local .a_2 { color: red; }
       .a-3 { color: red; }
     `,
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: '**/*.module.css',
-        dtsOutDir: 'generated',
-      };
-    `,
     'tsconfig.json': dedent`
       {
-        "compilerOptions": {}
+        "compilerOptions": {},
+        "hcmOptions": {
+          "pattern": "**/*.module.css",
+          "dtsOutDir": "generated"
+        }
       }
     `,
   });

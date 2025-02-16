@@ -27,17 +27,15 @@ describe('Completion', async () => {
     `,
     'a.module.css': '',
     'b.module.css': '',
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: '**/*.module.css',
-        dtsOutDir: 'generated',
-      };
-    `,
     'tsconfig.json': dedent`
       {
         "compilerOptions": {
           "jsx": "react-jsx",
-          "types": ["${formatPath(reactDtsPath)}"],
+          "types": ["${formatPath(reactDtsPath)}"]
+        },
+        "hcmOptions": {
+          "pattern": "**/*.module.css",
+          "dtsOutDir": "generated"
         }
       }
     `,

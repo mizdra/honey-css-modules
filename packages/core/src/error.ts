@@ -1,3 +1,5 @@
+import type ts from 'typescript';
+
 export class SystemError extends Error {
   code: string;
   constructor(code: string, message: string, cause?: unknown) {
@@ -6,15 +8,18 @@ export class SystemError extends Error {
   }
 }
 
-export class ConfigNotFoundError extends SystemError {
+export class TsConfigFileNotFoundError extends SystemError {
   constructor() {
-    super('CONFIG_NOT_FOUND', 'No config file found. Did you forget to create hcm.config.{js,mjs,cjs}?');
+    super('TS_CONFIG_NOT_FOUND', 'No tsconfig.json found.');
   }
 }
 
-export class ConfigImportError extends SystemError {
-  constructor(path: string, cause: unknown) {
-    super('CONFIG_IMPORT_ERROR', `Failed to import config file (${path}).`, { cause });
+export class TsConfigFileError extends SystemError {
+  constructor(error: ts.Diagnostic) {
+    super(
+      'TS_CONFIG_FILE_ERROR',
+      typeof error.messageText === 'string' ? error.messageText : error.messageText.messageText,
+    );
   }
 }
 

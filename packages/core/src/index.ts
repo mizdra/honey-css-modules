@@ -1,5 +1,5 @@
-export { defineConfig, type HCMConfig, readConfigFile, type ResolvedHCMConfig } from './config.js';
-export { ConfigNotFoundError, ConfigImportError, ConfigValidationError, SystemError } from './error.js';
+export { type HCMConfig, readConfigFile, type ResolvedHCMConfig } from './config.js';
+export { TsConfigFileNotFoundError, ConfigValidationError, SystemError } from './error.js';
 export {
   parseCSSModule,
   type ParseCSSModuleOptions,

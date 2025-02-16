@@ -19,16 +19,14 @@ describe('Rename File', async () => {
     'c.module.css': dedent`
       @value c_1: red;
     `,
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: '**/*.module.css',
-        dtsOutDir: 'generated',
-      };
-    `,
     'tsconfig.json': dedent`
       {
         "compilerOptions": {
           "paths": { "@/*": ["./*"] }
+        },
+        "hcmOptions": {
+          "pattern": "**/*.module.css",
+          "dtsOutDir": "generated"
         }
       }
     `,
