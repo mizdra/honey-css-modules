@@ -61,7 +61,7 @@ async function writeDtsByCSSModule(
  * @throws {WriteDtsFileError}
  */
 export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise<void> {
-  const resolver = createResolver(config.alias);
+  const resolver = createResolver(config.paths);
   const matchesPattern = createMatchesPattern(config);
 
   const cssModuleMap = new Map<string, CSSModule>();

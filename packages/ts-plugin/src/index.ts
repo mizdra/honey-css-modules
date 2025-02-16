@@ -34,7 +34,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     }
   }
 
-  const resolver = createResolver(config.alias);
+  const resolver = createResolver(config.paths);
   const matchesPattern = createMatchesPattern(config);
 
   return {
