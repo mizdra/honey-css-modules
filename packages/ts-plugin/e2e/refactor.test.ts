@@ -9,15 +9,13 @@ describe('Refactor', async () => {
   const iff = await createIFF({
     'a.tsx': '',
     'b.ts': '',
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: '**/*.module.css',
-        dtsOutDir: 'generated',
-      };
-    `,
     'tsconfig.json': dedent`
       {
-        "compilerOptions": { "jsx": "react-jsx" }
+        "compilerOptions": { "jsx": "react-jsx" },
+        "hcmOptions": {
+          "pattern": "**/*.module.css",
+          "dtsOutDir": "generated"
+        }
       }
     `,
   });

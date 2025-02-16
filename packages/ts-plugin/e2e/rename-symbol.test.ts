@@ -60,15 +60,13 @@ describe('Rename Symbol', async () => {
     'd.module.css': dedent`
       @value d_1: red;
     `,
-    'hcm.config.mjs': dedent`
-      export default {
-        pattern: '**/*.module.css',
-        dtsOutDir: 'generated',
-      };
-    `,
     'tsconfig.json': dedent`
       {
-        "compilerOptions": {}
+        "compilerOptions": {},
+        "hcmOptions": {
+          "pattern": "**/*.module.css",
+          "dtsOutDir": "generated"
+        }
       }
     `,
   });
