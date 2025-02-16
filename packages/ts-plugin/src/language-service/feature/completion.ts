@@ -1,4 +1,3 @@
-import { resolve } from 'node:path';
 import { getCssModuleFileName, isComponentFileName, STYLES_EXPORT_NAME } from 'honey-css-modules-core';
 import ts from 'typescript';
 
@@ -35,8 +34,7 @@ function isStylesEntryForCSSModuleFile(entry: ts.CompletionEntry, cssModuleFileN
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     entry.data.exportName === ts.InternalSymbolName.Default &&
     entry.data.fileName &&
-    // NOTE: In windows, `entry.data.fileName` is separated by `/`, but `cssModuleFileName` is separated by `\`. So we use `resolve` to normalize the path.
-    resolve(entry.data.fileName) === cssModuleFileName
+    entry.data.fileName === cssModuleFileName
   );
 }
 

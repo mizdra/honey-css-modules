@@ -1,9 +1,9 @@
-import { dirname, resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { createDts, type CreateDtsOptions } from './dts-creator.js';
+import { dirname, join } from './path.js';
 
 const options: CreateDtsOptions = {
-  resolver: (specifier, { request }) => resolve(dirname(request), specifier),
+  resolver: (specifier, { request }) => join(dirname(request), specifier),
   matchesPattern: () => true,
 };
 

@@ -11,10 +11,8 @@ import { createIFF } from './test/fixture.js';
 function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
   return {
     ...diagnostic,
-    text: diagnostic.text.replace(rootDir, '<rootDir>').replace(/\\/gu, '/'),
-    ...(diagnostic.fileName ?
-      { fileName: diagnostic.fileName.replace(rootDir, '<rootDir>').replace(/\\/gu, '/') }
-    : {}),
+    text: diagnostic.text.replace(rootDir, '<rootDir>'),
+    ...(diagnostic.fileName ? { fileName: diagnostic.fileName.replace(rootDir, '<rootDir>') } : {}),
   };
 }
 function formatDiagnostics(diagnostics: Diagnostic[], rootDir: string) {

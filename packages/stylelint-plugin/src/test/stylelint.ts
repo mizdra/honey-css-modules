@@ -1,3 +1,4 @@
+import { resolve } from 'honey-css-modules-core';
 import type stylelint from 'stylelint';
 
 function filterWarning(warning: stylelint.Warning) {
@@ -13,7 +14,7 @@ function filterWarning(warning: stylelint.Warning) {
 
 function formatLintResult(lintResult: stylelint.LintResult, rootDir: string) {
   return {
-    source: lintResult.source!.replace(rootDir, '<rootDir>').replace(/\\/gu, '/'),
+    source: resolve(lintResult.source!).replace(rootDir, '<rootDir>'),
     warnings: lintResult.warnings.map(filterWarning),
   };
 }

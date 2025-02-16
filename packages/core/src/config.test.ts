@@ -1,6 +1,6 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
-import { assertConfig, findConfigFile, readRawConfigFile } from './config.js';
+import { assertConfig, findConfigFile, readRawConfigFile, resolveConfig } from './config.js';
 import { TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
@@ -84,4 +84,44 @@ test('assertConfig', () => {
     `[Error: \`dashedIdents\` must be a boolean.]`,
   );
   expect(() => assertConfig({ pattern: 'str', dtsOutDir: 'str', dashedIdents: true })).not.toThrow();
+});
+
+describe('resolveConfig', () => {
+  test('resolves options', () => {
+    expect(
+      resolveConfig(
+        {
+          pattern: 'src/**/*.module.css',
+          dtsOutDir: 'generated',
+        },
+        '/app',
+      ),
+    ).toStrictEqual({
+      pattern: '/app/src/**/*.module.css',
+      dtsOutDir: '/app/generated',
+      arbitraryExtensions: false,
+      paths: {},
+      dashedIdents: false,
+      rootDir: '/app',
+    });
+  });
+  test('resolves paths', () => {
+    expect(
+      resolveConfig(
+        {
+          pattern: 'src/**/*.module.css',
+          dtsOutDir: 'generated',
+          paths: { '@/*': ['./*'] },
+        },
+        '/app',
+      ),
+    ).toStrictEqual({
+      pattern: '/app/src/**/*.module.css',
+      dtsOutDir: '/app/generated',
+      arbitraryExtensions: false,
+      paths: { '@/*': ['/app/*'] },
+      dashedIdents: false,
+      rootDir: '/app',
+    });
+  });
 });

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { resolve } from 'node:path';
 import { defineConfig, defineWorkspace } from 'vitest/config';
 
