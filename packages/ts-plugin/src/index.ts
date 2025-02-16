@@ -10,14 +10,13 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] info: Project is not configured`);
     return { languagePlugins: [] };
   }
-  const cwd = info.project.getCurrentDirectory();
 
   let config: ResolvedHCMConfig;
   try {
-    config = readConfigFile(cwd);
-    // TODO: Print the config file path
+    const readResult = readConfigFile(info.project.getProjectName());
+    config = readResult.config;
     info.project.projectService.logger.info(
-      `[ts-honey-css-modules-plugin] info: Config file is found in '${config.rootDir}'`,
+      `[ts-honey-css-modules-plugin] info: Config file is found '${readResult.configFileName}'`,
     );
   } catch (error) {
     // If the config file is not found, disable the plugin.

@@ -1,4 +1,4 @@
-import { dirname, join } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import ts from 'typescript';
 import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 
@@ -44,14 +44,33 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
   }
 }
 
+interface ReadConfigFileResult {
+  configFileName: string;
+  config: ResolvedHCMConfig;
+}
+
 /**
+ * @param project The path to the project directory or the path to `tsconfig.json`. It is absolute.
  * @throws {TsConfigFileNotFoundError}
  * @throws {TsConfigFileError}
  * @throws {ConfigValidationError}
  */
-export function readConfigFile(cwd: string): ResolvedHCMConfig {
-  const rawConfig = readRawConfigFile(cwd);
-  return resolveConfig(rawConfig, cwd);
+export function readConfigFile(project: string): ReadConfigFileResult {
+  const { configFileName, rawConfig } = readRawConfigFile(project);
+  const rootDir = dirname(configFileName);
+  return {
+    configFileName,
+    config: resolveConfig(rawConfig, rootDir),
+  };
+}
+
+export function findConfigFile(project: string): string | undefined {
+  const configFile =
+    ts.sys.directoryExists(project) ?
+      ts.findConfigFile(project, ts.sys.fileExists.bind(ts.sys), 'tsconfig.json')
+    : ts.findConfigFile(dirname(project), ts.sys.fileExists.bind(ts.sys), basename(project));
+  if (!configFile) return undefined;
+  return resolve(configFile);
 }
 
 /**
@@ -62,10 +81,10 @@ export function readConfigFile(cwd: string): ResolvedHCMConfig {
 // TODO: Read `compilerOptions.paths` instead of `hcmOptions.paths`
 // TODO: Read `include`/`exclude`/`files` instead of `hcmOptions.pattern`
 // TODO: Allow `extends` options to inherit `hcmOptions`
-export function readRawConfigFile(searchPath: string): HCMConfig {
-  const configFileName = ts.findConfigFile(searchPath, ts.sys.fileExists.bind(ts.sys));
+export function readRawConfigFile(project: string): { configFileName: string; rawConfig: HCMConfig } {
+  const configFileName = findConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
-  const configFile = ts.readConfigFile(configFileName, ts.sys.readFile.bind(ts.sys));
+  const configFile = ts.readConfigFile(configFileName.replaceAll('\\', '/'), ts.sys.readFile.bind(ts.sys));
   if (configFile.error) throw new TsConfigFileError(configFile.error);
 
   const config = ts.parseJsonConfigFileContent(
@@ -78,7 +97,7 @@ export function readRawConfigFile(searchPath: string): HCMConfig {
   if (!('hcmOptions' in config.raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
   const hcmOptions = config.raw.hcmOptions;
   assertConfig(hcmOptions);
-  return hcmOptions;
+  return { configFileName, rawConfig: hcmOptions };
 }
 
 export interface ResolvedHCMConfig {
