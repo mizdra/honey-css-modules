@@ -11,5 +11,10 @@
     "paths": { "@/*": ["./*"] },
     "rootDirs": ["src", "generated/src"],
     "types": [] // Simplify tsserver.log
+  },
+  "hcmOptions": {
+    "pattern": "src/**/*.module.css",
+    "dtsOutDir": "generated",
+    "alias": { "@": "." }
   }
 }
