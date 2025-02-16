@@ -5,12 +5,13 @@ import { createLogger, runHCM } from '../dist/index.js';
 
 // TODO: Support `--help` option
 // TODO: Support `--version` option
-// TODO: Support `--config` option
+// TODO: Support `--project` option
 
 const cwd = process.cwd();
 const logger = createLogger(cwd);
 try {
-  await runHCM(readConfigFile(cwd), logger);
+  const readResult = readConfigFile(cwd);
+  await runHCM(readResult.config, logger);
 } catch (e) {
   if (e instanceof SystemError) {
     logger.logSystemError(e);

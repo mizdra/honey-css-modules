@@ -1,8 +1,19 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
-import { assertConfig, readRawConfigFile } from './config.js';
+import { assertConfig, findConfigFile, readRawConfigFile } from './config.js';
 import { TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
+
+test('findConfigFile', async () => {
+  const iff = await createIFF({
+    'tsconfig.json': '{}',
+    'tsconfig.src.json': '{}',
+    'sub/tsconfig.json': '{}',
+  });
+  expect(findConfigFile(iff.rootDir)).toEqual(iff.paths['tsconfig.json']);
+  expect(findConfigFile(iff.paths['tsconfig.src.json'])).toEqual(iff.paths['tsconfig.src.json']);
+  expect(findConfigFile(iff.paths['sub'])).toEqual(iff.paths['sub/tsconfig.json']);
+});
 
 describe('readRawConfigFile', () => {
   test('returns a config object', async () => {
@@ -18,8 +29,8 @@ describe('readRawConfigFile', () => {
       'package.json': '{ "type": "module" }',
     });
     expect(readRawConfigFile(iff.rootDir)).toEqual({
-      pattern: 'src/**/*.module.css',
-      dtsOutDir: 'generated/hcm',
+      configFileName: iff.paths['tsconfig.json'],
+      rawConfig: { pattern: 'src/**/*.module.css', dtsOutDir: 'generated/hcm' },
     });
   });
   test('throws error if no config file is found', async () => {
