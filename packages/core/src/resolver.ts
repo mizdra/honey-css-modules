@@ -1,4 +1,4 @@
-import { isAbsolute } from 'node:path';
+import path, { isAbsolute } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
@@ -31,7 +31,7 @@ export function createResolver(paths: Record<string, string[]>): Resolver {
     const { resolvedModule } = ts.resolveModuleName(specifier, options.request, { paths }, host);
     if (resolvedModule) {
       // TODO: Logging that the paths is used.
-      specifier = resolvedModule.resolvedFileName.replace(/\.module\.d\.css\.ts$/u, '.module.css');
+      specifier = path.resolve(resolvedModule.resolvedFileName.replace(/\.module\.d\.css\.ts$/u, '.module.css'));
     }
     if (isAbsolute(specifier)) {
       return specifier;
