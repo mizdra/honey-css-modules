@@ -10,11 +10,10 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     info.project.projectService.logger.info(`[ts-honey-css-modules-plugin] info: Project is not configured`);
     return { languagePlugins: [] };
   }
-  const cwd = info.project.getCurrentDirectory();
 
   let config: ResolvedHCMConfig;
   try {
-    const readResult = readConfigFile(cwd);
+    const readResult = readConfigFile(info.project.getProjectName());
     config = readResult.config;
     info.project.projectService.logger.info(
       `[ts-honey-css-modules-plugin] info: Config file is found '${readResult.configFileName}'`,
