@@ -14,7 +14,6 @@ describe('Go to Definition', async () => {
       styles.b_1;
       styles.c_1;
       styles.c_alias;
-      styles.d_1;
     `,
     'a.module.css': dedent`
       @import './b.module.css';
@@ -24,7 +23,6 @@ describe('Go to Definition', async () => {
       .a_2 { color: red; }
       @value a_3: red;
       @import url(./b.module.css);
-      @import '@/d.module.css';
     `,
     'b.module.css': dedent`
       .b_1 { color: red; }
@@ -33,14 +31,10 @@ describe('Go to Definition', async () => {
       @value c_1: red;
       @value c_2: red;
     `,
-    'd.module.css': dedent`
-      .d_1 { color: red; }
-    `,
     'hcm.config.mjs': dedent`
       export default {
         pattern: '**/*.module.css',
         dtsOutDir: 'generated',
-        alias: { '@': '.' },
       };
     `,
     'tsconfig.json': dedent`
@@ -89,15 +83,6 @@ describe('Go to Definition', async () => {
       offset: 33,
       expected: [
         { file: formatPath(iff.paths['c.module.css']), start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 } },
-      ],
-    },
-    {
-      name: "'./d.module.css' in a.module.css",
-      file: iff.paths['a.module.css'],
-      line: 8,
-      offset: 9,
-      expected: [
-        { file: formatPath(iff.paths['d.module.css']), start: { line: 1, offset: 1 }, end: { line: 1, offset: 1 } },
       ],
     },
     {
@@ -187,15 +172,6 @@ describe('Go to Definition', async () => {
       expected: [
         { file: formatPath(iff.paths['a.module.css']), start: { line: 2, offset: 20 }, end: { line: 2, offset: 27 } },
         { file: formatPath(iff.paths['c.module.css']), start: { line: 2, offset: 8 }, end: { line: 2, offset: 11 } },
-      ],
-    },
-    {
-      name: 'd_1 in index.ts',
-      file: iff.paths['index.ts'],
-      line: 8,
-      offset: 8,
-      expected: [
-        { file: formatPath(iff.paths['d.module.css']), start: { line: 1, offset: 2 }, end: { line: 1, offset: 5 } },
       ],
     },
     {

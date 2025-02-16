@@ -10,7 +10,7 @@ const ALLOWED_CONFIG_FILE_EXTENSIONS = ['js', 'mjs', 'cjs'];
 export interface HCMConfig {
   pattern: string;
   dtsOutDir: string;
-  alias?: Record<string, string> | undefined;
+  paths?: Record<string, string[]> | undefined;
   arbitraryExtensions?: boolean | undefined;
   // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
 }
@@ -19,13 +19,18 @@ export function defineConfig(config: HCMConfig): HCMConfig {
   return config;
 }
 
-function assertAlias(alias: unknown): asserts alias is Record<string, string> {
-  if (typeof alias !== 'object' || alias === null) {
-    throw new ConfigValidationError('`alias` must be an object.');
+function assertPaths(paths: unknown): asserts paths is Record<string, string[]> {
+  if (typeof paths !== 'object' || paths === null) {
+    throw new ConfigValidationError('`paths` must be an object.');
   }
-  for (const [key, value] of Object.entries(alias)) {
-    if (typeof value !== 'string') {
-      throw new ConfigValidationError(`\`alias.${key}\` must be a string.`);
+  for (const [key, array] of Object.entries(paths)) {
+    if (!Array.isArray(array)) {
+      throw new ConfigValidationError(`\`paths[${JSON.stringify(key)}]\` must be an array.`);
+    }
+    for (let i = 0; i < array.length; i++) {
+      if (typeof array[i] !== 'string') {
+        throw new ConfigValidationError(`\`paths[${JSON.stringify(key)}][${i}]\` must be a string.`);
+      }
     }
   }
 }
@@ -39,7 +44,7 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
   if (typeof config.pattern !== 'string') throw new ConfigValidationError('`pattern` must be a string.');
   if (!('dtsOutDir' in config)) throw new ConfigValidationError('`dtsOutDir` is required.');
   if (typeof config.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
-  if ('alias' in config) assertAlias(config.alias);
+  if ('paths' in config) assertPaths(config.paths);
   if ('arbitraryExtensions' in config && typeof config.arbitraryExtensions !== 'boolean') {
     throw new ConfigValidationError('`arbitraryExtensions` must be a boolean.');
   }
@@ -107,7 +112,7 @@ export function readRawConfigFile(cwd: string): HCMConfig {
 export interface ResolvedHCMConfig {
   pattern: string;
   dtsOutDir: string;
-  alias: Record<string, string>;
+  paths: Record<string, string[]>;
   arbitraryExtensions: boolean;
   dashedIdents: boolean;
   /**
@@ -148,20 +153,20 @@ export interface ResolvedHCMConfig {
   rootDir: string;
 }
 
-function resolveAlias(alias: Record<string, string> | undefined, cwd: string): Record<string, string> {
-  if (alias === undefined) return {};
-  const resolvedAlias: Record<string, string> = {};
-  for (const [key, value] of Object.entries(alias)) {
-    resolvedAlias[key] = join(cwd, value);
+function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string): Record<string, string[]> {
+  if (paths === undefined) return {};
+  const resolvedPaths: Record<string, string[]> = {};
+  for (const [key, value] of Object.entries(paths)) {
+    resolvedPaths[key] = value.map((path) => join(cwd, path));
   }
-  return resolvedAlias;
+  return resolvedPaths;
 }
 
 export function resolveConfig(config: HCMConfig, rootDir: string): ResolvedHCMConfig {
   return {
     pattern: join(rootDir, config.pattern),
     dtsOutDir: join(rootDir, config.dtsOutDir),
-    alias: resolveAlias(config.alias, rootDir),
+    paths: resolvePaths(config.paths, rootDir),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
     dashedIdents: false, // TODO: Support dashedIdents
     rootDir,

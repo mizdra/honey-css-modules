@@ -1,5 +1,6 @@
-import { isAbsolute, normalize } from 'node:path';
+import path, { isAbsolute } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import ts from 'typescript';
 
 export interface ResolverOptions {
   /** The file that imports the specifier. It is a absolute path. */
@@ -14,14 +15,23 @@ export interface ResolverOptions {
  */
 export type Resolver = (specifier: string, options: ResolverOptions) => string | undefined;
 
-export function createResolver(alias: Record<string, string>): Resolver {
-  return (specifier: string, options: ResolverOptions) => {
-    for (const [key, value] of Object.entries(alias)) {
-      if (specifier.startsWith(key)) {
-        // NOTE: On Windows, `normalize(...)` to replace `/` with `\\` and then resolve the alias.
-        // TODO: Logging that the alias is used.
-        return normalize(specifier).replace(key, value);
-      }
+export function createResolver(paths: Record<string, string[]>): Resolver {
+  return (_specifier: string, options: ResolverOptions) => {
+    let specifier = _specifier;
+
+    const host: ts.ModuleResolutionHost = {
+      ...ts.sys,
+      fileExists: (fileName) => {
+        if (fileName.endsWith('.module.d.css.ts')) {
+          return ts.sys.fileExists(fileName.replace(/\.module\.d\.css\.ts$/u, '.module.css'));
+        }
+        return ts.sys.fileExists(fileName);
+      },
+    };
+    const { resolvedModule } = ts.resolveModuleName(specifier, options.request, { paths }, host);
+    if (resolvedModule) {
+      // TODO: Logging that the paths is used.
+      specifier = path.resolve(resolvedModule.resolvedFileName.replace(/\.module\.d\.css\.ts$/u, '.module.css'));
     }
     if (isAbsolute(specifier)) {
       return specifier;

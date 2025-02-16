@@ -1,56 +1,39 @@
-import { resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 import { createResolver } from './resolver.js';
+import { createIFF } from './test/fixture.js';
 
-describe('createResolver', () => {
-  describe('resolves relative path', () => {
-    const resolver = createResolver({});
-    test.each([
-      ['./a.module.css', resolve('/app/request.module.css'), resolve('/app/a.module.css')],
-      ['./dir/a.module.css', resolve('/app/request.module.css'), resolve('/app/dir/a.module.css')],
-    ])('resolves %s from %s', (specifier, request, expected) => {
-      expect(resolver(specifier, { request })).toBe(expected);
-    });
+describe('createResolver', async () => {
+  const iff = await createIFF({
+    'request.module.css': '',
+    'a.module.css': '',
+    'dir/a.module.css': '',
+    'paths1/a.module.css': '',
+    'paths2/b.module.css': '',
+    'paths3/c.module.css': '',
   });
-  describe('resolves absolute path', () => {
-    const resolver = createResolver({});
-    test.each([
-      [resolve('/app/a.module.css'), resolve('/app/request.module.css'), resolve('/app/a.module.css')],
-      [resolve('/app/dir/a.module.css'), resolve('/app/request.module.css'), resolve('/app/dir/a.module.css')],
-    ])('resolves %s from %s', (specifier, request, expected) => {
-      expect(resolver(specifier, { request })).toBe(expected);
-    });
+  const request = iff.paths['request.module.css'];
+  test('resolves relative path', () => {
+    const resolve = createResolver({});
+    expect(resolve('./a.module.css', { request })).toBe(iff.paths['a.module.css']);
+    expect(resolve('./dir/a.module.css', { request })).toBe(iff.paths['dir/a.module.css']);
   });
-  describe('resolves alias', () => {
-    describe('alias is used if import specifiers start with alias', () => {
-      const resolver = createResolver({ '@': resolve('/app/alias'), '#': resolve('/app/alias') });
-      test.each([
-        ['@/a.module.css', resolve('/app/request.module.css'), resolve('/app/alias/a.module.css')],
-        ['./@/a.module.css', resolve('/app/request.module.css'), resolve('/app/@/a.module.css')],
-        ['@/dir/a.module.css', resolve('/app/request.module.css'), resolve('/app/alias/dir/a.module.css')],
-        ['@/a.module.css', resolve('/app/dir/request.module.css'), resolve('/app/alias/a.module.css')],
-        ['#/a.module.css', resolve('/app/request.module.css'), resolve('/app/alias/a.module.css')],
-      ])('resolves %s from %s', (specifier, request, expected) => {
-        expect(resolver(specifier, { request })).toBe(expected);
+  describe('resolves paths', () => {
+    test('paths is used if import specifiers start with paths', () => {
+      const resolve = createResolver({
+        '@/*': [iff.join('paths1/*'), iff.join('paths2/*')],
+        '#/*': [iff.join('paths3/*')],
       });
-    });
-    test('the first alias is used if multiple aliases match', () => {
-      const resolver = createResolver({ '@': resolve('/app/alias1'), '@@': resolve('/app/alias2') });
-      expect(resolver('@/a.module.css', { request: resolve('/app/request.module.css') })).toBe(
-        resolve('/app/alias1/a.module.css'),
-      );
+      expect(resolve('@/a.module.css', { request })).toBe(iff.paths['paths1/a.module.css']);
+      expect(resolve('@/b.module.css', { request })).toBe(iff.paths['paths2/b.module.css']);
+      expect(resolve('#/c.module.css', { request })).toBe(iff.paths['paths3/c.module.css']);
+      expect(resolve('@/d.module.css', { request })).toBe(undefined);
     });
   });
-  describe('does not resolve invalid path', () => {
-    const resolver = createResolver({});
-    test.each([
-      ['http://example.com', resolve('/app/request.module.css')],
-      ['package', resolve('/app/request.module.css')],
-      ['@scope/package', resolve('/app/request.module.css')],
-      ['~package', resolve('/app/request.module.css')],
-      ['file:///app/a.module.css', resolve('/app/request.module.css')],
-    ])('does not resolve %s from %s', (specifier, request) => {
-      expect(resolver(specifier, { request })).toBe(undefined);
-    });
+  test('does not resolve invalid path', () => {
+    const resolve = createResolver({});
+    expect(resolve('http://example.com', { request })).toBe(undefined);
+    expect(resolve('package', { request })).toBe(undefined);
+    expect(resolve('@scope/package', { request })).toBe(undefined);
+    expect(resolve('~package', { request })).toBe(undefined);
   });
 });
