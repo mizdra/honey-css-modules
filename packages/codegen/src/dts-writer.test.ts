@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
@@ -40,7 +39,7 @@ describe('writeDtsFile', () => {
         arbitraryExtensions: false,
       },
     );
-    expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
+    expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles: { local1: string };
       export default styles;"
     `);

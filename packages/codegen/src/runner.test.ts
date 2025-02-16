@@ -1,4 +1,4 @@
-import { access, chmod, readFile } from 'node:fs/promises';
+import { access, chmod } from 'node:fs/promises';
 import dedent from 'dedent';
 import type { Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
@@ -50,14 +50,14 @@ describe('runHCM', () => {
       resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir),
       createLoggerSpy(),
     );
-    expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
+    expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
       };
       export default styles;
       "
     `);
-    expect(await readFile(iff.join('generated/src/b.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
+    expect(await iff.readFile('generated/src/b.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         b1: '' as readonly string,
       };
@@ -87,7 +87,7 @@ describe('runHCM', () => {
       resolveConfig({ pattern: 'src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir),
       createLoggerSpy(),
     );
-    expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
+    expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         ...(await import('./b.module.css')).default,
       };
@@ -137,7 +137,7 @@ describe('runHCM', () => {
       resolveConfig({ pattern: './src/**/*.module.css', dtsOutDir: 'generated' }, iff.rootDir),
       createLoggerSpy(),
     );
-    expect(await readFile(iff.join('generated/src/a.module.css.d.ts'), 'utf-8')).toMatchInlineSnapshot(`
+    expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
       };
