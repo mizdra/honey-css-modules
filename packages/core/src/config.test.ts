@@ -1,17 +1,19 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { assertConfig, readRawConfigFile } from './config.js';
-import { ConfigImportError, ConfigNotFoundError } from './error.js';
+import { TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
 describe('readRawConfigFile', () => {
   test('returns a config object', async () => {
     const iff = await createIFF({
-      'hcm.config.js': dedent`
-        export default {
-          pattern: 'src/**/*.module.css',
-          dtsOutDir: 'generated/hcm',
-        };
+      'tsconfig.json': dedent`
+        {
+          "hcmOptions": {
+            "pattern": "src/**/*.module.css",
+            "dtsOutDir": "generated/hcm"
+          }
+        }
       `,
       'package.json': '{ "type": "module" }',
     });
@@ -20,50 +22,22 @@ describe('readRawConfigFile', () => {
       dtsOutDir: 'generated/hcm',
     });
   });
-  test('falls back to other file extensions', async () => {
-    const iff = await createIFF({
-      'hcm.config.cjs': dedent`
-        module.exports = {
-          pattern: 'src/**/*.module.css',
-          dtsOutDir: 'generated/hcm',
-        };
-      `,
-    });
-    expect(readRawConfigFile(iff.rootDir)).toEqual({
-      pattern: 'src/**/*.module.css',
-      dtsOutDir: 'generated/hcm',
-    });
-    await iff.addFixtures({
-      'hcm.config.mjs': dedent`
-        export default {
-          pattern: 'src/**/*.module.css',
-          dtsOutDir: 'generated/hcm',
-        };
-      `,
-    });
-    expect(readRawConfigFile(iff.rootDir)).toEqual({
-      pattern: 'src/**/*.module.css',
-      dtsOutDir: 'generated/hcm',
-    });
-  });
-  test('throws a ConfigNotFoundError if no config file is found', async () => {
+  test('throws error if no config file is found', async () => {
     const iff = await createIFF({});
-    expect(() => readRawConfigFile(iff.rootDir)).toThrow(ConfigNotFoundError);
+    expect(() => readRawConfigFile(iff.rootDir)).toThrow(TsConfigFileNotFoundError);
   });
   test('throws error if config file has syntax errors', async () => {
     const iff = await createIFF({
-      'hcm.config.mjs': dedent`
-        export SYNTAX_ERROR;
-      `,
+      'tsconfig.json': '}',
     });
-    expect(() => readRawConfigFile(iff.rootDir)).toThrow(ConfigImportError);
+    expect(() => readRawConfigFile(iff.rootDir)).toThrow(TsConfigFileError);
   });
-  test('throws error if config file has no default export', async () => {
+  test('throws error if config file does not have "hcmOptions"', async () => {
     const iff = await createIFF({
-      'hcm.config.mjs': 'export const config = {};',
+      'tsconfig.json': '{}',
     });
     expect(() => readRawConfigFile(iff.rootDir)).toThrowErrorMatchingInlineSnapshot(
-      `[Error: Config must be a default export.]`,
+      `[Error: tsconfig.json must have \`hcmOptions\`.]`,
     );
   });
 });

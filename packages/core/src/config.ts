@@ -1,11 +1,6 @@
-import { execFileSync } from 'node:child_process';
-import { accessSync } from 'node:fs';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { ConfigImportError, ConfigNotFoundError, ConfigValidationError } from './error.js';
-
-// TODO: Support `ts`, `mts` and `cts` extensions
-const ALLOWED_CONFIG_FILE_EXTENSIONS = ['js', 'mjs', 'cjs'];
+import { dirname, join } from 'node:path';
+import ts from 'typescript';
+import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 
 export interface HCMConfig {
   pattern: string;
@@ -54,8 +49,8 @@ export function assertConfig(config: unknown): asserts config is HCMConfig {
 }
 
 /**
- * @throws {ConfigNotFoundError}
- * @throws {ConfigImportError}
+ * @throws {TsConfigFileNotFoundError}
+ * @throws {TsConfigFileError}
  * @throws {ConfigValidationError}
  */
 export function readConfigFile(cwd: string): ResolvedHCMConfig {
@@ -64,49 +59,27 @@ export function readConfigFile(cwd: string): ResolvedHCMConfig {
 }
 
 /**
- * @throws {ConfigNotFoundError}
- * @throws {ConfigImportError}
+ * @throws {TsConfigFileNotFoundError}
+ * @throws {TsConfigFileError}
  * @throws {ConfigValidationError}
  */
-export function readRawConfigFile(cwd: string): HCMConfig {
-  for (const ext of ALLOWED_CONFIG_FILE_EXTENSIONS) {
-    const path = join(cwd, `hcm.config.${ext}`);
-    try {
-      accessSync(path); // check if the file exists before importing
-    } catch {
-      continue;
-    }
-    let module: object;
-    try {
-      // NOTE: On Windows, `path` is like `C:\path\to\hcm.config.js`.
-      // However, `import(...)` does not accept a path like `C:\path\to\hcm.config.js`.
-      // Therefore, we use `pathToFileURL` to convert it into a URL with the `file:///C:\path\to\hcm.config.js` scheme before importing.
-      const resolvedPath = pathToFileURL(path).href;
-      module = JSON.parse(
-        execFileSync(
-          'node',
-          [
-            '-e',
-            // NOTE: The module loaded by `import` is cached by Node.js runtime. So the user can't change the config file without restarting the process.
-            // This is an intentional limitation to simplify implementation.
-            `import('${resolvedPath}')
-            .then(m => process.stdout.write(
-              JSON.stringify({
-                default: m.default,
-              }),
-            ))`,
-          ],
-          { stdio: ['pipe', 'pipe', 'ignore'] },
-        ).toString(),
-      );
-    } catch (error) {
-      throw new ConfigImportError(path, error);
-    }
-    if (!('default' in module)) throw new ConfigValidationError('Config must be a default export.');
-    assertConfig(module.default);
-    return module.default;
-  }
-  throw new ConfigNotFoundError();
+export function readRawConfigFile(searchPath: string): HCMConfig {
+  const configFileName = ts.findConfigFile(searchPath, ts.sys.fileExists.bind(ts.sys));
+  if (!configFileName) throw new TsConfigFileNotFoundError();
+  const configFile = ts.readConfigFile(configFileName, ts.sys.readFile.bind(ts.sys));
+  if (configFile.error) throw new TsConfigFileError(configFile.error);
+
+  const config = ts.parseJsonConfigFileContent(
+    configFile.config,
+    ts.sys,
+    dirname(configFileName),
+    undefined,
+    configFileName,
+  );
+  if (!('hcmOptions' in config.raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
+  const hcmOptions = config.raw.hcmOptions;
+  assertConfig(hcmOptions);
+  return hcmOptions;
 }
 
 export interface ResolvedHCMConfig {
@@ -121,7 +94,7 @@ export interface ResolvedHCMConfig {
    * For example, let’s say you have some input files:
    * ```
    * .
-   * ├── hcm.config.js
+   * ├── tsconfig.json
    * ├── src
    * │   ├── a.module.css
    * │   ├── b.module.css
