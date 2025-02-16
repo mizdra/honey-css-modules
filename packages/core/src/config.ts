@@ -10,10 +10,6 @@ export interface HCMConfig {
   // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
 }
 
-export function defineConfig(config: HCMConfig): HCMConfig {
-  return config;
-}
-
 function assertPaths(paths: unknown): asserts paths is Record<string, string[]> {
   if (typeof paths !== 'object' || paths === null) {
     throw new ConfigValidationError('`paths` must be an object.');
