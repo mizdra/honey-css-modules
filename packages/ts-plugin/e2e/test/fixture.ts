@@ -5,4 +5,7 @@ import { join } from 'node:path';
 import { defineIFFCreator } from '@mizdra/inline-fixture-files';
 
 const fixtureDir = join(tmpdir(), 'ts-honey-css-modules-plugin', process.env['VITEST_POOL_ID']!);
-export const createIFF = defineIFFCreator({ generateRootDir: () => join(fixtureDir, randomUUID()) });
+export const createIFF = defineIFFCreator({
+  generateRootDir: () => join(fixtureDir, randomUUID()),
+  unixStylePath: true,
+});
