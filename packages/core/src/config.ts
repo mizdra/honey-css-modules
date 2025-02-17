@@ -1,13 +1,15 @@
 import ts from 'typescript';
 import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
+import { isCSSModuleFile } from './file.js';
 import { basename, dirname, join, resolve } from './path.js';
 
 export interface TsConfig {
+  /** The names of css module files matched by the include/exclude/files options. It is absolute. */
+  fileNames: string[];
   options: {
     paths?: Record<string, string[]> | undefined;
   };
   hcmOptions: {
-    pattern: string;
     dtsOutDir: string;
     arbitraryExtensions?: boolean | undefined;
     // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
@@ -18,8 +20,6 @@ export function assertHCMOptions(hcmOptions: unknown): asserts hcmOptions is TsC
   if (typeof hcmOptions !== 'object' || hcmOptions === null) {
     throw new ConfigValidationError('`hcmOptions` must be an object.');
   }
-  if (!('pattern' in hcmOptions)) throw new ConfigValidationError('`pattern` is required.');
-  if (typeof hcmOptions.pattern !== 'string') throw new ConfigValidationError('`pattern` must be a string.');
   if (!('dtsOutDir' in hcmOptions)) throw new ConfigValidationError('`dtsOutDir` is required.');
   if (typeof hcmOptions.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
   if ('arbitraryExtensions' in hcmOptions && typeof hcmOptions.arbitraryExtensions !== 'boolean') {
@@ -79,12 +79,21 @@ export function readTsConfigFile(project: string): { configFileName: string; tsC
     dirname(configFileName),
     undefined,
     configFileName,
+    undefined,
+    [
+      {
+        extension: 'css',
+        isMixedContent: false,
+        scriptKind: ts.ScriptKind.Deferred,
+      },
+    ],
   );
   if (!('hcmOptions' in config.raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
   assertHCMOptions(config.raw.hcmOptions);
   return {
     configFileName,
     tsConfig: {
+      fileNames: config.fileNames.filter(isCSSModuleFile),
       options: {
         ...('paths' in config.options ? { paths: config.options.paths } : {}),
       },
@@ -94,7 +103,8 @@ export function readTsConfigFile(project: string): { configFileName: string; tsC
 }
 
 export interface ResolvedHCMConfig {
-  pattern: string;
+  /** The names of css module files matched by the include/exclude/files options. It is absolute. */
+  fileNames: string[];
   dtsOutDir: string;
   paths: Record<string, string[]>;
   arbitraryExtensions: boolean;
@@ -148,7 +158,7 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
 
 export function resolveConfig(tsConfig: TsConfig, rootDir: string): ResolvedHCMConfig {
   return {
-    pattern: join(rootDir, tsConfig.hcmOptions.pattern),
+    fileNames: tsConfig.fileNames,
     dtsOutDir: join(rootDir, tsConfig.hcmOptions.dtsOutDir),
     paths: resolvePaths(tsConfig.options.paths, rootDir),
     arbitraryExtensions: tsConfig.hcmOptions.arbitraryExtensions ?? false,
