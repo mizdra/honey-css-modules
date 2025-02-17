@@ -42,15 +42,15 @@ interface ReadConfigFileResult {
  * @throws {ConfigValidationError}
  */
 export function readConfigFile(project: string): ReadConfigFileResult {
-  const { configFileName, rawConfig } = readRawConfigFile(project);
+  const { configFileName, tsConfig } = readTsConfigFile(project);
   const rootDir = dirname(configFileName);
   return {
     configFileName,
-    config: resolveConfig(rawConfig, rootDir),
+    config: resolveConfig(tsConfig, rootDir),
   };
 }
 
-export function findConfigFile(project: string): string | undefined {
+export function findTsConfigFile(project: string): string | undefined {
   const configFile =
     ts.sys.directoryExists(project) ?
       ts.findConfigFile(project, ts.sys.fileExists.bind(ts.sys), 'tsconfig.json')
@@ -67,8 +67,8 @@ export function findConfigFile(project: string): string | undefined {
 // TODO: Read `compilerOptions.paths` instead of `hcmOptions.paths`
 // TODO: Read `include`/`exclude`/`files` instead of `hcmOptions.pattern`
 // TODO: Allow `extends` options to inherit `hcmOptions`
-export function readRawConfigFile(project: string): { configFileName: string; rawConfig: TsConfig } {
-  const configFileName = findConfigFile(project);
+export function readTsConfigFile(project: string): { configFileName: string; tsConfig: TsConfig } {
+  const configFileName = findTsConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
   const configFile = ts.readConfigFile(configFileName.replaceAll('\\', '/'), ts.sys.readFile.bind(ts.sys));
   if (configFile.error) throw new TsConfigFileError(configFile.error);
@@ -84,7 +84,7 @@ export function readRawConfigFile(project: string): { configFileName: string; ra
   assertHCMOptions(config.raw.hcmOptions);
   return {
     configFileName,
-    rawConfig: {
+    tsConfig: {
       options: {
         ...('paths' in config.options ? { paths: config.options.paths } : {}),
       },
@@ -146,12 +146,12 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
   return resolvedPaths;
 }
 
-export function resolveConfig(tsconfig: TsConfig, rootDir: string): ResolvedHCMConfig {
+export function resolveConfig(tsConfig: TsConfig, rootDir: string): ResolvedHCMConfig {
   return {
-    pattern: join(rootDir, tsconfig.hcmOptions.pattern),
-    dtsOutDir: join(rootDir, tsconfig.hcmOptions.dtsOutDir),
-    paths: resolvePaths(tsconfig.options.paths, rootDir),
-    arbitraryExtensions: tsconfig.hcmOptions.arbitraryExtensions ?? false,
+    pattern: join(rootDir, tsConfig.hcmOptions.pattern),
+    dtsOutDir: join(rootDir, tsConfig.hcmOptions.dtsOutDir),
+    paths: resolvePaths(tsConfig.options.paths, rootDir),
+    arbitraryExtensions: tsConfig.hcmOptions.arbitraryExtensions ?? false,
     dashedIdents: false, // TODO: Support dashedIdents
     rootDir,
   };

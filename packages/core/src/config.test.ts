@@ -1,21 +1,21 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
-import { assertHCMOptions, findConfigFile, readRawConfigFile, resolveConfig } from './config.js';
+import { assertHCMOptions, findTsConfigFile, readTsConfigFile, resolveConfig } from './config.js';
 import { TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
-test('findConfigFile', async () => {
+test('findTsConfigFile', async () => {
   const iff = await createIFF({
     'tsconfig.json': '{}',
     'tsconfig.src.json': '{}',
     'sub/tsconfig.json': '{}',
   });
-  expect(findConfigFile(iff.rootDir)).toEqual(iff.paths['tsconfig.json']);
-  expect(findConfigFile(iff.paths['tsconfig.src.json'])).toEqual(iff.paths['tsconfig.src.json']);
-  expect(findConfigFile(iff.paths['sub'])).toEqual(iff.paths['sub/tsconfig.json']);
+  expect(findTsConfigFile(iff.rootDir)).toEqual(iff.paths['tsconfig.json']);
+  expect(findTsConfigFile(iff.paths['tsconfig.src.json'])).toEqual(iff.paths['tsconfig.src.json']);
+  expect(findTsConfigFile(iff.paths['sub'])).toEqual(iff.paths['sub/tsconfig.json']);
 });
 
-describe('readRawConfigFile', () => {
+describe('readTsConfigFile', () => {
   test('returns a config object', async () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
@@ -28,26 +28,26 @@ describe('readRawConfigFile', () => {
       `,
       'package.json': '{ "type": "module" }',
     });
-    expect(readRawConfigFile(iff.rootDir)).toEqual({
+    expect(readTsConfigFile(iff.rootDir)).toEqual({
       configFileName: iff.paths['tsconfig.json'],
-      rawConfig: { options: {}, hcmOptions: { pattern: 'src/**/*.module.css', dtsOutDir: 'generated/hcm' } },
+      tsConfig: { options: {}, hcmOptions: { pattern: 'src/**/*.module.css', dtsOutDir: 'generated/hcm' } },
     });
   });
   test('throws error if no config file is found', async () => {
     const iff = await createIFF({});
-    expect(() => readRawConfigFile(iff.rootDir)).toThrow(TsConfigFileNotFoundError);
+    expect(() => readTsConfigFile(iff.rootDir)).toThrow(TsConfigFileNotFoundError);
   });
   test('throws error if config file has syntax errors', async () => {
     const iff = await createIFF({
       'tsconfig.json': '}',
     });
-    expect(() => readRawConfigFile(iff.rootDir)).toThrow(TsConfigFileError);
+    expect(() => readTsConfigFile(iff.rootDir)).toThrow(TsConfigFileError);
   });
   test('throws error if config file does not have "hcmOptions"', async () => {
     const iff = await createIFF({
       'tsconfig.json': '{}',
     });
-    expect(() => readRawConfigFile(iff.rootDir)).toThrowErrorMatchingInlineSnapshot(
+    expect(() => readTsConfigFile(iff.rootDir)).toThrowErrorMatchingInlineSnapshot(
       `[Error: tsconfig.json must have \`hcmOptions\`.]`,
     );
   });
