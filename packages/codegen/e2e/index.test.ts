@@ -18,10 +18,12 @@ test('generates .d.ts', async () => {
     'src/c.module.css': `.c1 { color: red; }`,
     'tsconfig.json': dedent`
       {
+        "compilerOptions": {
+          "paths": { "@/*": ["./src/*"] }
+        },
         "hcmOptions": {
           "pattern": "src/**/*.module.css",
-          "dtsOutDir": "dist",
-          "paths": { "@/*": ["./src/*"] }
+          "dtsOutDir": "dist"
         }
       }
     `,
