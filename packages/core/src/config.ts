@@ -2,44 +2,30 @@ import ts from 'typescript';
 import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 import { basename, dirname, join, resolve } from './path.js';
 
-export interface HCMConfig {
-  pattern: string;
-  dtsOutDir: string;
-  paths?: Record<string, string[]> | undefined;
-  arbitraryExtensions?: boolean | undefined;
-  // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
+export interface TsConfig {
+  options: {
+    paths?: Record<string, string[]> | undefined;
+  };
+  hcmOptions: {
+    pattern: string;
+    dtsOutDir: string;
+    arbitraryExtensions?: boolean | undefined;
+    // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
+  };
 }
 
-function assertPaths(paths: unknown): asserts paths is Record<string, string[]> {
-  if (typeof paths !== 'object' || paths === null) {
-    throw new ConfigValidationError('`paths` must be an object.');
+export function assertHCMOptions(hcmOptions: unknown): asserts hcmOptions is TsConfig['hcmOptions'] {
+  if (typeof hcmOptions !== 'object' || hcmOptions === null) {
+    throw new ConfigValidationError('`hcmOptions` must be an object.');
   }
-  for (const [key, array] of Object.entries(paths)) {
-    if (!Array.isArray(array)) {
-      throw new ConfigValidationError(`\`paths[${JSON.stringify(key)}]\` must be an array.`);
-    }
-    for (let i = 0; i < array.length; i++) {
-      if (typeof array[i] !== 'string') {
-        throw new ConfigValidationError(`\`paths[${JSON.stringify(key)}][${i}]\` must be a string.`);
-      }
-    }
-  }
-}
-
-/** @throws {ConfigValidationError} */
-export function assertConfig(config: unknown): asserts config is HCMConfig {
-  if (typeof config !== 'object' || config === null) {
-    throw new ConfigValidationError('Config must be an object.');
-  }
-  if (!('pattern' in config)) throw new ConfigValidationError('`pattern` is required.');
-  if (typeof config.pattern !== 'string') throw new ConfigValidationError('`pattern` must be a string.');
-  if (!('dtsOutDir' in config)) throw new ConfigValidationError('`dtsOutDir` is required.');
-  if (typeof config.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
-  if ('paths' in config) assertPaths(config.paths);
-  if ('arbitraryExtensions' in config && typeof config.arbitraryExtensions !== 'boolean') {
+  if (!('pattern' in hcmOptions)) throw new ConfigValidationError('`pattern` is required.');
+  if (typeof hcmOptions.pattern !== 'string') throw new ConfigValidationError('`pattern` must be a string.');
+  if (!('dtsOutDir' in hcmOptions)) throw new ConfigValidationError('`dtsOutDir` is required.');
+  if (typeof hcmOptions.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
+  if ('arbitraryExtensions' in hcmOptions && typeof hcmOptions.arbitraryExtensions !== 'boolean') {
     throw new ConfigValidationError('`arbitraryExtensions` must be a boolean.');
   }
-  if ('dashedIdents' in config && typeof config.dashedIdents !== 'boolean') {
+  if ('dashedIdents' in hcmOptions && typeof hcmOptions.dashedIdents !== 'boolean') {
     throw new ConfigValidationError('`dashedIdents` must be a boolean.');
   }
 }
@@ -81,7 +67,7 @@ export function findConfigFile(project: string): string | undefined {
 // TODO: Read `compilerOptions.paths` instead of `hcmOptions.paths`
 // TODO: Read `include`/`exclude`/`files` instead of `hcmOptions.pattern`
 // TODO: Allow `extends` options to inherit `hcmOptions`
-export function readRawConfigFile(project: string): { configFileName: string; rawConfig: HCMConfig } {
+export function readRawConfigFile(project: string): { configFileName: string; rawConfig: TsConfig } {
   const configFileName = findConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
   const configFile = ts.readConfigFile(configFileName.replaceAll('\\', '/'), ts.sys.readFile.bind(ts.sys));
@@ -95,9 +81,16 @@ export function readRawConfigFile(project: string): { configFileName: string; ra
     configFileName,
   );
   if (!('hcmOptions' in config.raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
-  const hcmOptions = config.raw.hcmOptions;
-  assertConfig(hcmOptions);
-  return { configFileName, rawConfig: hcmOptions };
+  assertHCMOptions(config.raw.hcmOptions);
+  return {
+    configFileName,
+    rawConfig: {
+      options: {
+        ...('paths' in config.options ? { paths: config.options.paths } : {}),
+      },
+      hcmOptions: config.raw.hcmOptions,
+    },
+  };
 }
 
 export interface ResolvedHCMConfig {
@@ -153,12 +146,12 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
   return resolvedPaths;
 }
 
-export function resolveConfig(config: HCMConfig, rootDir: string): ResolvedHCMConfig {
+export function resolveConfig(tsconfig: TsConfig, rootDir: string): ResolvedHCMConfig {
   return {
-    pattern: join(rootDir, config.pattern),
-    dtsOutDir: join(rootDir, config.dtsOutDir),
-    paths: resolvePaths(config.paths, rootDir),
-    arbitraryExtensions: config.arbitraryExtensions ?? false,
+    pattern: join(rootDir, tsconfig.hcmOptions.pattern),
+    dtsOutDir: join(rootDir, tsconfig.hcmOptions.dtsOutDir),
+    paths: resolvePaths(tsconfig.options.paths, rootDir),
+    arbitraryExtensions: tsconfig.hcmOptions.arbitraryExtensions ?? false,
     dashedIdents: false, // TODO: Support dashedIdents
     rootDir,
   };
