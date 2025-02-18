@@ -18,7 +18,6 @@ describe('handle invalid syntax CSS without crashing', async () => {
       {
         "compilerOptions": {},
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

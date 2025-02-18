@@ -31,7 +31,6 @@ test('Semantic Diagnostics', async () => {
       {
         "compilerOptions": {},
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

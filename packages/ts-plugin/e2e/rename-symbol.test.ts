@@ -64,7 +64,6 @@ describe('Rename Symbol', async () => {
       {
         "compilerOptions": {},
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

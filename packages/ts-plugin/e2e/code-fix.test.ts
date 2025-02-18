@@ -23,7 +23,6 @@ describe('Get Code Fixes', async () => {
       {
         "compilerOptions": {},
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

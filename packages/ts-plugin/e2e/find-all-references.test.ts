@@ -47,7 +47,6 @@ describe('Find All References', async () => {
       {
         "compilerOptions": {},
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

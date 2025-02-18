@@ -34,7 +34,6 @@ describe('Completion', async () => {
           "types": ["${reactDtsPath}"]
         },
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

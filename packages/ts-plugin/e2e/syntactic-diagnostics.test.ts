@@ -16,7 +16,6 @@ test('Syntactic Diagnostics', async () => {
       {
         "compilerOptions": {},
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }
