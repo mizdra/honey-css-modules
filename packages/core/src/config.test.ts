@@ -89,15 +89,21 @@ describe('resolveConfig', () => {
         },
         '/app',
       ),
-    ).toStrictEqual({
-      includes: ['/app/src'],
-      excludes: ['/app/src/test'],
-      dtsOutDir: '/app/generated',
-      arbitraryExtensions: false,
-      paths: {},
-      dashedIdents: false,
-      rootDir: '/app',
-    });
+    ).toMatchInlineSnapshot(`
+      {
+        "arbitraryExtensions": false,
+        "dashedIdents": false,
+        "dtsOutDir": "/app/generated",
+        "excludes": [
+          "/app/src/test",
+        ],
+        "includes": [
+          "/app/src",
+        ],
+        "paths": {},
+        "rootDir": "/app",
+      }
+    `);
   });
   test('resolves paths', () => {
     expect(
@@ -112,14 +118,22 @@ describe('resolveConfig', () => {
         },
         '/app',
       ),
-    ).toStrictEqual({
-      includes: ['/app/**/*'],
-      excludes: [],
-      dtsOutDir: '/app/generated',
-      arbitraryExtensions: false,
-      paths: { '@/*': ['/app/*'] },
-      dashedIdents: false,
-      rootDir: '/app',
-    });
+    ).toMatchInlineSnapshot(`
+      {
+        "arbitraryExtensions": false,
+        "dashedIdents": false,
+        "dtsOutDir": "/app/generated",
+        "excludes": [],
+        "includes": [
+          "/app/**/*",
+        ],
+        "paths": {
+          "@/*": [
+            "/app/*",
+          ],
+        },
+        "rootDir": "/app",
+      }
+    `);
   });
 });
