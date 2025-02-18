@@ -27,16 +27,26 @@ export default [
       'no-restricted-imports': [
         'error',
         {
-          name: 'buffer',
-          message: 'Use Uint8Array instead.',
-        },
-        {
-          name: 'node:buffer',
-          message: 'Use Uint8Array instead.',
-        },
-        {
-          name: 'node:path',
-          message: 'Use original path package instead.',
+          paths: [
+            {
+              name: 'buffer',
+              message: 'Use Uint8Array instead.',
+            },
+            {
+              name: 'node:buffer',
+              message: 'Use Uint8Array instead.',
+            },
+            {
+              name: 'node:path',
+              message: 'Use original path package instead.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['**/src', '!**/../src'],
+              message: 'Do not import internal modules directly.',
+            },
+          ],
         },
       ],
       // Disable because it does not work in the workspace

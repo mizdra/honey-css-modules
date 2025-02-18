@@ -2,6 +2,7 @@ import { access, chmod } from 'node:fs/promises';
 import dedent from 'dedent';
 import type { Diagnostic, ResolvedHCMConfig } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
+// eslint-disable-next-line no-restricted-imports -- Allow for testing
 import { resolveConfig } from '../../core/src/config.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
