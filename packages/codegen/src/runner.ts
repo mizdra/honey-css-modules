@@ -1,5 +1,4 @@
-// eslint-disable-next-line n/no-unsupported-features/node-builtins -- TODO: Require Node.js version which have stable glob API
-import { glob, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import type {
   CSSModule,
   MatchesPattern,
@@ -15,11 +14,11 @@ import {
   createExportBuilder,
   createMatchesPattern,
   createResolver,
+  getFileNamesByPattern,
   parseCSSModule,
-  resolve,
 } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
-import { GlobError, ReadCSSModuleFileError } from './error.js';
+import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 
 /**
@@ -68,18 +67,13 @@ export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise
   const cssModuleMap = new Map<string, CSSModule>();
   const syntacticDiagnostics: SyntacticDiagnostic[] = [];
 
-  let fileNames: string[];
-  try {
-    fileNames = (await Array.fromAsync(glob(config.pattern))).map((path) => resolve(path));
-  } catch (error) {
-    throw new GlobError(config.pattern, error);
-  }
+  const fileNames = getFileNamesByPattern(config);
   if (fileNames.length === 0) {
     logger.logDiagnostics([
       {
         type: 'semantic',
         category: 'warning',
-        text: `No files found by pattern ${config.pattern}.`,
+        text: `The file specified in tsconfig.json not found.`,
       },
     ]);
     return;
