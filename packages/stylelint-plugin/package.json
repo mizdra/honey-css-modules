@@ -36,8 +36,10 @@
     "!src/test",
     "dist"
   ],
+  "dependencies": {
+    "honey-css-modules-core": "^0.0.0"
+  },
   "peerDependencies": {
-    "stylelint": "^16.0.0",
-    "honey-css-modules-core": "../core"
+    "stylelint": "^16.0.0"
   }
 }

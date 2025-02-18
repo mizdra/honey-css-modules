@@ -37,10 +37,10 @@
   ],
   "dependencies": {
     "@volar/language-core": "^2.4.11",
-    "@volar/typescript": "^2.4.11"
+    "@volar/typescript": "^2.4.11",
+    "honey-css-modules-core": "^0.0.0"
   },
   "peerDependencies": {
-    "honey-css-modules-core": "../core",
     "typescript": ">=5.6.3"
   }
 }
