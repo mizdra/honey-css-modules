@@ -13,7 +13,6 @@ describe('Refactor', async () => {
       {
         "compilerOptions": { "jsx": "react-jsx" },
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

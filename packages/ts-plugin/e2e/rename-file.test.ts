@@ -25,7 +25,6 @@ describe('Rename File', async () => {
           "paths": { "@/*": ["./*"] }
         },
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

@@ -3,11 +3,12 @@ import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } f
 import { basename, dirname, join, resolve } from './path.js';
 
 export interface TsConfig {
+  includes?: string[];
+  excludes?: string[];
   options: {
     paths?: Record<string, string[]> | undefined;
   };
   hcmOptions: {
-    pattern: string;
     dtsOutDir: string;
     arbitraryExtensions?: boolean | undefined;
     // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
@@ -18,8 +19,6 @@ export function assertHCMOptions(hcmOptions: unknown): asserts hcmOptions is TsC
   if (typeof hcmOptions !== 'object' || hcmOptions === null) {
     throw new ConfigValidationError('`hcmOptions` must be an object.');
   }
-  if (!('pattern' in hcmOptions)) throw new ConfigValidationError('`pattern` is required.');
-  if (typeof hcmOptions.pattern !== 'string') throw new ConfigValidationError('`pattern` must be a string.');
   if (!('dtsOutDir' in hcmOptions)) throw new ConfigValidationError('`dtsOutDir` is required.');
   if (typeof hcmOptions.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
   if ('arbitraryExtensions' in hcmOptions && typeof hcmOptions.arbitraryExtensions !== 'boolean') {
@@ -28,6 +27,22 @@ export function assertHCMOptions(hcmOptions: unknown): asserts hcmOptions is TsC
   if ('dashedIdents' in hcmOptions && typeof hcmOptions.dashedIdents !== 'boolean') {
     throw new ConfigValidationError('`dashedIdents` must be a boolean.');
   }
+}
+
+interface RawData {
+  include?: string[];
+  exclude?: string[];
+  hcmOptions: {
+    dtsOutDir: string;
+    arbitraryExtensions?: boolean | undefined;
+    // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
+  };
+}
+
+function assertRawData(raw: object): asserts raw is RawData {
+  if (!('hcmOptions' in raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
+  assertHCMOptions(raw.hcmOptions);
+  // MEMO: `include` and `exclude` are validated in `ts.parseJsonConfigFileContent`, so we don't need to validate them here.
 }
 
 interface ReadConfigFileResult {
@@ -64,8 +79,6 @@ export function findTsConfigFile(project: string): string | undefined {
  * @throws {TsConfigFileError}
  * @throws {ConfigValidationError}
  */
-// TODO: Read `compilerOptions.paths` instead of `hcmOptions.paths`
-// TODO: Read `include`/`exclude`/`files` instead of `hcmOptions.pattern`
 // TODO: Allow `extends` options to inherit `hcmOptions`
 export function readTsConfigFile(project: string): { configFileName: string; tsConfig: TsConfig } {
   const configFileName = findTsConfigFile(project);
@@ -79,12 +92,21 @@ export function readTsConfigFile(project: string): { configFileName: string; tsC
     dirname(configFileName),
     undefined,
     configFileName,
+    undefined,
+    [
+      {
+        extension: 'css',
+        isMixedContent: false,
+        scriptKind: ts.ScriptKind.Deferred,
+      },
+    ],
   );
-  if (!('hcmOptions' in config.raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
-  assertHCMOptions(config.raw.hcmOptions);
+  assertRawData(config.raw);
   return {
     configFileName,
     tsConfig: {
+      ...('include' in config.raw ? { includes: config.raw.include } : {}),
+      ...('exclude' in config.raw ? { excludes: config.raw.exclude } : {}),
       options: {
         ...('paths' in config.options ? { paths: config.options.paths } : {}),
       },
@@ -94,7 +116,8 @@ export function readTsConfigFile(project: string): { configFileName: string; tsC
 }
 
 export interface ResolvedHCMConfig {
-  pattern: string;
+  includes: string[];
+  excludes: string[];
   dtsOutDir: string;
   paths: Record<string, string[]>;
   arbitraryExtensions: boolean;
@@ -146,9 +169,15 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
   return resolvedPaths;
 }
 
+// https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3006
+const defaultIncludeSpec = '**/*';
+
 export function resolveConfig(tsConfig: TsConfig, rootDir: string): ResolvedHCMConfig {
   return {
-    pattern: join(rootDir, tsConfig.hcmOptions.pattern),
+    // If `include` is not specified, fallback to the default include spec.
+    // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102
+    includes: (tsConfig.includes ?? [defaultIncludeSpec]).map((i) => join(rootDir, i)),
+    excludes: (tsConfig.excludes ?? []).map((e) => join(rootDir, e)),
     dtsOutDir: join(rootDir, tsConfig.hcmOptions.dtsOutDir),
     paths: resolvePaths(tsConfig.options.paths, rootDir),
     arbitraryExtensions: tsConfig.hcmOptions.arbitraryExtensions ?? false,

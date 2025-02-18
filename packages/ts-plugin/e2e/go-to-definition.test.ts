@@ -37,7 +37,6 @@ describe('Go to Definition', async () => {
           "paths": { "@/*": ["./*"] }
         },
         "hcmOptions": {
-          "pattern": "**/*.module.css",
           "dtsOutDir": "generated"
         }
       }

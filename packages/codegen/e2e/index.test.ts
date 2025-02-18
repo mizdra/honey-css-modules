@@ -22,7 +22,6 @@ test('generates .d.ts', async () => {
           "paths": { "@/*": ["./src/*"] }
         },
         "hcmOptions": {
-          "pattern": "src/**/*.module.css",
           "dtsOutDir": "dist"
         }
       }
@@ -91,7 +90,6 @@ test('generates .d.ts with circular import', async () => {
     'tsconfig.json': dedent`
       {
         "hcmOptions": {
-          "pattern": "src/**/*.module.css",
           "dtsOutDir": "dist"
         }
       }

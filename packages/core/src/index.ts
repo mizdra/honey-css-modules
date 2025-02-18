@@ -23,12 +23,14 @@ export {
 export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
 export {
+  CSS_MODULE_EXTENSION,
   getCssModuleFileName,
   isComponentFileName,
   isCSSModuleFile,
   findComponentFile,
   type MatchesPattern,
   createMatchesPattern,
+  getFileNamesByPattern,
 } from './file.js';
 export { checkCSSModule } from './checker.js';
 export { type ExportBuilder, createExportBuilder } from './export-builder.js';
