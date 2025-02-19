@@ -1,5 +1,5 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
-import type { ResolvedHCMConfig } from 'honey-css-modules-core';
+import type { HCMConfig } from 'honey-css-modules-core';
 import { createMatchesPattern, createResolver, readConfigFile } from 'honey-css-modules-core';
 import { TsConfigFileNotFoundError } from 'honey-css-modules-core';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
@@ -11,7 +11,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     return { languagePlugins: [] };
   }
 
-  let config: ResolvedHCMConfig;
+  let config: HCMConfig;
   try {
     const readResult = readConfigFile(info.project.getProjectName());
     config = readResult.config;

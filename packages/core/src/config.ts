@@ -2,7 +2,11 @@ import ts from 'typescript';
 import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
 import { basename, dirname, join, resolve } from './path.js';
 
-export interface TsConfig {
+/**
+ * The config loaded from `tsconfig.json`.
+ * This is unnormalized. Paths are relative, and some options may be omitted.
+ */
+interface UnnormalizedTsConfig {
   includes?: string[];
   excludes?: string[];
   paths?: Record<string, string[]> | undefined;
@@ -11,110 +15,11 @@ export interface TsConfig {
   // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
 }
 
-export function assertHCMOptions(
-  hcmOptions: unknown,
-): asserts hcmOptions is Pick<TsConfig, 'dtsOutDir' | 'arbitraryExtensions'> {
-  if (typeof hcmOptions !== 'object' || hcmOptions === null) {
-    throw new ConfigValidationError('`hcmOptions` must be an object.');
-  }
-  if (!('dtsOutDir' in hcmOptions)) throw new ConfigValidationError('`dtsOutDir` is required.');
-  if (typeof hcmOptions.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
-  if ('arbitraryExtensions' in hcmOptions && typeof hcmOptions.arbitraryExtensions !== 'boolean') {
-    throw new ConfigValidationError('`arbitraryExtensions` must be a boolean.');
-  }
-  if ('dashedIdents' in hcmOptions && typeof hcmOptions.dashedIdents !== 'boolean') {
-    throw new ConfigValidationError('`dashedIdents` must be a boolean.');
-  }
-}
-
-interface RawData {
-  include?: string[];
-  exclude?: string[];
-  hcmOptions: {
-    dtsOutDir: string;
-    arbitraryExtensions?: boolean | undefined;
-    // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
-  };
-}
-
-function assertRawData(raw: object): asserts raw is RawData {
-  if (!('hcmOptions' in raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
-  assertHCMOptions(raw.hcmOptions);
-  // MEMO: `include` and `exclude` are validated in `ts.parseJsonConfigFileContent`, so we don't need to validate them here.
-}
-
-interface ReadConfigFileResult {
-  configFileName: string;
-  config: ResolvedHCMConfig;
-}
-
 /**
- * @param project The path to the project directory or the path to `tsconfig.json`. It is absolute.
- * @throws {TsConfigFileNotFoundError}
- * @throws {TsConfigFileError}
- * @throws {ConfigValidationError}
+ * The config used by honey-css-modules.
+ * This is normalized. Paths are resolved from relative to absolute, and default values are set for missing options.
  */
-export function readConfigFile(project: string): ReadConfigFileResult {
-  const { configFileName, tsConfig } = readTsConfigFile(project);
-  const rootDir = dirname(configFileName);
-  return {
-    configFileName,
-    config: resolveConfig(tsConfig, rootDir),
-  };
-}
-
-export function findTsConfigFile(project: string): string | undefined {
-  const configFile =
-    ts.sys.directoryExists(project) ?
-      ts.findConfigFile(project, ts.sys.fileExists.bind(ts.sys), 'tsconfig.json')
-    : ts.findConfigFile(dirname(project), ts.sys.fileExists.bind(ts.sys), basename(project));
-  if (!configFile) return undefined;
-  return resolve(configFile);
-}
-
-/**
- * @throws {TsConfigFileNotFoundError}
- * @throws {TsConfigFileError}
- * @throws {ConfigValidationError}
- */
-// TODO: Allow `extends` options to inherit `hcmOptions`
-export function readTsConfigFile(project: string): { configFileName: string; tsConfig: TsConfig } {
-  const configFileName = findTsConfigFile(project);
-  if (!configFileName) throw new TsConfigFileNotFoundError();
-  const configFile = ts.readConfigFile(configFileName.replaceAll('\\', '/'), ts.sys.readFile.bind(ts.sys));
-  if (configFile.error) throw new TsConfigFileError(configFile.error);
-
-  const config = ts.parseJsonConfigFileContent(
-    configFile.config,
-    ts.sys,
-    dirname(configFileName),
-    undefined,
-    configFileName,
-    undefined,
-    [
-      {
-        extension: 'css',
-        isMixedContent: false,
-        scriptKind: ts.ScriptKind.Deferred,
-      },
-    ],
-  );
-  assertRawData(config.raw);
-  return {
-    configFileName,
-    tsConfig: {
-      ...('include' in config.raw ? { includes: config.raw.include } : {}),
-      ...('exclude' in config.raw ? { excludes: config.raw.exclude } : {}),
-      ...('paths' in config.options ? { paths: config.options.paths } : {}),
-      dtsOutDir: config.raw.hcmOptions.dtsOutDir,
-      ...('arbitraryExtensions' in config.raw.hcmOptions ?
-        { arbitraryExtensions: config.raw.hcmOptions.arbitraryExtensions }
-      : {}),
-    },
-  };
-}
-
-export interface ResolvedHCMConfig {
+export interface HCMConfig {
   includes: string[];
   excludes: string[];
   dtsOutDir: string;
@@ -159,6 +64,112 @@ export interface ResolvedHCMConfig {
   rootDir: string;
 }
 
+export function assertHCMOptions(
+  hcmOptions: unknown,
+): asserts hcmOptions is Pick<UnnormalizedTsConfig, 'dtsOutDir' | 'arbitraryExtensions'> {
+  if (typeof hcmOptions !== 'object' || hcmOptions === null) {
+    throw new ConfigValidationError('`hcmOptions` must be an object.');
+  }
+  if (!('dtsOutDir' in hcmOptions)) throw new ConfigValidationError('`dtsOutDir` is required.');
+  if (typeof hcmOptions.dtsOutDir !== 'string') throw new ConfigValidationError('`dtsOutDir` must be a string.');
+  if ('arbitraryExtensions' in hcmOptions && typeof hcmOptions.arbitraryExtensions !== 'boolean') {
+    throw new ConfigValidationError('`arbitraryExtensions` must be a boolean.');
+  }
+  if ('dashedIdents' in hcmOptions && typeof hcmOptions.dashedIdents !== 'boolean') {
+    throw new ConfigValidationError('`dashedIdents` must be a boolean.');
+  }
+}
+
+/**
+ * The validated data of `ts.ParsedCommandLine['raw']`.
+ */
+interface ValidatedRawData {
+  include?: string[];
+  exclude?: string[];
+  hcmOptions: {
+    dtsOutDir: string;
+    arbitraryExtensions?: boolean | undefined;
+    // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
+  };
+}
+
+function assertRawData(raw: object): asserts raw is ValidatedRawData {
+  if (!('hcmOptions' in raw)) throw new ConfigValidationError('tsconfig.json must have `hcmOptions`.');
+  assertHCMOptions(raw.hcmOptions);
+  // MEMO: `include` and `exclude` are validated in `ts.parseJsonConfigFileContent`, so we don't need to validate them here.
+}
+
+interface ReadConfigFileResult {
+  configFileName: string;
+  config: HCMConfig;
+}
+
+/**
+ * @param project The path to the project directory or the path to `tsconfig.json`. It is absolute.
+ * @throws {TsConfigFileNotFoundError}
+ * @throws {TsConfigFileError}
+ * @throws {ConfigValidationError}
+ */
+export function readConfigFile(project: string): ReadConfigFileResult {
+  const { configFileName, tsConfig } = readTsConfigFile(project);
+  const rootDir = dirname(configFileName);
+  return {
+    configFileName,
+    config: resolveConfig(tsConfig, rootDir),
+  };
+}
+
+export function findTsConfigFile(project: string): string | undefined {
+  const configFile =
+    ts.sys.directoryExists(project) ?
+      ts.findConfigFile(project, ts.sys.fileExists.bind(ts.sys), 'tsconfig.json')
+    : ts.findConfigFile(dirname(project), ts.sys.fileExists.bind(ts.sys), basename(project));
+  if (!configFile) return undefined;
+  return resolve(configFile);
+}
+
+/**
+ * @throws {TsConfigFileNotFoundError}
+ * @throws {TsConfigFileError}
+ * @throws {ConfigValidationError}
+ */
+// TODO: Allow `extends` options to inherit `hcmOptions`
+export function readTsConfigFile(project: string): { configFileName: string; tsConfig: UnnormalizedTsConfig } {
+  const configFileName = findTsConfigFile(project);
+  if (!configFileName) throw new TsConfigFileNotFoundError();
+  const configFile = ts.readConfigFile(configFileName.replaceAll('\\', '/'), ts.sys.readFile.bind(ts.sys));
+  if (configFile.error) throw new TsConfigFileError(configFile.error);
+
+  const config = ts.parseJsonConfigFileContent(
+    configFile.config,
+    ts.sys,
+    dirname(configFileName),
+    undefined,
+    configFileName,
+    undefined,
+    [
+      {
+        extension: 'css',
+        isMixedContent: false,
+        scriptKind: ts.ScriptKind.Deferred,
+      },
+    ],
+  );
+  assertRawData(config.raw);
+  return {
+    configFileName,
+    tsConfig: {
+      ...('include' in config.raw ? { includes: config.raw.include } : {}),
+      ...('exclude' in config.raw ? { excludes: config.raw.exclude } : {}),
+      ...('paths' in config.options ? { paths: config.options.paths } : {}),
+      dtsOutDir: config.raw.hcmOptions.dtsOutDir,
+      ...('arbitraryExtensions' in config.raw.hcmOptions ?
+        { arbitraryExtensions: config.raw.hcmOptions.arbitraryExtensions }
+      : {}),
+    },
+  };
+}
+
 function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string): Record<string, string[]> {
   if (paths === undefined) return {};
   const resolvedPaths: Record<string, string[]> = {};
@@ -171,7 +182,7 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
 // https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3006
 const defaultIncludeSpec = '**/*';
 
-export function resolveConfig(tsConfig: TsConfig, rootDir: string): ResolvedHCMConfig {
+export function resolveConfig(tsConfig: UnnormalizedTsConfig, rootDir: string): HCMConfig {
   return {
     // If `include` is not specified, fallback to the default include spec.
     // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102

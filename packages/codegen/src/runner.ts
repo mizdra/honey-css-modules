@@ -1,9 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import type {
   CSSModule,
+  HCMConfig,
   MatchesPattern,
   ParseCSSModuleResult,
-  ResolvedHCMConfig,
   Resolver,
   SemanticDiagnostic,
   SyntacticDiagnostic,
@@ -24,10 +24,7 @@ import type { Logger } from './logger/logger.js';
 /**
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  */
-async function parseCSSModuleByFileName(
-  fileName: string,
-  { dashedIdents }: ResolvedHCMConfig,
-): Promise<ParseCSSModuleResult> {
+async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: HCMConfig): Promise<ParseCSSModuleResult> {
   let text: string;
   try {
     text = await readFile(fileName, 'utf-8');
@@ -42,7 +39,7 @@ async function parseCSSModuleByFileName(
  */
 async function writeDtsByCSSModule(
   cssModule: CSSModule,
-  { dtsOutDir, rootDir, arbitraryExtensions }: ResolvedHCMConfig,
+  { dtsOutDir, rootDir, arbitraryExtensions }: HCMConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
 ): Promise<void> {
@@ -60,7 +57,7 @@ async function writeDtsByCSSModule(
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(config: ResolvedHCMConfig, logger: Logger): Promise<void> {
+export async function runHCM(config: HCMConfig, logger: Logger): Promise<void> {
   const resolver = createResolver(config.paths);
   const matchesPattern = createMatchesPattern(config);
 
