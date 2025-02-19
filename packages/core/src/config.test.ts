@@ -38,6 +38,93 @@ describe('readTsConfigFile', () => {
       },
     });
   });
+  describe('inherits `hcmOptions` with `extends`', () => {
+    test('inherits from a file', async () => {
+      const iff = await createIFF({
+        'tsconfig.base.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": "./tsconfig.base.json",
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+        'package.json': '{ "type": "module" }',
+      });
+      expect(readTsConfigFile(iff.rootDir).tsConfig).toEqual({
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
+    test('inherits from a file recursively', async () => {
+      const iff = await createIFF({
+        'tsconfig.base1.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" },
+          }
+        `,
+        'tsconfig.base2.json': dedent`
+          {
+            "extends": "./tsconfig.base1.json",
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": "./tsconfig.base2.json",
+          }
+        `,
+        'package.json': '{ "type": "module" }',
+      });
+      expect(readTsConfigFile(iff.rootDir).tsConfig).toEqual({
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
+    test('inherits from a package', async () => {
+      const iff = await createIFF({
+        'node_modules/some-pkg/tsconfig.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": "some-pkg/tsconfig.json"
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).tsConfig).toEqual({
+        dtsOutDir: 'generated/hcm',
+      });
+    });
+    test('inherits from multiple files', async () => {
+      const iff = await createIFF({
+        'tsconfig.base1.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.base2.json': dedent`
+          {
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": ["./tsconfig.base1.json", "./tsconfig.base2.json"],
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).tsConfig).toEqual({
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
+  });
   test('throws error if no config file is found', async () => {
     const iff = await createIFF({});
     expect(() => readTsConfigFile(iff.rootDir)).toThrow(TsConfigFileNotFoundError);
