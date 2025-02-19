@@ -1,12 +1,6 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type {
-  CSSModule,
-  MatchesPattern,
-  ResolvedHCMConfig,
-  Resolver,
-  SyntacticDiagnostic,
-} from 'honey-css-modules-core';
+import type { CSSModule, HCMConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
 import { createDts, parseCSSModule } from 'honey-css-modules-core';
 import ts from 'typescript';
 
@@ -28,7 +22,7 @@ export interface CSSModuleScript extends SourceScript<string> {
 }
 
 export function createCSSModuleLanguagePlugin(
-  config: ResolvedHCMConfig,
+  config: HCMConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
 ): LanguagePlugin<string, VirtualCode> {
