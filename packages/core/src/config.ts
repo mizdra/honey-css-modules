@@ -134,6 +134,16 @@ export function findTsConfigFile(project: string): string | undefined {
  * @throws {ConfigValidationError}
  */
 // TODO: Allow `extends` options to inherit `hcmOptions`
+function mergeTsConfigs(base: UnnormalizedTsConfig, overrides: UnnormalizedTsConfig): UnnormalizedTsConfig {
+  return {
+    includes: overrides.includes ?? base.includes,
+    excludes: overrides.excludes ?? base.excludes,
+    paths: { ...(base.paths ?? {}), ...(overrides.paths ?? {}) },
+    dtsOutDir: overrides.dtsOutDir ?? base.dtsOutDir,
+    arbitraryExtensions: overrides.arbitraryExtensions ?? base.arbitraryExtensions,
+  };
+}
+
 export function readTsConfigFile(project: string): { configFileName: string; tsConfig: UnnormalizedTsConfig } {
   const configFileName = findTsConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
@@ -156,18 +166,28 @@ export function readTsConfigFile(project: string): { configFileName: string; tsC
     ],
   );
   assertRawData(config.raw);
-  return {
-    configFileName,
-    tsConfig: {
-      ...('include' in config.raw ? { includes: config.raw.include } : {}),
-      ...('exclude' in config.raw ? { excludes: config.raw.exclude } : {}),
-      ...('paths' in config.options ? { paths: config.options.paths } : {}),
-      dtsOutDir: config.raw.hcmOptions.dtsOutDir,
-      ...('arbitraryExtensions' in config.raw.hcmOptions ?
-        { arbitraryExtensions: config.raw.hcmOptions.arbitraryExtensions }
-      : {}),
-    },
+
+  let tsConfig: UnnormalizedTsConfig = {
+    ...('include' in config.raw ? { includes: config.raw.include } : {}),
+    ...('exclude' in config.raw ? { excludes: config.raw.exclude } : {}),
+    ...('paths' in config.options ? { paths: config.options.paths } : {}),
+    dtsOutDir: config.raw.hcmOptions.dtsOutDir,
+    ...('arbitraryExtensions' in config.raw.hcmOptions ?
+      { arbitraryExtensions: config.raw.hcmOptions.arbitraryExtensions }
+    : {}),
   };
+
+  // Support multiple or single `extends`
+  if (config.raw.extends) {
+    const extendsArray = Array.isArray(config.raw.extends) ? config.raw.extends : [config.raw.extends];
+    for (const ext of extendsArray) {
+      const baseConfigPath = resolve(dirname(configFileName), ext);
+      const baseConfig = readTsConfigFile(baseConfigPath).tsConfig;
+      tsConfig = mergeTsConfigs(baseConfig, tsConfig);
+    }
+  }
+
+  return { configFileName, tsConfig };
 }
 
 function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string): Record<string, string[]> {
