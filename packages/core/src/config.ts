@@ -5,17 +5,15 @@ import { basename, dirname, join, resolve } from './path.js';
 export interface TsConfig {
   includes?: string[];
   excludes?: string[];
-  options: {
-    paths?: Record<string, string[]> | undefined;
-  };
-  hcmOptions: {
-    dtsOutDir: string;
-    arbitraryExtensions?: boolean | undefined;
-    // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
-  };
+  paths?: Record<string, string[]> | undefined;
+  dtsOutDir: string;
+  arbitraryExtensions?: boolean | undefined;
+  // dashedIdents?: boolean | undefined; // TODO: Support dashedIdents
 }
 
-export function assertHCMOptions(hcmOptions: unknown): asserts hcmOptions is TsConfig['hcmOptions'] {
+export function assertHCMOptions(
+  hcmOptions: unknown,
+): asserts hcmOptions is Pick<TsConfig, 'dtsOutDir' | 'arbitraryExtensions'> {
   if (typeof hcmOptions !== 'object' || hcmOptions === null) {
     throw new ConfigValidationError('`hcmOptions` must be an object.');
   }
@@ -107,10 +105,11 @@ export function readTsConfigFile(project: string): { configFileName: string; tsC
     tsConfig: {
       ...('include' in config.raw ? { includes: config.raw.include } : {}),
       ...('exclude' in config.raw ? { excludes: config.raw.exclude } : {}),
-      options: {
-        ...('paths' in config.options ? { paths: config.options.paths } : {}),
-      },
-      hcmOptions: config.raw.hcmOptions,
+      ...('paths' in config.options ? { paths: config.options.paths } : {}),
+      dtsOutDir: config.raw.hcmOptions.dtsOutDir,
+      ...('arbitraryExtensions' in config.raw.hcmOptions ?
+        { arbitraryExtensions: config.raw.hcmOptions.arbitraryExtensions }
+      : {}),
     },
   };
 }
@@ -178,9 +177,9 @@ export function resolveConfig(tsConfig: TsConfig, rootDir: string): ResolvedHCMC
     // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102
     includes: (tsConfig.includes ?? [defaultIncludeSpec]).map((i) => join(rootDir, i)),
     excludes: (tsConfig.excludes ?? []).map((e) => join(rootDir, e)),
-    dtsOutDir: join(rootDir, tsConfig.hcmOptions.dtsOutDir),
-    paths: resolvePaths(tsConfig.options.paths, rootDir),
-    arbitraryExtensions: tsConfig.hcmOptions.arbitraryExtensions ?? false,
+    dtsOutDir: join(rootDir, tsConfig.dtsOutDir),
+    paths: resolvePaths(tsConfig.paths, rootDir),
+    arbitraryExtensions: tsConfig.arbitraryExtensions ?? false,
     dashedIdents: false, // TODO: Support dashedIdents
     rootDir,
   };

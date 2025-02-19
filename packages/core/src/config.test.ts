@@ -34,8 +34,7 @@ describe('readTsConfigFile', () => {
       tsConfig: {
         includes: ['src'],
         excludes: ['src/test'],
-        options: {},
-        hcmOptions: { dtsOutDir: 'generated/hcm' },
+        dtsOutDir: 'generated/hcm',
       },
     });
   });
@@ -82,10 +81,7 @@ describe('resolveConfig', () => {
         {
           includes: ['src'],
           excludes: ['src/test'],
-          options: {},
-          hcmOptions: {
-            dtsOutDir: 'generated',
-          },
+          dtsOutDir: 'generated',
         },
         '/app',
       ),
@@ -109,12 +105,8 @@ describe('resolveConfig', () => {
     expect(
       resolveConfig(
         {
-          options: {
-            paths: { '@/*': ['./*'] },
-          },
-          hcmOptions: {
-            dtsOutDir: 'generated',
-          },
+          paths: { '@/*': ['./*'] },
+          dtsOutDir: 'generated',
         },
         '/app',
       ),

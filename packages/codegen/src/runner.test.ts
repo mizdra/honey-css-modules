@@ -18,7 +18,7 @@ function createConfig({
   dtsOutDir: string;
   rootDir: string;
 }): ResolvedHCMConfig {
-  return resolveConfig({ includes, options: {}, hcmOptions: { dtsOutDir } }, rootDir);
+  return resolveConfig({ includes, dtsOutDir }, rootDir);
 }
 
 function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
