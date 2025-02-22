@@ -14,6 +14,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
   let config: HCMConfig;
   try {
     const readResult = readConfigFile(info.project.getProjectName());
+    // TODO: Report diagnostics
     config = readResult.config;
     info.project.projectService.logger.info(
       `[ts-honey-css-modules-plugin] info: Config file is found '${readResult.configFileName}'`,

@@ -11,9 +11,3 @@ export class TsConfigFileNotFoundError extends SystemError {
     super('TS_CONFIG_NOT_FOUND', 'No tsconfig.json found.');
   }
 }
-
-export class ConfigValidationError extends SystemError {
-  constructor(message: string) {
-    super('CONFIG_VALIDATION_ERROR', message);
-  }
-}

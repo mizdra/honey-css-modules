@@ -1,6 +1,6 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
-import { assertHCMOptions, findTsConfigFile, readTsConfigFile, resolveConfig } from './config.js';
+import { findTsConfigFile, normalizeConfig, readTsConfigFile } from './config.js';
 import { TsConfigFileNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
@@ -30,11 +30,14 @@ describe('readTsConfigFile', () => {
     });
     expect(readTsConfigFile(iff.rootDir)).toStrictEqual({
       configFileName: iff.paths['tsconfig.json'],
-      tsConfig: {
+      config: {
         includes: ['src'],
         excludes: ['src/test'],
+        paths: undefined,
         dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: undefined,
       },
+      diagnostics: [],
     });
   });
   test('returns a config object if config file has syntax errors', async () => {
@@ -53,48 +56,82 @@ describe('readTsConfigFile', () => {
     });
     expect(readTsConfigFile(iff.rootDir)).toStrictEqual({
       configFileName: iff.paths['tsconfig.json'],
-      tsConfig: {
+      config: {
         includes: ['src'],
+        excludes: undefined,
+        paths: undefined,
         dtsOutDir: 'generated/hcm',
         arbitraryExtensions: true,
       },
+      diagnostics: [],
+    });
+  });
+  test('returns a config object with diagnostics if config file has semantic errors', async () => {
+    const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["src", 1],
+          "exclude": ["src/test", 1],
+          "compilerOptions": {
+            "paths": {
+              "@/*": ["./*", 1],
+              "#/*": 1,
+            }
+          },
+          "hcmOptions": {
+            "dtsOutDir": 1,
+            "arbitraryExtensions": 1
+            //                     ^ error: "arbitraryExtensions" must be a boolean
+          }
+        }
+      `,
+      'package.json': '{ "type": "module" }',
+    });
+    // MEMO: The errors not derived from `hcmOptions` are not returned.
+    expect(readTsConfigFile(iff.rootDir)).toStrictEqual({
+      configFileName: iff.paths['tsconfig.json'],
+      config: {
+        includes: ['src'],
+        excludes: ['src/test'],
+        paths: { '@/*': ['./*'] },
+        dtsOutDir: undefined,
+        arbitraryExtensions: undefined,
+      },
+      diagnostics: [
+        {
+          type: 'semantic',
+          category: 'error',
+          text: '`dtsOutDir` must be a string.',
+          fileName: iff.paths['tsconfig.json'],
+        },
+        {
+          type: 'semantic',
+          category: 'error',
+          text: '`arbitraryExtensions` must be a boolean.',
+          fileName: iff.paths['tsconfig.json'],
+        },
+      ],
     });
   });
   test('throws error if no config file is found', async () => {
     const iff = await createIFF({});
     expect(() => readTsConfigFile(iff.rootDir)).toThrow(TsConfigFileNotFoundError);
   });
-  test('throws error if config file does not have "hcmOptions"', async () => {
-    const iff = await createIFF({
-      'tsconfig.json': '{}',
-    });
-    expect(() => readTsConfigFile(iff.rootDir)).toThrowErrorMatchingInlineSnapshot(
-      `[Error: tsconfig.json must have \`hcmOptions\`.]`,
-    );
-  });
 });
 
-test('assertHCMOptions', () => {
-  expect(() => assertHCMOptions({})).toThrowErrorMatchingInlineSnapshot(`[Error: \`dtsOutDir\` is required.]`);
-  expect(() => assertHCMOptions({ dtsOutDir: 1 })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`dtsOutDir\` must be a string.]`,
-  );
-  expect(() => assertHCMOptions({ dtsOutDir: 'str' })).not.toThrow();
-  expect(() => assertHCMOptions({ dtsOutDir: 'str', arbitraryExtensions: 1 })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`arbitraryExtensions\` must be a boolean.]`,
-  );
-  expect(() => assertHCMOptions({ dtsOutDir: 'str', arbitraryExtensions: true })).not.toThrow();
-  expect(() => assertHCMOptions({ dtsOutDir: 'str', dashedIdents: 1 })).toThrowErrorMatchingInlineSnapshot(
-    `[Error: \`dashedIdents\` must be a boolean.]`,
-  );
-  expect(() => assertHCMOptions({ dtsOutDir: 'str', dashedIdents: true })).not.toThrow();
-});
-
-describe('resolveConfig', () => {
+describe('normalizeConfig', () => {
+  const defaultConfig = {
+    includes: undefined,
+    excludes: undefined,
+    paths: undefined,
+    dtsOutDir: undefined,
+    arbitraryExtensions: undefined,
+  };
   test('resolves options', () => {
     expect(
-      resolveConfig(
+      normalizeConfig(
         {
+          ...defaultConfig,
           includes: ['src'],
           excludes: ['src/test'],
           dtsOutDir: 'generated',
@@ -119,8 +156,9 @@ describe('resolveConfig', () => {
   });
   test('resolves paths', () => {
     expect(
-      resolveConfig(
+      normalizeConfig(
         {
+          ...defaultConfig,
           paths: { '@/*': ['./*'] },
           dtsOutDir: 'generated',
         },

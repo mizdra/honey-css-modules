@@ -10,8 +10,13 @@ import { createLogger, runHCM } from '../dist/index.js';
 const cwd = process.cwd();
 const logger = createLogger(cwd);
 try {
-  const readResult = readConfigFile(cwd);
-  await runHCM(readResult.config, logger);
+  const { config, diagnostics } = readConfigFile(cwd);
+  if (diagnostics.length > 0) {
+    logger.logDiagnostics(diagnostics);
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+  await runHCM(config, logger);
 } catch (e) {
   if (e instanceof SystemError) {
     logger.logSystemError(e);
