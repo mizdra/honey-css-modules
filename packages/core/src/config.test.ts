@@ -1,7 +1,7 @@
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { assertHCMOptions, findTsConfigFile, readTsConfigFile, resolveConfig } from './config.js';
-import { TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
+import { TsConfigFileNotFoundError } from './error.js';
 import { createIFF } from './test/fixture.js';
 
 test('findTsConfigFile', async () => {
@@ -27,9 +27,8 @@ describe('readTsConfigFile', () => {
           }
         }
       `,
-      'package.json': '{ "type": "module" }',
     });
-    expect(readTsConfigFile(iff.rootDir)).toEqual({
+    expect(readTsConfigFile(iff.rootDir)).toStrictEqual({
       configFileName: iff.paths['tsconfig.json'],
       tsConfig: {
         includes: ['src'],
@@ -38,15 +37,32 @@ describe('readTsConfigFile', () => {
       },
     });
   });
+  test('returns a config object if config file has syntax errors', async () => {
+    const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["src"]
+          //                ^ error: ',' is missing
+          "hcmOptions": {
+            "dtsOutDir": "generated/hcm"
+            //                          ^ error: ',' is missing
+            "arbitraryExtensions": true
+          }
+        }
+      `,
+    });
+    expect(readTsConfigFile(iff.rootDir)).toStrictEqual({
+      configFileName: iff.paths['tsconfig.json'],
+      tsConfig: {
+        includes: ['src'],
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      },
+    });
+  });
   test('throws error if no config file is found', async () => {
     const iff = await createIFF({});
     expect(() => readTsConfigFile(iff.rootDir)).toThrow(TsConfigFileNotFoundError);
-  });
-  test('throws error if config file has syntax errors', async () => {
-    const iff = await createIFF({
-      'tsconfig.json': '}',
-    });
-    expect(() => readTsConfigFile(iff.rootDir)).toThrow(TsConfigFileError);
   });
   test('throws error if config file does not have "hcmOptions"', async () => {
     const iff = await createIFF({

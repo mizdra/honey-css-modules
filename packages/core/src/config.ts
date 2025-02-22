@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { ConfigValidationError, TsConfigFileError, TsConfigFileNotFoundError } from './error.js';
+import { ConfigValidationError, TsConfigFileNotFoundError } from './error.js';
 import { basename, dirname, join, resolve } from './path.js';
 
 /**
@@ -105,9 +105,12 @@ interface ReadConfigFileResult {
 }
 
 /**
- * @param project The path to the project directory or the path to `tsconfig.json`. It is absolute.
+ * Reads the `tsconfig.json` file and returns the normalized config.
+ * Even if the `tsconfig.json` file contains syntax errors, this function attempts
+ * to parse as much as possible and still returns a valid config.
+ *
+ * @param project The absolute path to the project directory or the path to `tsconfig.json`.
  * @throws {TsConfigFileNotFoundError}
- * @throws {TsConfigFileError}
  * @throws {ConfigValidationError}
  */
 export function readConfigFile(project: string): ReadConfigFileResult {
@@ -130,15 +133,18 @@ export function findTsConfigFile(project: string): string | undefined {
 
 /**
  * @throws {TsConfigFileNotFoundError}
- * @throws {TsConfigFileError}
  * @throws {ConfigValidationError}
  */
 // TODO: Allow `extends` options to inherit `hcmOptions`
 export function readTsConfigFile(project: string): { configFileName: string; tsConfig: UnnormalizedTsConfig } {
   const configFileName = findTsConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
+
   const configFile = ts.readConfigFile(configFileName, ts.sys.readFile.bind(ts.sys));
-  if (configFile.error) throw new TsConfigFileError(configFile.error);
+  // MEMO: `configFile.error` contains a syntax error for `tsconfig.json`.
+  // However, it is ignored so that ts-plugin will work even if `tsconfig.json` is somewhat broken.
+  // Also, this error is reported to the user by `tsc` or `tsserver`.
+  // We discard it since there is no need to report it from honey-css-modules.
 
   const config = ts.parseJsonConfigFileContent(
     configFile.config,
