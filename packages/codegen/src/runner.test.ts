@@ -1,9 +1,7 @@
 import { access, chmod } from 'node:fs/promises';
 import dedent from 'dedent';
-import type { Diagnostic, HCMConfig } from 'honey-css-modules-core';
+import { type Diagnostic, type HCMConfig, join } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
-// eslint-disable-next-line no-restricted-imports -- Allow for testing
-import { resolveConfig } from '../../core/src/config.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 import { runHCM } from './runner.js';
@@ -18,7 +16,15 @@ function createConfig({
   dtsOutDir: string;
   rootDir: string;
 }): HCMConfig {
-  return resolveConfig({ includes, dtsOutDir }, rootDir);
+  return {
+    includes: includes.map((include) => join(rootDir, include)),
+    excludes: [],
+    paths: {},
+    dtsOutDir: join(rootDir, dtsOutDir),
+    arbitraryExtensions: false,
+    dashedIdents: false,
+    rootDir,
+  };
 }
 
 function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
