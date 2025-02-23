@@ -116,6 +116,157 @@ describe('readTsConfigFile', () => {
     const iff = await createIFF({});
     expect(() => readTsConfigFile(iff.rootDir)).toThrow(TsConfigFileNotFoundError);
   });
+  describe('supports `extends`', () => {
+    test('inherits from a file', async () => {
+      const iff = await createIFF({
+        'tsconfig.base.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": "./tsconfig.base.json",
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).config).toEqual({
+        includes: undefined,
+        excludes: undefined,
+        paths: undefined,
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
+    test('does not merge arrays and objects, but overwrites them', async () => {
+      const iff = await createIFF({
+        'tsconfig.base.json': dedent`
+          {
+            "include": ["include1"],
+            "exclude": ["exclude1"],
+            "compilerOptions": {
+              "paths": { "@/*": ["./paths1/*"] }
+            }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": "./tsconfig.base.json",
+            "include": ["include2"],
+            "exclude": ["exclude2"],
+            "compilerOptions": {
+              "paths": { "@/*": ["./paths2/*"], "#/*": ["./paths2/*"] }
+            }
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).config).toEqual({
+        includes: ['include2'],
+        excludes: ['exclude2'],
+        paths: { '@/*': ['./paths2/*'], '#/*': ['./paths2/*'] },
+        dtsOutDir: undefined,
+        arbitraryExtensions: undefined,
+      });
+    });
+    test('inherits from a file recursively', async () => {
+      const iff = await createIFF({
+        'tsconfig.base1.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" },
+          }
+        `,
+        'tsconfig.base2.json': dedent`
+          {
+            "extends": "./tsconfig.base1.json",
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": "./tsconfig.base2.json"
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).config).toEqual({
+        includes: undefined,
+        excludes: undefined,
+        paths: undefined,
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
+    test('inherits from a package', async () => {
+      const iff = await createIFF({
+        'node_modules/some-pkg/tsconfig.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": "some-pkg/tsconfig.json"
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).config).toEqual({
+        includes: undefined,
+        excludes: undefined,
+        paths: undefined,
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: undefined,
+      });
+    });
+    test('inherits from multiple files', async () => {
+      const iff = await createIFF({
+        'tsconfig.base1.json': dedent`
+          {
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.base2.json': dedent`
+          {
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": ["./tsconfig.base1.json", "./tsconfig.base2.json"]
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).config).toEqual({
+        includes: undefined,
+        excludes: undefined,
+        paths: undefined,
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
+    test('ignores un-existing files', async () => {
+      const iff = await createIFF({
+        'tsconfig.base.json': dedent`
+          {
+            "extends": "./un-existing.json",
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": ["./tsconfig.base.json", "./un-existing.json"],
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).config).toEqual({
+        includes: undefined,
+        excludes: undefined,
+        paths: undefined,
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
+  });
 });
 
 describe('normalizeConfig', () => {
