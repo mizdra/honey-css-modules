@@ -141,6 +141,7 @@ describe('normalizeConfig', () => {
     ).toMatchInlineSnapshot(`
       {
         "arbitraryExtensions": false,
+        "basePath": "/app",
         "dashedIdents": false,
         "dtsOutDir": "/app/generated",
         "excludes": [
@@ -150,7 +151,6 @@ describe('normalizeConfig', () => {
           "/app/src",
         ],
         "paths": {},
-        "rootDir": "/app",
       }
     `);
   });
@@ -167,6 +167,7 @@ describe('normalizeConfig', () => {
     ).toMatchInlineSnapshot(`
       {
         "arbitraryExtensions": false,
+        "basePath": "/app",
         "dashedIdents": false,
         "dtsOutDir": "/app/generated",
         "excludes": [],
@@ -178,7 +179,6 @@ describe('normalizeConfig', () => {
             "/app/*",
           ],
         },
-        "rootDir": "/app",
       }
     `);
   });

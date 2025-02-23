@@ -15,11 +15,13 @@ export interface HCMConfig {
   arbitraryExtensions: boolean;
   dashedIdents: boolean;
   /**
-   * The root directory of the project. This is used to determine the output directory of the d.ts file.
+   * A root directory to resolve relative path entries in the config file to.
+   * This is an absolute path.
    *
+   * This is also used to determine the output directory of the d.ts file.
    * For example, let’s say you have some input files:
    * ```
-   * .
+   * /app
    * ├── tsconfig.json
    * ├── src
    * │   ├── a.module.css
@@ -28,9 +30,9 @@ export interface HCMConfig {
    * │   │   ├── c.module.css
    * ```
    *
-   * If you set `rootDir` to `src`, the output files will be:
+   * If you set `basePath` to `/app/src`, the output files will be:
    * ```
-   * .
+   * /app
    * ├── dist
    * │   ├── a.module.css.d.ts
    * │   ├── b.module.css.d.ts
@@ -38,9 +40,9 @@ export interface HCMConfig {
    * │   │   ├── c.module.css.d.ts
    * ```
    *
-   * If you set `rootDir` to `.` (the project root), the output files will be:
+   * If you set `basePath` to `/app`, the output files will be:
    * ```
-   * .
+   * /app
    * ├── dist
    * │   ├── src
    * │   │   ├── a.module.css.d.ts
@@ -49,7 +51,7 @@ export interface HCMConfig {
    * │   │   │   ├── c.module.css.d.ts
    * ```
    */
-  rootDir: string;
+  basePath: string;
 }
 
 /**
@@ -160,10 +162,10 @@ interface ReadConfigFileResult {
  */
 export function readConfigFile(project: string): ReadConfigFileResult {
   const { configFileName, config, diagnostics } = readTsConfigFile(project);
-  const rootDir = dirname(configFileName);
+  const basePath = dirname(configFileName);
   return {
     configFileName,
-    config: normalizeConfig(config, rootDir),
+    config: normalizeConfig(config, basePath),
     diagnostics,
   };
 }
@@ -227,16 +229,20 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
 // https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3006
 const defaultIncludeSpec = '**/*';
 
-export function normalizeConfig(config: UnnormalizedHCMConfig, rootDir: string): HCMConfig {
+/**
+ * Normalize the config. Resolve relative paths to absolute paths, and set default values for missing options.
+ * @param basePath A root directory to resolve relative path entries in the config file to.
+ */
+export function normalizeConfig(config: UnnormalizedHCMConfig, basePath: string): HCMConfig {
   return {
     // If `include` is not specified, fallback to the default include spec.
     // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102
-    includes: (config.includes ?? [defaultIncludeSpec]).map((i) => join(rootDir, i)),
-    excludes: (config.excludes ?? []).map((e) => join(rootDir, e)),
-    dtsOutDir: join(rootDir, config.dtsOutDir ?? 'generated'),
-    paths: resolvePaths(config.paths, rootDir),
+    includes: (config.includes ?? [defaultIncludeSpec]).map((i) => join(basePath, i)),
+    excludes: (config.excludes ?? []).map((e) => join(basePath, e)),
+    dtsOutDir: join(basePath, config.dtsOutDir ?? 'generated'),
+    paths: resolvePaths(config.paths, basePath),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
     dashedIdents: false, // TODO: Support dashedIdents
-    rootDir,
+    basePath,
   };
 }
