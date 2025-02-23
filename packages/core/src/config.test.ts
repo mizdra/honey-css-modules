@@ -85,7 +85,6 @@ describe('readTsConfigFile', () => {
           }
         }
       `,
-      'package.json': '{ "type": "module" }',
     });
     // MEMO: The errors not derived from `hcmOptions` are not returned.
     expect(readTsConfigFile(iff.rootDir)).toStrictEqual({
