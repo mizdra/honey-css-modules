@@ -1,33 +1,11 @@
 import { access, chmod } from 'node:fs/promises';
 import dedent from 'dedent';
-import { type Diagnostic, type HCMConfig, join } from 'honey-css-modules-core';
+import { type Diagnostic } from 'honey-css-modules-core';
 import { describe, expect, test, vi } from 'vitest';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
 import { runHCM } from './runner.js';
 import { createIFF } from './test/fixture.js';
-
-function createConfig({
-  includes,
-  dtsOutDir,
-  basePath,
-}: {
-  includes: string[];
-  dtsOutDir: string;
-  basePath: string;
-}): HCMConfig {
-  return {
-    includes: includes.map((include) => join(basePath, include)),
-    excludes: [],
-    paths: {},
-    dtsOutDir: join(basePath, dtsOutDir),
-    arbitraryExtensions: false,
-    dashedIdents: false,
-    basePath,
-    configFileName: 'dummy',
-    diagnostics: [],
-  };
-}
 
 function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
   return {
@@ -62,10 +40,18 @@ function createLoggerSpy() {
 describe('runHCM', () => {
   test('generates .d.ts files', async () => {
     const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["./src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.module.css': '.b1 { color: blue; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
+    await runHCM(iff.rootDir, createLoggerSpy());
     expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
@@ -83,20 +69,36 @@ describe('runHCM', () => {
   });
   test('does not generate .d.ts files for files not matched by `pattern`', async () => {
     const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["./src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
+    await runHCM(iff.rootDir, createLoggerSpy());
     await expect(access(iff.join('generated/src/a.module.css.d.ts'))).resolves.not.toThrow();
     await expect(access(iff.join('generated/src/b.css.d.ts'))).rejects.toThrow();
   });
   test('does not generate types derived from files not matched by `pattern`', async () => {
     const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["./src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
       'src/a.module.css': '@import "./b.module.css"; @import "./c.css"',
       'src/b.module.css': '.b1 { color: blue; }',
       'src/c.css': '.c1 { color: red; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
+    await runHCM(iff.rootDir, createLoggerSpy());
     expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         ...(await import('./b.module.css')).default,
@@ -106,9 +108,18 @@ describe('runHCM', () => {
     `);
   });
   test('warns when no files found by `pattern`', async () => {
-    const iff = await createIFF({});
+    const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["./src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
+    });
     const loggerSpy = createLoggerSpy();
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), loggerSpy);
+    await runHCM(iff.rootDir, loggerSpy);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
     expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
       [
@@ -122,19 +133,33 @@ describe('runHCM', () => {
   });
   test.runIf(process.platform !== 'win32')('throws error when failed to read CSS Module file', async () => {
     const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["./src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
       'src/a.module.css': '.a1 { color: red; }',
     });
     await chmod(iff.paths['src/a.module.css'], 0o200); // Remove read permission
-    await expect(
-      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy()),
-    ).rejects.toThrow(ReadCSSModuleFileError);
+    await expect(runHCM(iff.rootDir, createLoggerSpy())).rejects.toThrow(ReadCSSModuleFileError);
   });
   test('support ./ in `pattern`', async () => {
     const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["./src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
       'src/a.module.css': `@import './b.css'; .a1 { color: red; }`,
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
+    await runHCM(iff.rootDir, createLoggerSpy());
     expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
@@ -146,13 +171,19 @@ describe('runHCM', () => {
   });
   test('reports syntactic diagnostics', async () => {
     const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
       'src/a.module.css': '.a1 {',
       'src/b.module.css': '@value;',
     });
     const loggerSpy = createLoggerSpy();
-    await expect(
-      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), loggerSpy),
-    ).rejects.toThrow(ProcessExitError);
+    await expect(runHCM(iff.rootDir, loggerSpy)).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
     expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
       [
@@ -185,6 +216,14 @@ describe('runHCM', () => {
   });
   test('reports semantic diagnostics', async () => {
     const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["src"],
+          "hcmOptions": {
+            "dtsOutDir": "generated"
+          }
+        }
+      `,
       'src/a.module.css': dedent`
         @value b_1, b_2 from "./b.module.css";
       `,
@@ -194,9 +233,7 @@ describe('runHCM', () => {
       `,
     });
     const loggerSpy = createLoggerSpy();
-    await expect(
-      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), loggerSpy),
-    ).rejects.toThrow(ProcessExitError);
+    await expect(runHCM(iff.rootDir, loggerSpy)).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
     expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
       [

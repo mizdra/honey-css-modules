@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readConfigFile, SystemError } from 'honey-css-modules-core';
+import { SystemError } from 'honey-css-modules-core';
 import { createLogger, runHCM } from '../dist/index.js';
 
 // TODO: Support `--help` option
@@ -8,15 +8,10 @@ import { createLogger, runHCM } from '../dist/index.js';
 // TODO: Support `--project` option
 
 const cwd = process.cwd();
+const project = cwd;
 const logger = createLogger(cwd);
 try {
-  const config = readConfigFile(cwd);
-  if (config.diagnostics.length > 0) {
-    logger.logDiagnostics(config.diagnostics);
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
-  await runHCM(config, logger);
+  await runHCM(project, logger);
 } catch (e) {
   if (e instanceof SystemError) {
     logger.logSystemError(e);

@@ -16,6 +16,7 @@ import {
   createResolver,
   getFileNamesByPattern,
   parseCSSModule,
+  readConfigFile,
 } from 'honey-css-modules-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
@@ -53,11 +54,19 @@ async function writeDtsByCSSModule(
 
 /**
  * Run honey-css-modules .d.ts generation.
+ * @param project The absolute path to the project directory or the path to `tsconfig.json`.
  * @throws {GlobError} When failed to retrieve files by glob pattern.
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(config: HCMConfig, logger: Logger): Promise<void> {
+export async function runHCM(project: string, logger: Logger): Promise<void> {
+  const config = readConfigFile(project);
+  if (config.diagnostics.length > 0) {
+    logger.logDiagnostics(config.diagnostics);
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+
   const resolver = createResolver(config.paths);
   const matchesPattern = createMatchesPattern(config);
 
