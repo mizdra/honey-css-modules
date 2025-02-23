@@ -179,6 +179,18 @@ export function findTsConfigFile(project: string): string | undefined {
   return resolve(configFile);
 }
 
+function mergeParsedRawData(base: ParsedRawData, overrides: ParsedRawData): ParsedRawData {
+  const result: ParsedRawData = { config: { ...base.config }, diagnostics: [...base.diagnostics] };
+  if (overrides.config.includes !== undefined) result.config.includes = overrides.config.includes;
+  if (overrides.config.excludes !== undefined) result.config.excludes = overrides.config.excludes;
+  if (overrides.config.paths !== undefined) result.config.paths = overrides.config.paths;
+  if (overrides.config.dtsOutDir !== undefined) result.config.dtsOutDir = overrides.config.dtsOutDir;
+  if (overrides.config.arbitraryExtensions !== undefined)
+    result.config.arbitraryExtensions = overrides.config.arbitraryExtensions;
+  result.diagnostics.push(...overrides.diagnostics);
+  return result;
+}
+
 /**
  * @throws {TsConfigFileNotFoundError}
  */
@@ -189,14 +201,14 @@ export function readTsConfigFile(project: string): {
   const configFileName = findTsConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
 
-  const configFile = ts.readConfigFile(configFileName, ts.sys.readFile.bind(ts.sys));
-  // MEMO: `configFile.error` contains a syntax error for `tsconfig.json`.
+  const tsConfigSourceFile = ts.readJsonConfigFile(configFileName, ts.sys.readFile.bind(ts.sys));
+  // MEMO: `tsConfigSourceFile.parseDiagnostics` (Internal API) contains a syntax error for `tsconfig.json`.
   // However, it is ignored so that ts-plugin will work even if `tsconfig.json` is somewhat broken.
   // Also, this error is reported to the user by `tsc` or `tsserver`.
   // We discard it since there is no need to report it from honey-css-modules.
 
-  const parsedCommandLine = ts.parseJsonConfigFileContent(
-    configFile.config,
+  const parsedCommandLine = ts.parseJsonSourceFileConfigFileContent(
+    tsConfigSourceFile,
     ts.sys,
     dirname(configFileName),
     undefined,
@@ -210,7 +222,16 @@ export function readTsConfigFile(project: string): {
       },
     ],
   );
-  const parsedRawData = parseRawData(parsedCommandLine.raw, configFileName);
+  let parsedRawData = parseRawData(parsedCommandLine.raw, configFileName);
+
+  // Inherit options from the base config
+  if (tsConfigSourceFile.extendedSourceFiles) {
+    for (const extendedSourceFile of tsConfigSourceFile.extendedSourceFiles) {
+      const base = readTsConfigFile(extendedSourceFile);
+      parsedRawData = mergeParsedRawData(base, parsedRawData);
+    }
+  }
+
   return {
     configFileName,
     ...parsedRawData,
