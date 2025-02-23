@@ -10,20 +10,20 @@ import { createIFF } from './test/fixture.js';
 function createConfig({
   includes,
   dtsOutDir,
-  rootDir,
+  basePath,
 }: {
   includes: string[];
   dtsOutDir: string;
-  rootDir: string;
+  basePath: string;
 }): HCMConfig {
   return {
-    includes: includes.map((include) => join(rootDir, include)),
+    includes: includes.map((include) => join(basePath, include)),
     excludes: [],
     paths: {},
-    dtsOutDir: join(rootDir, dtsOutDir),
+    dtsOutDir: join(basePath, dtsOutDir),
     arbitraryExtensions: false,
     dashedIdents: false,
-    rootDir,
+    basePath,
   };
 }
 
@@ -63,7 +63,7 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.module.css': '.b1 { color: blue; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), createLoggerSpy());
+    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
     expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
@@ -84,7 +84,7 @@ describe('runHCM', () => {
       'src/a.module.css': '.a1 { color: red; }',
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), createLoggerSpy());
+    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
     await expect(access(iff.join('generated/src/a.module.css.d.ts'))).resolves.not.toThrow();
     await expect(access(iff.join('generated/src/b.css.d.ts'))).rejects.toThrow();
   });
@@ -94,7 +94,7 @@ describe('runHCM', () => {
       'src/b.module.css': '.b1 { color: blue; }',
       'src/c.css': '.c1 { color: red; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), createLoggerSpy());
+    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
     expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         ...(await import('./b.module.css')).default,
@@ -106,7 +106,7 @@ describe('runHCM', () => {
   test('warns when no files found by `pattern`', async () => {
     const iff = await createIFF({});
     const loggerSpy = createLoggerSpy();
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), loggerSpy);
+    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), loggerSpy);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
     expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
       [
@@ -124,7 +124,7 @@ describe('runHCM', () => {
     });
     await chmod(iff.paths['src/a.module.css'], 0o200); // Remove read permission
     await expect(
-      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), createLoggerSpy()),
+      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy()),
     ).rejects.toThrow(ReadCSSModuleFileError);
   });
   test('support ./ in `pattern`', async () => {
@@ -132,7 +132,7 @@ describe('runHCM', () => {
       'src/a.module.css': `@import './b.css'; .a1 { color: red; }`,
       'src/b.css': '.b1 { color: red; }',
     });
-    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), createLoggerSpy());
+    await runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), createLoggerSpy());
     expect(await iff.readFile('generated/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
       "declare const styles = {
         a1: '' as readonly string,
@@ -149,7 +149,7 @@ describe('runHCM', () => {
     });
     const loggerSpy = createLoggerSpy();
     await expect(
-      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), loggerSpy),
+      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), loggerSpy),
     ).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
     expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
@@ -193,7 +193,7 @@ describe('runHCM', () => {
     });
     const loggerSpy = createLoggerSpy();
     await expect(
-      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', rootDir: iff.rootDir }), loggerSpy),
+      runHCM(createConfig({ includes: ['src'], dtsOutDir: 'generated', basePath: iff.rootDir }), loggerSpy),
     ).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
     expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`

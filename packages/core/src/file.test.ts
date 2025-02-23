@@ -159,7 +159,7 @@ describe('getFileNamesByPattern', () => {
     const result = getFileNamesByPattern({
       includes: [iff.join('src')],
       excludes: [],
-      rootDir: iff.rootDir,
+      basePath: iff.rootDir,
     });
     expect(result.sort()).toEqual([iff.paths['src/a.module.css'], iff.paths['src/sub/a.module.css']].sort());
   });
@@ -172,7 +172,7 @@ describe('getFileNamesByPattern', () => {
     const result = getFileNamesByPattern({
       includes: [iff.join('src')],
       excludes: [],
-      rootDir: iff.rootDir,
+      basePath: iff.rootDir,
     });
     expect(result).toEqual([iff.paths['src/a.module.css']]);
   });
@@ -184,7 +184,7 @@ describe('getFileNamesByPattern', () => {
     const result = getFileNamesByPattern({
       includes: [],
       excludes: [],
-      rootDir: iff.rootDir,
+      basePath: iff.rootDir,
     });
     expect(result.sort()).toEqual([iff.paths['src/a.module.css'], iff.paths['a.module.css']].sort());
   });
@@ -196,7 +196,7 @@ describe('getFileNamesByPattern', () => {
     const result = getFileNamesByPattern({
       includes: [iff.join('src')],
       excludes: [iff.join('src/exclude')],
-      rootDir: iff.rootDir,
+      basePath: iff.rootDir,
     });
     expect(result).toEqual([iff.paths['src/a.module.css']]);
   });
@@ -209,7 +209,7 @@ describe('getFileNamesByPattern', () => {
     const result = getFileNamesByPattern({
       includes: [iff.rootDir],
       excludes: [],
-      rootDir: iff.rootDir,
+      basePath: iff.rootDir,
     });
     expect(result).toEqual([]);
   });
@@ -227,7 +227,7 @@ describe('getFileNamesByPattern', () => {
     const result = getFileNamesByPattern({
       includes: [iff.join('src1/**/*'), iff.join('src2/*')],
       excludes: [iff.join('src1/exclude1/**/*'), iff.join('src1/**/exclude2')],
-      rootDir: iff.rootDir,
+      basePath: iff.rootDir,
     });
     expect(result.sort()).toEqual(
       [

@@ -39,14 +39,14 @@ async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: HCMC
  */
 async function writeDtsByCSSModule(
   cssModule: CSSModule,
-  { dtsOutDir, rootDir, arbitraryExtensions }: HCMConfig,
+  { dtsOutDir, basePath, arbitraryExtensions }: HCMConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
 ): Promise<void> {
   const dts = createDts(cssModule, { resolver, matchesPattern });
   await writeDtsFile(dts.text, cssModule.fileName, {
     outDir: dtsOutDir,
-    rootDir,
+    basePath,
     arbitraryExtensions,
   });
 }

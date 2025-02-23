@@ -73,12 +73,11 @@ export function createMatchesPattern(options: { includes: string[]; excludes: st
 /**
  * Get files matched by the pattern.
  */
-export function getFileNamesByPattern(options: { rootDir: string; includes: string[]; excludes: string[] }): string[] {
+export function getFileNamesByPattern(options: { basePath: string; includes: string[]; excludes: string[] }): string[] {
   // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3929
 
   // MEMO: `ts.sys.readDirectory` catch errors internally. So we don't need to wrap with try-catch.
   // https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/sys.ts#L1877-L1879
 
-  // TODO: Should we use `baseDir` instead of `rootDir`?
-  return ts.sys.readDirectory(options.rootDir, [CSS_MODULE_EXTENSION], options.excludes, options.includes);
+  return ts.sys.readDirectory(options.basePath, [CSS_MODULE_EXTENSION], options.excludes, options.includes);
 }
