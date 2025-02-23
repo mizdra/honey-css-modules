@@ -87,6 +87,10 @@ function parseRawData(raw: unknown, configFileName: string): ParsedRawData {
     diagnostics: [],
   };
   if (typeof raw !== 'object' || raw === null) return result;
+
+  // `tsConfigSourceFile.configFileSpecs` contains `includes` and `excludes`. However, it is an internal API.
+  // So we collect `includes` and `excludes` from `parsedCommandLine.raw` without the internal API.
+
   if ('include' in raw) {
     if (Array.isArray(raw.include)) {
       const includes = raw.include.filter((i) => typeof i === 'string');
@@ -222,9 +226,11 @@ export function readTsConfigFile(project: string): {
       },
     ],
   );
+  // Read options from `parsedCommandLine.raw`
   let parsedRawData = parseRawData(parsedCommandLine.raw, configFileName);
 
-  // Inherit options from the base config
+  // The options read from `parsedCommandLine.raw` do not inherit values from the file specified in `extends`.
+  // So here we read the options from those files and merge them into `parsedRawData`.
   if (tsConfigSourceFile.extendedSourceFiles) {
     for (const extendedSourceFile of tsConfigSourceFile.extendedSourceFiles) {
       let base: ParsedRawData;
