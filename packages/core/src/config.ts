@@ -227,7 +227,13 @@ export function readTsConfigFile(project: string): {
   // Inherit options from the base config
   if (tsConfigSourceFile.extendedSourceFiles) {
     for (const extendedSourceFile of tsConfigSourceFile.extendedSourceFiles) {
-      const base = readTsConfigFile(extendedSourceFile);
+      let base: ParsedRawData;
+      try {
+        base = readTsConfigFile(extendedSourceFile);
+      } catch (error) {
+        if (error instanceof TsConfigFileNotFoundError) continue;
+        throw error;
+      }
       parsedRawData = mergeParsedRawData(base, parsedRawData);
     }
   }

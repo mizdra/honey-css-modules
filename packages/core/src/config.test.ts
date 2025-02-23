@@ -243,6 +243,29 @@ describe('readTsConfigFile', () => {
         arbitraryExtensions: true,
       });
     });
+    test('ignores un-existing files', async () => {
+      const iff = await createIFF({
+        'tsconfig.base.json': dedent`
+          {
+            "extends": "./un-existing.json",
+            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+          }
+        `,
+        'tsconfig.json': dedent`
+          {
+            "extends": ["./tsconfig.base.json", "./un-existing.json"],
+            "hcmOptions": { "arbitraryExtensions": true }
+          }
+        `,
+      });
+      expect(readTsConfigFile(iff.rootDir).config).toEqual({
+        includes: undefined,
+        excludes: undefined,
+        paths: undefined,
+        dtsOutDir: 'generated/hcm',
+        arbitraryExtensions: true,
+      });
+    });
   });
 });
 
