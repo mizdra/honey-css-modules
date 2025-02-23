@@ -1,8 +1,13 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { CSSModule, HCMConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
-import { createDts, parseCSSModule } from 'honey-css-modules-core';
 import ts from 'typescript';
+import type { HCMConfig } from './config.js';
+import type { SyntacticDiagnostic } from './diagnostic.js';
+import { createDts } from './dts-creator.js';
+import type { MatchesPattern } from './file.js';
+import type { CSSModule } from './parser/css-module-parser.js';
+import { parseCSSModule } from './parser/css-module-parser.js';
+import type { Resolver } from './resolver.js';
 
 export const LANGUAGE_ID = 'css-module';
 
