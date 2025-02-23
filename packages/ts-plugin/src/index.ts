@@ -1,8 +1,12 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
 import type { HCMConfig } from 'honey-css-modules-core';
-import { createMatchesPattern, createResolver, readConfigFile } from 'honey-css-modules-core';
+import {
+  createCSSModuleLanguagePlugin,
+  createMatchesPattern,
+  createResolver,
+  readConfigFile,
+} from 'honey-css-modules-core';
 import { TsConfigFileNotFoundError } from 'honey-css-modules-core';
-import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 import { proxyLanguageService } from './language-service/proxy.js';
 
 const plugin = createLanguageServicePlugin((ts, info) => {
@@ -13,11 +17,10 @@ const plugin = createLanguageServicePlugin((ts, info) => {
 
   let config: HCMConfig;
   try {
-    const readResult = readConfigFile(info.project.getProjectName());
+    config = readConfigFile(info.project.getProjectName());
     // TODO: Report diagnostics
-    config = readResult.config;
     info.project.projectService.logger.info(
-      `[ts-honey-css-modules-plugin] info: Config file is found '${readResult.configFileName}'`,
+      `[ts-honey-css-modules-plugin] info: Config file is found '${config.configFileName}'`,
     );
   } catch (error) {
     // If the config file is not found, disable the plugin.
