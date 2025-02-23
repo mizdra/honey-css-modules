@@ -169,7 +169,32 @@ describe('runHCM', () => {
     `);
     await expect(access(iff.join('generated/src/b.css.d.ts'))).rejects.toThrow();
   });
-  test('reports syntactic diagnostics', async () => {
+  test('reports semantic diagnostics in tsconfig.json', async () => {
+    const iff = await createIFF({
+      'tsconfig.json': dedent`
+        {
+          "include": ["src"],
+          "hcmOptions": {
+            "dtsOutDir": 1
+          }
+        }
+      `,
+    });
+    const loggerSpy = createLoggerSpy();
+    await expect(runHCM(iff.rootDir, loggerSpy)).rejects.toThrow(ProcessExitError);
+    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+      [
+        {
+          "category": "error",
+          "fileName": "<rootDir>/tsconfig.json",
+          "text": "\`dtsOutDir\` must be a string.",
+          "type": "semantic",
+        },
+      ]
+    `);
+  });
+  test('reports syntactic diagnostics in *.module.css', async () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
@@ -214,7 +239,7 @@ describe('runHCM', () => {
       ]
     `);
   });
-  test('reports semantic diagnostics', async () => {
+  test('reports semantic diagnostics in *.module.css', async () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
