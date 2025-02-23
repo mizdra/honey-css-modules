@@ -291,7 +291,6 @@ describe('normalizeConfig', () => {
     ).toMatchInlineSnapshot(`
       {
         "arbitraryExtensions": false,
-        "basePath": "/app",
         "dashedIdents": false,
         "dtsOutDir": "/app/generated",
         "excludes": [
@@ -317,7 +316,6 @@ describe('normalizeConfig', () => {
     ).toMatchInlineSnapshot(`
       {
         "arbitraryExtensions": false,
-        "basePath": "/app",
         "dashedIdents": false,
         "dtsOutDir": "/app/generated",
         "excludes": [],

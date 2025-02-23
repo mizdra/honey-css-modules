@@ -10,9 +10,9 @@ import { createLogger, runHCM } from '../dist/index.js';
 const cwd = process.cwd();
 const logger = createLogger(cwd);
 try {
-  const { config, diagnostics } = readConfigFile(cwd);
-  if (diagnostics.length > 0) {
-    logger.logDiagnostics(diagnostics);
+  const config = readConfigFile(cwd);
+  if (config.diagnostics.length > 0) {
+    logger.logDiagnostics(config.diagnostics);
     // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }

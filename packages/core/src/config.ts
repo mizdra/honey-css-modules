@@ -3,6 +3,13 @@ import type { SemanticDiagnostic } from './diagnostic.js';
 import { TsConfigFileNotFoundError } from './error.js';
 import { basename, dirname, join, resolve } from './path.js';
 
+// https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3006
+const DEFAULT_INCLUDE_SPEC = '**/*';
+
+type RemoveUndefined<T> = {
+  [K in keyof T]: Exclude<T[K], undefined>;
+};
+
 /**
  * The config used by honey-css-modules.
  * This is normalized. Paths are resolved from relative to absolute, and default values are set for missing options.
@@ -52,6 +59,9 @@ export interface HCMConfig {
    * ```
    */
   basePath: string;
+  configFileName: string;
+  /** The diagnostics that occurred while reading the config file. */
+  diagnostics: SemanticDiagnostic[];
 }
 
 /**
@@ -150,12 +160,6 @@ function parseRawData(raw: unknown, configFileName: string): ParsedRawData {
 }
 export { parseRawData as parseRawDataForTest };
 
-interface ReadConfigFileResult {
-  configFileName: string;
-  config: HCMConfig;
-  diagnostics: SemanticDiagnostic[];
-}
-
 /**
  * Reads the `tsconfig.json` file and returns the normalized config.
  * Even if the `tsconfig.json` file contains syntax or semantic errors,
@@ -164,12 +168,13 @@ interface ReadConfigFileResult {
  * @param project The absolute path to the project directory or the path to `tsconfig.json`.
  * @throws {TsConfigFileNotFoundError}
  */
-export function readConfigFile(project: string): ReadConfigFileResult {
+export function readConfigFile(project: string): HCMConfig {
   const { configFileName, config, diagnostics } = readTsConfigFile(project);
   const basePath = dirname(configFileName);
   return {
+    ...normalizeConfig(config, basePath),
+    basePath,
     configFileName,
-    config: normalizeConfig(config, basePath),
     diagnostics,
   };
 }
@@ -259,23 +264,22 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
   return resolvedPaths;
 }
 
-// https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3006
-const defaultIncludeSpec = '**/*';
-
 /**
  * Normalize the config. Resolve relative paths to absolute paths, and set default values for missing options.
  * @param basePath A root directory to resolve relative path entries in the config file to.
  */
-export function normalizeConfig(config: UnnormalizedHCMConfig, basePath: string): HCMConfig {
+export function normalizeConfig(
+  config: UnnormalizedHCMConfig,
+  basePath: string,
+): RemoveUndefined<UnnormalizedHCMConfig> & { dashedIdents: boolean } {
   return {
     // If `include` is not specified, fallback to the default include spec.
     // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102
-    includes: (config.includes ?? [defaultIncludeSpec]).map((i) => join(basePath, i)),
+    includes: (config.includes ?? [DEFAULT_INCLUDE_SPEC]).map((i) => join(basePath, i)),
     excludes: (config.excludes ?? []).map((e) => join(basePath, e)),
     paths: resolvePaths(config.paths, basePath),
     dtsOutDir: join(basePath, config.dtsOutDir ?? 'generated'),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
     dashedIdents: false, // TODO: Support dashedIdents
-    basePath,
   };
 }

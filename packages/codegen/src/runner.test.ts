@@ -24,6 +24,8 @@ function createConfig({
     arbitraryExtensions: false,
     dashedIdents: false,
     basePath,
+    configFileName: 'dummy',
+    diagnostics: [],
   };
 }
 
