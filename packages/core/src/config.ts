@@ -10,8 +10,8 @@ import { basename, dirname, join, resolve } from './path.js';
 export interface HCMConfig {
   includes: string[];
   excludes: string[];
-  dtsOutDir: string;
   paths: Record<string, string[]>;
+  dtsOutDir: string;
   arbitraryExtensions: boolean;
   dashedIdents: boolean;
   /**
@@ -80,8 +80,8 @@ function parseRawData(raw: unknown, configFileName: string): ParsedRawData {
     config: {
       includes: undefined,
       excludes: undefined,
-      dtsOutDir: undefined,
       paths: undefined,
+      dtsOutDir: undefined,
       arbitraryExtensions: undefined,
     },
     diagnostics: [],
@@ -239,8 +239,8 @@ export function normalizeConfig(config: UnnormalizedHCMConfig, basePath: string)
     // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102
     includes: (config.includes ?? [defaultIncludeSpec]).map((i) => join(basePath, i)),
     excludes: (config.excludes ?? []).map((e) => join(basePath, e)),
-    dtsOutDir: join(basePath, config.dtsOutDir ?? 'generated'),
     paths: resolvePaths(config.paths, basePath),
+    dtsOutDir: join(basePath, config.dtsOutDir ?? 'generated'),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
     dashedIdents: false, // TODO: Support dashedIdents
     basePath,
