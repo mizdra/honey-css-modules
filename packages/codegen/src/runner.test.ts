@@ -42,10 +42,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["./src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
       'src/a.module.css': '.a1 { color: red; }',
@@ -71,10 +68,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["./src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
       'src/a.module.css': '.a1 { color: red; }',
@@ -88,10 +82,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["./src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
       'src/a.module.css': '@import "./b.module.css"; @import "./c.css"',
@@ -111,10 +102,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["./src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
     });
@@ -135,10 +123,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["./src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
       'src/a.module.css': '.a1 { color: red; }',
@@ -150,10 +135,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["./src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
       'src/a.module.css': `@import './b.css'; .a1 { color: red; }`,
@@ -173,10 +155,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["src"],
-          "hcmOptions": {
-            "dtsOutDir": 1
-          }
+          "hcmOptions": { "dtsOutDir": 1 }
         }
       `,
     });
@@ -198,10 +177,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
       'src/a.module.css': '.a1 {',
@@ -243,10 +219,7 @@ describe('runHCM', () => {
     const iff = await createIFF({
       'tsconfig.json': dedent`
         {
-          "include": ["src"],
-          "hcmOptions": {
-            "dtsOutDir": "generated"
-          }
+          "hcmOptions": { "dtsOutDir": "generated" }
         }
       `,
       'src/a.module.css': dedent`
