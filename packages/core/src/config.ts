@@ -17,6 +17,7 @@ type RemoveUndefined<T> = {
 export interface HCMConfig {
   includes: string[];
   excludes: string[];
+  compilerOptions: ts.CompilerOptions;
   paths: Record<string, string[]>;
   dtsOutDir: string;
   arbitraryExtensions: boolean;
@@ -169,12 +170,13 @@ export { parseRawData as parseRawDataForTest };
  * @throws {TsConfigFileNotFoundError}
  */
 export function readConfigFile(project: string): HCMConfig {
-  const { configFileName, config, diagnostics } = readTsConfigFile(project);
+  const { configFileName, config, compilerOptions, diagnostics } = readTsConfigFile(project);
   const basePath = dirname(configFileName);
   return {
     ...normalizeConfig(config, basePath),
     basePath,
     configFileName,
+    compilerOptions,
     diagnostics,
   };
 }
@@ -206,6 +208,7 @@ function mergeParsedRawData(base: ParsedRawData, overrides: ParsedRawData): Pars
 // TODO: Allow `extends` options to inherit `hcmOptions`
 export function readTsConfigFile(project: string): {
   configFileName: string;
+  compilerOptions: ts.CompilerOptions;
 } & ParsedRawData {
   const configFileName = findTsConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
@@ -251,6 +254,7 @@ export function readTsConfigFile(project: string): {
 
   return {
     configFileName,
+    compilerOptions: parsedCommandLine.options,
     ...parsedRawData,
   };
 }
