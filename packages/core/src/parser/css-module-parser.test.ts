@@ -6,7 +6,10 @@ const options: ParseCSSModuleOptions = { fileName: '/test.module.css', dashedIde
 
 describe('parseCSSModule', () => {
   test('collects local tokens', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         .basic {}
         .cascading {}
@@ -27,233 +30,113 @@ describe('parseCSSModule', () => {
       `,
       options,
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",
           "localTokens": [
             {
               "loc": {
-                "end": {
-                  "column": 7,
-                  "line": 1,
-                  "offset": 6,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 1,
-                  "offset": 1,
-                },
+                "end": 6,
+                "start": 1,
               },
               "name": "basic",
             },
             {
               "loc": {
-                "end": {
-                  "column": 11,
-                  "line": 2,
-                  "offset": 20,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 2,
-                  "offset": 11,
-                },
+                "end": 20,
+                "start": 11,
               },
               "name": "cascading",
             },
             {
               "loc": {
-                "end": {
-                  "column": 11,
-                  "line": 3,
-                  "offset": 34,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 3,
-                  "offset": 25,
-                },
+                "end": 34,
+                "start": 25,
               },
               "name": "cascading",
             },
             {
               "loc": {
-                "end": {
-                  "column": 16,
-                  "line": 4,
-                  "offset": 53,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 4,
-                  "offset": 39,
-                },
+                "end": 53,
+                "start": 39,
               },
               "name": "pseudo_class_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 16,
-                  "line": 5,
-                  "offset": 72,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 5,
-                  "offset": 58,
-                },
+                "end": 72,
+                "start": 58,
               },
               "name": "pseudo_class_2",
             },
             {
               "loc": {
-                "end": {
-                  "column": 21,
-                  "line": 6,
-                  "offset": 102,
-                },
-                "start": {
-                  "column": 7,
-                  "line": 6,
-                  "offset": 88,
-                },
+                "end": 102,
+                "start": 88,
               },
               "name": "pseudo_class_3",
             },
             {
               "loc": {
-                "end": {
-                  "column": 21,
-                  "line": 7,
-                  "offset": 127,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 7,
-                  "offset": 108,
-                },
+                "end": 127,
+                "start": 108,
               },
               "name": "multiple_selector_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 41,
-                  "line": 7,
-                  "offset": 147,
-                },
-                "start": {
-                  "column": 22,
-                  "line": 7,
-                  "offset": 128,
-                },
+                "end": 147,
+                "start": 128,
               },
               "name": "multiple_selector_2",
             },
             {
               "loc": {
-                "end": {
-                  "column": 14,
-                  "line": 8,
-                  "offset": 164,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 8,
-                  "offset": 152,
-                },
+                "end": 164,
+                "start": 152,
               },
               "name": "combinator_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 30,
-                  "line": 8,
-                  "offset": 180,
-                },
-                "start": {
-                  "column": 18,
-                  "line": 8,
-                  "offset": 168,
-                },
+                "end": 180,
+                "start": 168,
               },
               "name": "combinator_2",
             },
             {
               "loc": {
-                "end": {
-                  "column": 13,
-                  "line": 11,
-                  "offset": 265,
-                },
-                "start": {
-                  "column": 6,
-                  "line": 11,
-                  "offset": 258,
-                },
+                "end": 265,
+                "start": 258,
               },
               "name": "at_rule",
             },
             {
               "loc": {
-                "end": {
-                  "column": 17,
-                  "line": 14,
-                  "offset": 291,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 14,
-                  "offset": 276,
-                },
+                "end": 291,
+                "start": 276,
               },
               "name": "selector_list_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 35,
-                  "line": 14,
-                  "offset": 309,
-                },
-                "start": {
-                  "column": 20,
-                  "line": 14,
-                  "offset": 294,
-                },
+                "end": 309,
+                "start": 294,
               },
               "name": "selector_list_2",
             },
             {
               "loc": {
-                "end": {
-                  "column": 16,
-                  "line": 15,
-                  "offset": 328,
-                },
-                "start": {
-                  "column": 9,
-                  "line": 15,
-                  "offset": 321,
-                },
+                "end": 328,
+                "start": 321,
               },
               "name": "local_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 13,
-                  "line": 16,
-                  "offset": 345,
-                },
-                "start": {
-                  "column": 8,
-                  "line": 16,
-                  "offset": 340,
-                },
+                "end": 345,
+                "start": 340,
               },
               "name": "value",
             },
@@ -265,14 +148,17 @@ describe('parseCSSModule', () => {
     `);
   });
   test('collects token importers', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         @import './a.module.css';
         @value a, b as alias from './a.module.css';
       `,
       options,
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",
@@ -281,74 +167,34 @@ describe('parseCSSModule', () => {
             {
               "from": "./a.module.css",
               "fromLoc": {
-                "end": {
-                  "column": 24,
-                  "line": 1,
-                  "offset": 23,
-                },
-                "start": {
-                  "column": 10,
-                  "line": 1,
-                  "offset": 9,
-                },
+                "end": 23,
+                "start": 9,
               },
               "type": "import",
             },
             {
               "from": "./a.module.css",
               "fromLoc": {
-                "end": {
-                  "column": 42,
-                  "line": 2,
-                  "offset": 67,
-                },
-                "start": {
-                  "column": 28,
-                  "line": 2,
-                  "offset": 53,
-                },
+                "end": 67,
+                "start": 53,
               },
               "type": "value",
               "values": [
                 {
                   "loc": {
-                    "end": {
-                      "column": 9,
-                      "line": 2,
-                      "offset": 34,
-                    },
-                    "start": {
-                      "column": 8,
-                      "line": 2,
-                      "offset": 33,
-                    },
+                    "end": 34,
+                    "start": 33,
                   },
                   "name": "a",
                 },
                 {
                   "loc": {
-                    "end": {
-                      "column": 12,
-                      "line": 2,
-                      "offset": 37,
-                    },
-                    "start": {
-                      "column": 11,
-                      "line": 2,
-                      "offset": 36,
-                    },
+                    "end": 37,
+                    "start": 36,
                   },
                   "localLoc": {
-                    "end": {
-                      "column": 21,
-                      "line": 2,
-                      "offset": 46,
-                    },
-                    "start": {
-                      "column": 16,
-                      "line": 2,
-                      "offset": 41,
-                    },
+                    "end": 46,
+                    "start": 41,
                   },
                   "localName": "alias",
                   "name": "b",
@@ -362,30 +208,25 @@ describe('parseCSSModule', () => {
     `);
   });
   test('collects diagnostics', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         :local .local1 {}
         @value;
       `,
       options,
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",
           "localTokens": [
             {
               "loc": {
-                "end": {
-                  "column": 15,
-                  "line": 1,
-                  "offset": 14,
-                },
-                "start": {
-                  "column": 9,
-                  "line": 1,
-                  "offset": 8,
-                },
+                "end": 14,
+                "start": 8,
               },
               "name": "local1",
             },
@@ -395,30 +236,17 @@ describe('parseCSSModule', () => {
         "diagnostics": [
           {
             "category": "error",
-            "end": {
-              "column": 7,
-              "line": 1,
-            },
+            "end": 6,
             "fileName": "/test.module.css",
-            "start": {
-              "column": 1,
-              "line": 1,
-              "offset": 0,
-            },
+            "start": 0,
             "text": "\`:local\` is not supported. Use \`:local(...)\` instead.",
             "type": "syntactic",
           },
           {
             "category": "error",
-            "end": {
-              "column": 8,
-              "line": 2,
-            },
+            "end": 26,
             "fileName": "/test.module.css",
-            "start": {
-              "column": 1,
-              "line": 2,
-            },
+            "start": 18,
             "text": "\`@value\` is a invalid syntax.",
             "type": "syntactic",
           },
@@ -470,16 +298,14 @@ describe('parseCSSModule', () => {
         "cssModule": {
           "fileName": "/test.module.css",
           "localTokens": [],
+          "text": ".a {",
           "tokenImporters": [],
         },
         "diagnostics": [
           {
             "category": "error",
             "fileName": "/test.module.css",
-            "start": {
-              "column": 1,
-              "line": 1,
-            },
+            "start": 0,
             "text": "Unclosed block",
             "type": "syntactic",
           },
@@ -488,29 +314,24 @@ describe('parseCSSModule', () => {
     `);
   });
   test('parses CSS in a fault-tolerant manner if safe is true', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         .a {
       `,
       { ...options, safe: true },
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",
           "localTokens": [
             {
               "loc": {
-                "end": {
-                  "column": 3,
-                  "line": 1,
-                  "offset": 2,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 1,
-                  "offset": 1,
-                },
+                "end": 2,
+                "start": 1,
               },
               "name": "a",
             },

@@ -39,16 +39,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 7,
-                  "line": 1,
-                  "offset": 6,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 1,
-                  "offset": 1,
-                },
+                "end": 6,
+                "start": 1,
               },
               "name": "basic",
             },
@@ -59,16 +51,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 11,
-                  "line": 2,
-                  "offset": 20,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 2,
-                  "offset": 11,
-                },
+                "end": 20,
+                "start": 11,
               },
               "name": "cascading",
             },
@@ -79,16 +63,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 11,
-                  "line": 3,
-                  "offset": 34,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 3,
-                  "offset": 25,
-                },
+                "end": 34,
+                "start": 25,
               },
               "name": "cascading",
             },
@@ -99,16 +75,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 16,
-                  "line": 4,
-                  "offset": 53,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 4,
-                  "offset": 39,
-                },
+                "end": 53,
+                "start": 39,
               },
               "name": "pseudo_class_1",
             },
@@ -119,16 +87,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 16,
-                  "line": 5,
-                  "offset": 72,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 5,
-                  "offset": 58,
-                },
+                "end": 72,
+                "start": 58,
               },
               "name": "pseudo_class_2",
             },
@@ -139,16 +99,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 21,
-                  "line": 6,
-                  "offset": 102,
-                },
-                "start": {
-                  "column": 7,
-                  "line": 6,
-                  "offset": 88,
-                },
+                "end": 102,
+                "start": 88,
               },
               "name": "pseudo_class_3",
             },
@@ -159,31 +111,15 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 21,
-                  "line": 7,
-                  "offset": 127,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 7,
-                  "offset": 108,
-                },
+                "end": 127,
+                "start": 108,
               },
               "name": "multiple_selector_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 41,
-                  "line": 7,
-                  "offset": 147,
-                },
-                "start": {
-                  "column": 22,
-                  "line": 7,
-                  "offset": 128,
-                },
+                "end": 147,
+                "start": 128,
               },
               "name": "multiple_selector_2",
             },
@@ -194,31 +130,15 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 14,
-                  "line": 8,
-                  "offset": 164,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 8,
-                  "offset": 152,
-                },
+                "end": 164,
+                "start": 152,
               },
               "name": "combinator_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 30,
-                  "line": 8,
-                  "offset": 180,
-                },
-                "start": {
-                  "column": 18,
-                  "line": 8,
-                  "offset": 168,
-                },
+                "end": 180,
+                "start": 168,
               },
               "name": "combinator_2",
             },
@@ -229,16 +149,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 13,
-                  "line": 11,
-                  "offset": 265,
-                },
-                "start": {
-                  "column": 6,
-                  "line": 11,
-                  "offset": 258,
-                },
+                "end": 265,
+                "start": 258,
               },
               "name": "at_rule",
             },
@@ -249,31 +161,15 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 17,
-                  "line": 14,
-                  "offset": 291,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 14,
-                  "offset": 276,
-                },
+                "end": 291,
+                "start": 276,
               },
               "name": "selector_list_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 35,
-                  "line": 14,
-                  "offset": 309,
-                },
-                "start": {
-                  "column": 20,
-                  "line": 14,
-                  "offset": 294,
-                },
+                "end": 309,
+                "start": 294,
               },
               "name": "selector_list_2",
             },
@@ -284,16 +180,8 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 27,
-                  "line": 15,
-                  "offset": 339,
-                },
-                "start": {
-                  "column": 9,
-                  "line": 15,
-                  "offset": 321,
-                },
+                "end": 339,
+                "start": 321,
               },
               "name": "local_class_name_1",
             },
@@ -304,46 +192,22 @@ describe('parseRule', () => {
           "classSelectors": [
             {
               "loc": {
-                "end": {
-                  "column": 16,
-                  "line": 16,
-                  "offset": 359,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 16,
-                  "offset": 345,
-                },
+                "end": 359,
+                "start": 345,
               },
               "name": "with_newline_1",
             },
             {
               "loc": {
-                "end": {
-                  "column": 16,
-                  "line": 17,
-                  "offset": 376,
-                },
-                "start": {
-                  "column": 2,
-                  "line": 17,
-                  "offset": 362,
-                },
+                "end": 376,
+                "start": 362,
               },
               "name": "with_newline_2",
             },
             {
               "loc": {
-                "end": {
-                  "column": 20,
-                  "line": 18,
-                  "offset": 396,
-                },
-                "start": {
-                  "column": 6,
-                  "line": 18,
-                  "offset": 382,
-                },
+                "end": 396,
+                "start": 382,
               },
               "name": "with_newline_3",
             },
@@ -382,15 +246,9 @@ describe('parseRule', () => {
             "diagnostics": [
               {
                 "category": "error",
-                "end": {
-                  "column": 19,
-                  "line": 1,
-                },
+                "end": 18,
                 "fileName": "/test/test.css",
-                "start": {
-                  "column": 8,
-                  "line": 1,
-                },
+                "start": 7,
                 "text": "A \`:global(...)\` is not allowed inside of \`:local(...)\`.",
                 "type": "syntactic",
               },
@@ -401,15 +259,9 @@ describe('parseRule', () => {
             "diagnostics": [
               {
                 "category": "error",
-                "end": {
-                  "column": 19,
-                  "line": 2,
-                },
+                "end": 41,
                 "fileName": "/test/test.css",
-                "start": {
-                  "column": 9,
-                  "line": 2,
-                },
+                "start": 31,
                 "text": "A \`:local(...)\` is not allowed inside of \`:global(...)\`.",
                 "type": "syntactic",
               },
@@ -420,15 +272,9 @@ describe('parseRule', () => {
             "diagnostics": [
               {
                 "category": "error",
-                "end": {
-                  "column": 18,
-                  "line": 3,
-                },
+                "end": 63,
                 "fileName": "/test/test.css",
-                "start": {
-                  "column": 8,
-                  "line": 3,
-                },
+                "start": 53,
                 "text": "A \`:local(...)\` is not allowed inside of \`:local(...)\`.",
                 "type": "syntactic",
               },
@@ -439,15 +285,9 @@ describe('parseRule', () => {
             "diagnostics": [
               {
                 "category": "error",
-                "end": {
-                  "column": 20,
-                  "line": 4,
-                },
+                "end": 87,
                 "fileName": "/test/test.css",
-                "start": {
-                  "column": 9,
-                  "line": 4,
-                },
+                "start": 76,
                 "text": "A \`:global(...)\` is not allowed inside of \`:global(...)\`.",
                 "type": "syntactic",
               },
@@ -501,16 +341,8 @@ describe('parseRule', () => {
             "classSelectors": [
               {
                 "loc": {
-                  "end": {
-                    "column": 15,
-                    "line": 1,
-                    "offset": 14,
-                  },
-                  "start": {
-                    "column": 9,
-                    "line": 1,
-                    "offset": 8,
-                  },
+                  "end": 14,
+                  "start": 8,
                 },
                 "name": "local1",
               },
@@ -518,16 +350,9 @@ describe('parseRule', () => {
             "diagnostics": [
               {
                 "category": "error",
-                "end": {
-                  "column": 7,
-                  "line": 1,
-                },
+                "end": 6,
                 "fileName": "/test/test.css",
-                "start": {
-                  "column": 1,
-                  "line": 1,
-                  "offset": 0,
-                },
+                "start": 0,
                 "text": "\`:local\` is not supported. Use \`:local(...)\` instead.",
                 "type": "syntactic",
               },
@@ -537,16 +362,8 @@ describe('parseRule', () => {
             "classSelectors": [
               {
                 "loc": {
-                  "end": {
-                    "column": 17,
-                    "line": 2,
-                    "offset": 34,
-                  },
-                  "start": {
-                    "column": 10,
-                    "line": 2,
-                    "offset": 27,
-                  },
+                  "end": 34,
+                  "start": 27,
                 },
                 "name": "global1",
               },
@@ -554,16 +371,9 @@ describe('parseRule', () => {
             "diagnostics": [
               {
                 "category": "error",
-                "end": {
-                  "column": 8,
-                  "line": 2,
-                },
+                "end": 25,
                 "fileName": "/test/test.css",
-                "start": {
-                  "column": 1,
-                  "line": 2,
-                  "offset": 18,
-                },
+                "start": 18,
                 "text": "\`:global\` is not supported. Use \`:global(...)\` instead.",
                 "type": "syntactic",
               },
@@ -612,30 +422,17 @@ describe('parseRule', () => {
           "diagnostics": [
             {
               "category": "error",
-              "end": {
-                "column": 5,
-                "line": 1,
-              },
+              "end": 4,
               "fileName": "/test/test.css",
-              "start": {
-                "column": 1,
-                "line": 1,
-                "offset": 0,
-              },
+              "start": 0,
               "text": "\`a-1\` is not allowed because it is not a valid JavaScript identifier.",
               "type": "syntactic",
             },
             {
               "category": "error",
-              "end": {
-                "column": 15,
-                "line": 1,
-              },
+              "end": 14,
               "fileName": "/test/test.css",
-              "start": {
-                "column": 6,
-                "line": 1,
-              },
+              "start": 5,
               "text": "\`a_\\u0032\` is not allowed because it is not a valid JavaScript identifier.",
               "type": "syntactic",
             },

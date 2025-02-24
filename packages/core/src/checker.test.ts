@@ -15,6 +15,7 @@ describe('checkCSSModule', () => {
         createAtImportTokenImporter('./b.module.css'),
         createAtValueTokenImporter('./c.module.css', ['c_1']),
       ],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: [] }),
@@ -26,29 +27,17 @@ describe('checkCSSModule', () => {
       [
         {
           "category": "error",
-          "end": {
-            "column": 1,
-            "line": 1,
-          },
+          "end": 0,
           "fileName": "/a.module.css",
-          "start": {
-            "column": 1,
-            "line": 1,
-          },
+          "start": 0,
           "text": "Cannot import module './b.module.css'",
           "type": "semantic",
         },
         {
           "category": "error",
-          "end": {
-            "column": 1,
-            "line": 1,
-          },
+          "end": 0,
           "fileName": "/a.module.css",
-          "start": {
-            "column": 1,
-            "line": 1,
-          },
+          "start": 0,
           "text": "Cannot import module './c.module.css'",
           "type": "semantic",
         },
@@ -60,6 +49,7 @@ describe('checkCSSModule', () => {
       fileName: '/a.module.css',
       localTokens: [],
       tokenImporters: [createAtValueTokenImporter('./b.module.css', ['b_1', 'b_2'])],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: ['b_1'] }),
@@ -71,15 +61,9 @@ describe('checkCSSModule', () => {
       [
         {
           "category": "error",
-          "end": {
-            "column": 1,
-            "line": 1,
-          },
+          "end": 0,
           "fileName": "/a.module.css",
-          "start": {
-            "column": 1,
-            "line": 1,
-          },
+          "start": 0,
           "text": "Module './b.module.css' has no exported token 'b_2'.",
           "type": "semantic",
         },
@@ -91,6 +75,7 @@ describe('checkCSSModule', () => {
       fileName: '/a.module.css',
       localTokens: [],
       tokenImporters: [createAtImportTokenImporter('./unresolvable.module.css')],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: [] }),
@@ -109,6 +94,7 @@ describe('checkCSSModule', () => {
         createAtImportTokenImporter('./b.module.css'),
         createAtValueTokenImporter('./c.module.css', ['c_1']),
       ],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: [] }),

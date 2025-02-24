@@ -19,7 +19,6 @@ export {
   type SemanticDiagnostic,
   type SyntacticDiagnostic,
   type DiagnosticCategory,
-  type DiagnosticPosition,
 } from './diagnostic.js';
 export { type CreateDtsOptions, createDts, STYLES_EXPORT_NAME } from './dts-creator.js';
 export { createResolver, type Resolver } from './resolver.js';
@@ -36,3 +35,4 @@ export {
 export { checkCSSModule } from './checker.js';
 export { type ExportBuilder, createExportBuilder } from './export-builder.js';
 export { join, resolve, relative, dirname, basename, parse, matchesGlob, isAbsolute } from './path.js';
+export { getLineAndColumnFromOffset } from './util.js';

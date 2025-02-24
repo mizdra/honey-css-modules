@@ -1,5 +1,5 @@
 import type { AtRule } from 'postcss';
-import type { DiagnosticPosition, SyntacticDiagnostic } from '../diagnostic.js';
+import type { SyntacticDiagnostic } from '../diagnostic.js';
 import type { Location } from './location.js';
 
 interface ValueDeclaration {
@@ -69,42 +69,20 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
       if (matchesForImportedItem) {
         const [, name, localName] = matchesForImportedItem as [string, string, string | undefined];
         const nameIndex = matchesForImportedItem.indices![1]![0];
-        const start = {
-          line: atValue.source!.start!.line,
-          column: atValue.source!.start!.column + baseLength + currentItemIndex + nameIndex,
-          offset: atValue.source!.start!.offset + baseLength + currentItemIndex + nameIndex,
-        };
-        const end = {
-          line: start.line,
-          column: start.column + name.length,
-          offset: start.offset + name.length,
-        };
+        const start = atValue.source!.start!.offset + baseLength + currentItemIndex + nameIndex;
+        const end = start + name.length;
         const result = { name, loc: { start, end } };
         if (localName === undefined) {
           values.push(result);
         } else {
           const localNameIndex = matchesForImportedItem.indices![2]![0];
-          const start = {
-            line: atValue.source!.start!.line,
-            column: atValue.source!.start!.column + baseLength + currentItemIndex + localNameIndex,
-            offset: atValue.source!.start!.offset + baseLength + currentItemIndex + localNameIndex,
-          };
-          const end = {
-            line: start.line,
-            column: start.column + localName.length,
-            offset: start.offset + localName.length,
-          };
+          const start = atValue.source!.start!.offset + baseLength + currentItemIndex + localNameIndex;
+          const end = start + localName.length;
           values.push({ ...result, localName, localLoc: { start, end } });
         }
       } else {
-        const start: DiagnosticPosition = {
-          line: atValue.source!.start!.line,
-          column: atValue.source!.start!.column + baseLength + currentItemIndex,
-        };
-        const end: DiagnosticPosition = {
-          line: start.line,
-          column: start.column + alias.length,
-        };
+        const start = atValue.source!.start!.offset + baseLength + currentItemIndex;
+        const end = start + alias.length;
         diagnostics.push({
           type: 'syntactic',
           fileName: atValue.source!.input.file!,
@@ -120,16 +98,8 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
     const normalizedFrom = from.slice(1, -1);
 
     const fromIndex = matchesForValueImport.indices![2]![0] + 1;
-    const start = {
-      line: atValue.source!.start!.line,
-      column: atValue.source!.start!.column + baseLength + fromIndex,
-      offset: atValue.source!.start!.offset + baseLength + fromIndex,
-    };
-    const end = {
-      line: start.line,
-      column: start.column + normalizedFrom.length,
-      offset: start.offset + normalizedFrom.length,
-    };
+    const start = atValue.source!.start!.offset + baseLength + fromIndex;
+    const end = start + normalizedFrom.length;
 
     const parsedAtValue: ValueImportDeclaration = {
       type: 'valueImportDeclaration',
@@ -146,30 +116,16 @@ export function parseAtValue(atValue: AtRule): ParseAtValueResult {
     if (name === undefined) throw new Error(`unreachable`);
     /** The index of the `<name>` in `@value <name>: <value>;`. */
     const nameIndex = 6 + (atValue.raws.afterName?.length ?? 0) + matchesForValueDefinition.indices![1]![0];
-    const start = {
-      line: atValue.source!.start!.line,
-      column: atValue.source!.start!.column + nameIndex,
-      offset: atValue.source!.start!.offset + nameIndex,
-    };
-    const end = {
-      line: start.line,
-      column: start.column + name.length,
-      offset: start.offset + name.length,
-    };
+    const start = atValue.source!.start!.offset + nameIndex;
+    const end = start + name.length;
     const parsedAtValue = { type: 'valueDeclaration', name, loc: { start, end } } as const;
     return { atValue: parsedAtValue, diagnostics };
   }
   diagnostics.push({
     type: 'syntactic',
     fileName: atValue.source!.input.file!,
-    start: {
-      line: atValue.source!.start!.line,
-      column: atValue.source!.start!.column,
-    },
-    end: {
-      line: atValue.source!.end!.line,
-      column: atValue.source!.end!.column + 1,
-    },
+    start: atValue.source!.start!.offset,
+    end: atValue.source!.end!.offset + 1,
     text: `\`${atValue.toString()}\` is a invalid syntax.`,
     category: 'error',
   });

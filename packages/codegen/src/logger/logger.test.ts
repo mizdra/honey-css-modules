@@ -13,7 +13,7 @@ describe('createLogger', () => {
       { type: 'semantic', text: 'text1', category: 'error' },
       { type: 'semantic', text: 'text2', category: 'error' },
     ];
-    logger.logDiagnostics(diagnostics);
+    logger.logDiagnostics('', diagnostics);
     expect(stderrWriteSpy).toHaveBeenCalledWith('error: text1\n\nerror: text2\n\n');
   });
   test('logSystemError', () => {

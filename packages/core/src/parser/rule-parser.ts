@@ -120,17 +120,8 @@ export function parseRule(rule: Rule): ParseRuleResult {
     // If `rule` is `.a, .b { color: red; }` and `className` is `.b`,
     // `rule.source` is `{ start: { line: 1, column: 1 }, end: { line: 1, column: 22 } }`
     // And `className.source` is `{ start: { line: 1, column: 5 }, end: { line: 1, column: 6 } }`.
-    const start = {
-      line: rule.source!.start!.line + className.source!.start!.line - 1,
-      column: rule.source!.start!.column + className.source!.start!.column,
-      offset: rule.source!.start!.offset + className.sourceIndex + 1,
-    };
-    const end = {
-      // The end line is always the same as the start line, as a class selector cannot break in the middle.
-      line: start.line,
-      column: start.column + className.value.length,
-      offset: start.offset + className.value.length,
-    };
+    const start = rule.source!.start!.offset + className.sourceIndex + 1;
+    const end = start + className.value.length;
     return {
       name: className.value,
       loc: { start, end },
