@@ -1,12 +1,7 @@
 import type { Language } from '@volar/language-core';
-import {
-  createExportBuilder,
-  HCM_DATA_KEY,
-  isCSSModuleScript,
-  type MatchesPattern,
-  type Resolver,
-} from 'honey-css-modules-core';
+import { createExportBuilder, type MatchesPattern, type Resolver } from 'honey-css-modules-core';
 import type ts from 'typescript';
+import { HCM_DATA_KEY, isCSSModuleScript } from '../language-plugin.js';
 import { getCodeFixesAtPosition } from './feature/code-fix.js';
 import { getCompletionsAtPosition } from './feature/completion.js';
 import { getApplicableRefactors, getEditsForRefactor } from './feature/refactor.js';
