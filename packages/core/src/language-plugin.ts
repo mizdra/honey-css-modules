@@ -20,8 +20,8 @@ interface CSSModuleVirtualCode extends VirtualCode {
   };
 }
 
-export interface CSSModuleScript extends SourceScript<string> {
-  generated: SourceScript<string>['generated'] & {
+export interface CSSModuleScript<T> extends SourceScript<T> {
+  generated: SourceScript<T>['generated'] & {
     root: CSSModuleVirtualCode;
   };
 }
@@ -87,7 +87,7 @@ export function createCSSModuleLanguagePlugin<T>(
   };
 }
 
-export function isCSSModuleScript(script: SourceScript<string> | undefined): script is CSSModuleScript {
+export function isCSSModuleScript<T>(script: SourceScript<T> | undefined): script is CSSModuleScript<T> {
   return (
     !!script && script.languageId === LANGUAGE_ID && !!script.generated?.root && HCM_DATA_KEY in script.generated.root
   );
