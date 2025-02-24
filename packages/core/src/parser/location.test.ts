@@ -1,14 +1,13 @@
 import dedent from 'dedent';
 import selectorParser from 'postcss-selector-parser';
 import { describe, expect, test } from 'vitest';
-import type { DiagnosticPosition } from '../diagnostic.js';
 import { createRoot, createRules } from '../test/ast.js';
 import { calcDiagnosticsLocationForSelectorParserNode } from './location.js';
 
 function calcLocations(source: string) {
   const [rule] = createRules(createRoot(source));
   const root = selectorParser().astSync(rule!);
-  const result: { node: string; type: string; start: DiagnosticPosition; end: DiagnosticPosition }[] = [];
+  const result: { node: string; type: string; start: number; end: number }[] = [];
   root.walk((node) => {
     const loc = calcDiagnosticsLocationForSelectorParserNode(rule!, node);
     result.push({
@@ -26,53 +25,27 @@ describe('calcDiagnosticsLocationForSelectorParserNode', () => {
     expect(result).toMatchInlineSnapshot(`
       [
         {
-          "end": {
-            "column": 6,
-            "line": 1,
-          },
+          "end": 5,
           "node": ".a .b",
-          "start": {
-            "column": 1,
-            "line": 1,
-            "offset": 0,
-          },
+          "start": 0,
           "type": "selector",
         },
         {
-          "end": {
-            "column": 3,
-            "line": 1,
-          },
+          "end": 2,
           "node": ".a",
-          "start": {
-            "column": 1,
-            "line": 1,
-            "offset": 0,
-          },
+          "start": 0,
           "type": "class",
         },
         {
-          "end": {
-            "column": 4,
-            "line": 1,
-          },
+          "end": 3,
           "node": " ",
-          "start": {
-            "column": 3,
-            "line": 1,
-          },
+          "start": 2,
           "type": "combinator",
         },
         {
-          "end": {
-            "column": 6,
-            "line": 1,
-          },
+          "end": 5,
           "node": ".b",
-          "start": {
-            "column": 4,
-            "line": 1,
-          },
+          "start": 3,
           "type": "class",
         },
       ]
@@ -87,81 +60,43 @@ describe('calcDiagnosticsLocationForSelectorParserNode', () => {
     expect(result1).toMatchInlineSnapshot(`
       [
         {
-          "end": {
-            "column": 5,
-            "line": 3,
-          },
+          "end": 10,
           "node": ".a
       .b
         .c",
-          "start": {
-            "column": 1,
-            "line": 1,
-            "offset": 0,
-          },
+          "start": 0,
           "type": "selector",
         },
         {
-          "end": {
-            "column": 3,
-            "line": 1,
-          },
+          "end": 2,
           "node": ".a",
-          "start": {
-            "column": 1,
-            "line": 1,
-            "offset": 0,
-          },
+          "start": 0,
           "type": "class",
         },
         {
-          "end": {
-            "column": 1,
-            "line": 2,
-          },
+          "end": 3,
           "node": "
       ",
-          "start": {
-            "column": 3,
-            "line": 1,
-          },
+          "start": 2,
           "type": "combinator",
         },
         {
-          "end": {
-            "column": 3,
-            "line": 2,
-          },
+          "end": 5,
           "node": ".b",
-          "start": {
-            "column": 1,
-            "line": 2,
-          },
+          "start": 3,
           "type": "class",
         },
         {
-          "end": {
-            "column": 3,
-            "line": 3,
-          },
+          "end": 8,
           "node": "
         ",
-          "start": {
-            "column": 3,
-            "line": 2,
-          },
+          "start": 5,
           "type": "combinator",
         },
         {
-          "end": {
-            "column": 5,
-            "line": 3,
-          },
+          "end": 10,
           "node": ".c",
-          "start": {
-            "column": 3,
-            "line": 3,
-          },
+          "start": 8,
           "type": "class",
         },
       ]
@@ -174,55 +109,29 @@ describe('calcDiagnosticsLocationForSelectorParserNode', () => {
     expect(result2).toMatchInlineSnapshot(`
       [
         {
-          "end": {
-            "column": 5,
-            "line": 3,
-          },
+          "end": 29,
           "node": ".a
         .b",
-          "start": {
-            "column": 1,
-            "line": 2,
-            "offset": 22,
-          },
+          "start": 22,
           "type": "selector",
         },
         {
-          "end": {
-            "column": 3,
-            "line": 2,
-          },
+          "end": 24,
           "node": ".a",
-          "start": {
-            "column": 1,
-            "line": 2,
-            "offset": 22,
-          },
+          "start": 22,
           "type": "class",
         },
         {
-          "end": {
-            "column": 3,
-            "line": 3,
-          },
+          "end": 27,
           "node": "
         ",
-          "start": {
-            "column": 3,
-            "line": 2,
-          },
+          "start": 24,
           "type": "combinator",
         },
         {
-          "end": {
-            "column": 5,
-            "line": 3,
-          },
+          "end": 29,
           "node": ".b",
-          "start": {
-            "column": 3,
-            "line": 3,
-          },
+          "start": 27,
           "type": "class",
         },
       ]

@@ -19,61 +19,29 @@ test('parseAtImport', () => {
       {
         "from": "test.css",
         "fromLoc": {
-          "end": {
-            "column": 18,
-            "line": 2,
-            "offset": 26,
-          },
-          "start": {
-            "column": 10,
-            "line": 2,
-            "offset": 18,
-          },
+          "end": 26,
+          "start": 18,
         },
       },
       {
         "from": "test.css",
         "fromLoc": {
-          "end": {
-            "column": 22,
-            "line": 3,
-            "offset": 50,
-          },
-          "start": {
-            "column": 14,
-            "line": 3,
-            "offset": 42,
-          },
+          "end": 50,
+          "start": 42,
         },
       },
       {
         "from": "test.css",
         "fromLoc": {
-          "end": {
-            "column": 21,
-            "line": 4,
-            "offset": 74,
-          },
-          "start": {
-            "column": 13,
-            "line": 4,
-            "offset": 66,
-          },
+          "end": 74,
+          "start": 66,
         },
       },
       {
         "from": "test.css",
         "fromLoc": {
-          "end": {
-            "column": 18,
-            "line": 5,
-            "offset": 94,
-          },
-          "start": {
-            "column": 10,
-            "line": 5,
-            "offset": 86,
-          },
+          "end": 94,
+          "start": 86,
         },
       },
     ]

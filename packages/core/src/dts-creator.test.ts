@@ -8,7 +8,7 @@ const options: CreateDtsOptions = {
 };
 
 function fakeLoc(offset: number) {
-  return { start: { line: 1, column: 1, offset }, end: { line: 1, column: 1, offset } };
+  return { start: offset, end: offset };
 }
 
 describe('createDts', () => {

@@ -1,6 +1,6 @@
 import type { AtImportTokenImporter, AtValueTokenImporter, Token } from '../parser/css-module-parser.js';
 
-const fakeLoc = { start: { line: 1, column: 1, offset: 0 }, end: { line: 1, column: 1, offset: 0 } };
+const fakeLoc = { start: 0, end: 0 };
 
 export function createToken(name: string): Token {
   return { name, loc: fakeLoc };

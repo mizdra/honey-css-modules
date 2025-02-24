@@ -2,15 +2,15 @@ import { styleText } from 'node:util';
 import {
   type Diagnostic,
   type DiagnosticCategory,
-  type DiagnosticPosition,
+  getLineAndColumnFromOffset,
   relative,
   type SystemError,
 } from 'honey-css-modules-core';
 
-export function formatDiagnostic(diagnostic: Diagnostic, cwd: string): string {
+export function formatDiagnostic(text: string, diagnostic: Diagnostic, cwd: string): string {
   let result = '';
   if (diagnostic.fileName) {
-    result += `${formatLocation(diagnostic.fileName, diagnostic.start, cwd)} - `;
+    result += `${formatLocation(text, diagnostic.fileName, diagnostic.start, cwd)} - `;
   }
   result += `${formatCategory(diagnostic.category)}: `;
   result += diagnostic.text;
@@ -29,14 +29,15 @@ export function formatSystemError(error: SystemError): string {
   return result;
 }
 
-function formatLocation(fileName: string, start: DiagnosticPosition | undefined, cwd: string): string {
+function formatLocation(text: string, fileName: string, start: number | undefined, cwd: string): string {
   let result = '';
   result += styleText('cyan', relative(cwd, fileName));
   if (start !== undefined) {
+    const { line, column } = getLineAndColumnFromOffset(text, start);
     result += ':';
-    result += styleText('yellow', start.line.toString());
+    result += styleText('yellow', line.toString());
     result += ':';
-    result += styleText('yellow', start.column.toString());
+    result += styleText('yellow', column.toString());
   }
   return result;
 }

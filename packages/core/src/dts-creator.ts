@@ -83,7 +83,7 @@ export function createDts(
   let text = `declare const ${STYLES_EXPORT_NAME} = {\n`;
   for (const token of localTokens) {
     text += `  `;
-    mapping.sourceOffsets.push(token.loc.start.offset);
+    mapping.sourceOffsets.push(token.loc.start);
     mapping.generatedOffsets.push(text.length);
     mapping.lengths.push(token.name.length);
     text += `${token.name}: '' as readonly string,\n`;
@@ -91,7 +91,7 @@ export function createDts(
   for (const tokenImporter of tokenImporters) {
     if (tokenImporter.type === 'import') {
       text += `  ...(await import(`;
-      mapping.sourceOffsets.push(tokenImporter.fromLoc.start.offset - 1);
+      mapping.sourceOffsets.push(tokenImporter.fromLoc.start - 1);
       mapping.lengths.push(tokenImporter.from.length + 2);
       mapping.generatedOffsets.push(text.length);
       text += `'${tokenImporter.from}')).default,\n`;
@@ -102,19 +102,19 @@ export function createDts(
         const localLoc = value.localLoc ?? value.loc;
 
         text += `  `;
-        mapping.sourceOffsets.push(localLoc.start.offset);
+        mapping.sourceOffsets.push(localLoc.start);
         mapping.lengths.push(localName.length);
         mapping.generatedOffsets.push(text.length);
         linkedCodeMapping.sourceOffsets.push(text.length);
         linkedCodeMapping.lengths.push(localName.length);
         text += `${localName}: (await import(`;
         if (i === 0) {
-          mapping.sourceOffsets.push(tokenImporter.fromLoc.start.offset - 1);
+          mapping.sourceOffsets.push(tokenImporter.fromLoc.start - 1);
           mapping.lengths.push(tokenImporter.from.length + 2);
           mapping.generatedOffsets.push(text.length);
         }
         text += `'${tokenImporter.from}')).default.`;
-        mapping.sourceOffsets.push(value.loc.start.offset);
+        mapping.sourceOffsets.push(value.loc.start);
         mapping.lengths.push(value.name.length);
         mapping.generatedOffsets.push(text.length);
         linkedCodeMapping.generatedOffsets.push(text.length);

@@ -109,7 +109,7 @@ describe('runHCM', () => {
     const loggerSpy = createLoggerSpy();
     await runHCM(iff.rootDir, loggerSpy);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
-    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![1], iff.rootDir)).toMatchInlineSnapshot(`
       [
         {
           "category": "warning",
@@ -162,7 +162,7 @@ describe('runHCM', () => {
     const loggerSpy = createLoggerSpy();
     await expect(runHCM(iff.rootDir, loggerSpy)).rejects.toThrow(ProcessExitError);
     expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
-    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![1], iff.rootDir)).toMatchInlineSnapshot(`
       [
         {
           "category": "error",
@@ -185,30 +185,25 @@ describe('runHCM', () => {
     });
     const loggerSpy = createLoggerSpy();
     await expect(runHCM(iff.rootDir, loggerSpy)).rejects.toThrow(ProcessExitError);
-    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
-    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(2);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![1], iff.rootDir)).toMatchInlineSnapshot(`
       [
         {
           "category": "error",
           "fileName": "<rootDir>/src/a.module.css",
-          "start": {
-            "column": 1,
-            "line": 1,
-          },
+          "start": 0,
           "text": "Unclosed block",
           "type": "syntactic",
         },
+      ]
+    `);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[1]![1], iff.rootDir)).toMatchInlineSnapshot(`
+      [
         {
           "category": "error",
-          "end": {
-            "column": 8,
-            "line": 1,
-          },
+          "end": 8,
           "fileName": "<rootDir>/src/b.module.css",
-          "start": {
-            "column": 1,
-            "line": 1,
-          },
+          "start": 0,
           "text": "\`@value\` is a invalid syntax.",
           "type": "syntactic",
         },
@@ -232,34 +227,26 @@ describe('runHCM', () => {
     });
     const loggerSpy = createLoggerSpy();
     await expect(runHCM(iff.rootDir, loggerSpy)).rejects.toThrow(ProcessExitError);
-    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(1);
-    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![0], iff.rootDir)).toMatchInlineSnapshot(`
+    expect(loggerSpy.logDiagnostics).toHaveBeenCalledTimes(2);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[0]![1], iff.rootDir)).toMatchInlineSnapshot(`
       [
         {
           "category": "error",
-          "end": {
-            "column": 16,
-            "line": 1,
-          },
+          "end": 15,
           "fileName": "<rootDir>/src/a.module.css",
-          "start": {
-            "column": 13,
-            "line": 1,
-          },
+          "start": 12,
           "text": "Module './b.module.css' has no exported token 'b_2'.",
           "type": "semantic",
         },
+      ]
+    `);
+    expect(formatDiagnostics(loggerSpy.logDiagnostics.mock.calls[1]![1], iff.rootDir)).toMatchInlineSnapshot(`
+      [
         {
           "category": "error",
-          "end": {
-            "column": 24,
-            "line": 2,
-          },
+          "end": 40,
           "fileName": "<rootDir>/src/b.module.css",
-          "start": {
-            "column": 10,
-            "line": 2,
-          },
+          "start": 26,
           "text": "Cannot import module './c.module.css'",
           "type": "semantic",
         },

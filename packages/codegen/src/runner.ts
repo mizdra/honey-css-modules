@@ -1,13 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import type {
-  CSSModule,
-  HCMConfig,
-  MatchesPattern,
-  ParseCSSModuleResult,
-  Resolver,
-  SemanticDiagnostic,
-  SyntacticDiagnostic,
-} from 'honey-css-modules-core';
+import type { CSSModule, HCMConfig, MatchesPattern, ParseCSSModuleResult, Resolver } from 'honey-css-modules-core';
 import {
   checkCSSModule,
   createDts,
@@ -62,7 +54,7 @@ async function writeDtsByCSSModule(
 export async function runHCM(project: string, logger: Logger): Promise<void> {
   const config = readConfigFile(project);
   if (config.diagnostics.length > 0) {
-    logger.logDiagnostics(config.diagnostics);
+    logger.logDiagnostics(config.text, config.diagnostics);
     // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
@@ -71,11 +63,10 @@ export async function runHCM(project: string, logger: Logger): Promise<void> {
   const matchesPattern = createMatchesPattern(config);
 
   const cssModuleMap = new Map<string, CSSModule>();
-  const syntacticDiagnostics: SyntacticDiagnostic[] = [];
 
   const fileNames = getFileNamesByPattern(config);
   if (fileNames.length === 0) {
-    logger.logDiagnostics([
+    logger.logDiagnostics('', [
       {
         type: 'semantic',
         category: 'warning',
@@ -84,31 +75,31 @@ export async function runHCM(project: string, logger: Logger): Promise<void> {
     ]);
     return;
   }
+  let hasError = false;
   const parseResults = await Promise.all(fileNames.map(async (fileName) => parseCSSModuleByFileName(fileName, config)));
-  for (const parseResult of parseResults) {
-    cssModuleMap.set(parseResult.cssModule.fileName, parseResult.cssModule);
-    syntacticDiagnostics.push(...parseResult.diagnostics);
+  for (const { cssModule, diagnostics } of parseResults) {
+    cssModuleMap.set(cssModule.fileName, cssModule);
+    if (diagnostics.length > 0) {
+      hasError = true;
+      logger.logDiagnostics(cssModule.text, diagnostics);
+    }
   }
 
-  if (syntacticDiagnostics.length > 0) {
-    logger.logDiagnostics(syntacticDiagnostics);
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
+  // eslint-disable-next-line n/no-process-exit
+  if (hasError) process.exit(1);
 
   const getCSSModule = (path: string) => cssModuleMap.get(path);
   const exportBuilder = createExportBuilder({ getCSSModule, matchesPattern, resolver });
-  const semanticDiagnostics: SemanticDiagnostic[] = [];
   for (const { cssModule } of parseResults) {
     const diagnostics = checkCSSModule(cssModule, exportBuilder, matchesPattern, resolver, getCSSModule);
-    semanticDiagnostics.push(...diagnostics);
+    if (diagnostics.length > 0) {
+      hasError = true;
+      logger.logDiagnostics(cssModule.text, diagnostics);
+    }
   }
 
-  if (semanticDiagnostics.length > 0) {
-    logger.logDiagnostics(semanticDiagnostics);
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
+  // eslint-disable-next-line n/no-process-exit
+  if (hasError) process.exit(1);
 
   await Promise.all(
     parseResults.map(async (parseResult) =>

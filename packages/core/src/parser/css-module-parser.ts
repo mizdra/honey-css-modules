@@ -2,6 +2,7 @@ import type { AtRule, Node, Root, Rule } from 'postcss';
 import { CssSyntaxError, parse } from 'postcss';
 import safeParser from 'postcss-safe-parser';
 import type { SyntacticDiagnostic } from '../diagnostic.js';
+import { getOffsetFromLineAndColumn } from '../util.js';
 import { parseAtImport } from './at-import-parser.js';
 import { parseAtValue } from './at-value-parser.js';
 import { type Location } from './location.js';
@@ -165,7 +166,9 @@ export function parseCSSModule(text: string, { fileName, safe }: ParseCSSModuleO
     ast = parser(text, { from: fileName });
   } catch (e) {
     if (e instanceof CssSyntaxError) {
-      const start = { line: e.line ?? 1, column: e.column ?? 1 };
+      const start = e.line !== undefined && e.column ? getOffsetFromLineAndColumn(text, e.line, e.column) : 0;
+      const end =
+        e.endLine !== undefined && e.endColumn ? getOffsetFromLineAndColumn(text, e.endLine, e.endColumn) : undefined;
       return {
         cssModule: { fileName, text, localTokens: [], tokenImporters: [] },
         diagnostics: [
@@ -173,10 +176,7 @@ export function parseCSSModule(text: string, { fileName, safe }: ParseCSSModuleO
             type: 'syntactic',
             fileName,
             start,
-            ...(e.endLine !== undefined &&
-              e.endColumn !== undefined && {
-                end: { line: e.endLine, column: e.endColumn },
-              }),
+            ...(end !== undefined ? { end } : {}),
             text: e.reason,
             category: 'error',
           },
