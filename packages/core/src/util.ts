@@ -20,3 +20,25 @@ export function getLineAndColumnFromOffset(text: string, offset: number): { line
   const column = offset - lastNewLine;
   return { line, column };
 }
+
+/**
+ * Calculate offset from line and column numbers in text.
+ * Both line and column numbers are 1-based.
+ */
+export function getOffsetFromLineAndColumn(text: string, line: number, column: number): number {
+  let currentLine = 1;
+  let offset = 0;
+
+  // Find the start of the target line
+  while (currentLine < line && offset < text.length) {
+    if (text[offset] === '\n') {
+      currentLine++;
+    }
+    offset++;
+  }
+
+  // Add the column offset (subtract 1 because column is 1-based)
+  offset += column - 1;
+
+  return offset;
+}
