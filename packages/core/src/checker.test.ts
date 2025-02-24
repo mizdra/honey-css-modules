@@ -15,6 +15,7 @@ describe('checkCSSModule', () => {
         createAtImportTokenImporter('./b.module.css'),
         createAtValueTokenImporter('./c.module.css', ['c_1']),
       ],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: [] }),
@@ -60,6 +61,7 @@ describe('checkCSSModule', () => {
       fileName: '/a.module.css',
       localTokens: [],
       tokenImporters: [createAtValueTokenImporter('./b.module.css', ['b_1', 'b_2'])],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: ['b_1'] }),
@@ -91,6 +93,7 @@ describe('checkCSSModule', () => {
       fileName: '/a.module.css',
       localTokens: [],
       tokenImporters: [createAtImportTokenImporter('./unresolvable.module.css')],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: [] }),
@@ -109,6 +112,7 @@ describe('checkCSSModule', () => {
         createAtImportTokenImporter('./b.module.css'),
         createAtValueTokenImporter('./c.module.css', ['c_1']),
       ],
+      text: '',
     };
     const exportBuilder = {
       build: () => ({ allTokens: [] }),

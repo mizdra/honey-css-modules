@@ -6,7 +6,10 @@ const options: ParseCSSModuleOptions = { fileName: '/test.module.css', dashedIde
 
 describe('parseCSSModule', () => {
   test('collects local tokens', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         .basic {}
         .cascading {}
@@ -27,7 +30,7 @@ describe('parseCSSModule', () => {
       `,
       options,
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",
@@ -265,14 +268,17 @@ describe('parseCSSModule', () => {
     `);
   });
   test('collects token importers', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         @import './a.module.css';
         @value a, b as alias from './a.module.css';
       `,
       options,
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",
@@ -362,14 +368,17 @@ describe('parseCSSModule', () => {
     `);
   });
   test('collects diagnostics', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         :local .local1 {}
         @value;
       `,
       options,
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",
@@ -470,6 +479,7 @@ describe('parseCSSModule', () => {
         "cssModule": {
           "fileName": "/test.module.css",
           "localTokens": [],
+          "text": ".a {",
           "tokenImporters": [],
         },
         "diagnostics": [
@@ -488,13 +498,16 @@ describe('parseCSSModule', () => {
     `);
   });
   test('parses CSS in a fault-tolerant manner if safe is true', () => {
-    const parsed = parseCSSModule(
+    const {
+      cssModule: { text, ...cssModule },
+      diagnostics,
+    } = parseCSSModule(
       dedent`
         .a {
       `,
       { ...options, safe: true },
     );
-    expect(parsed).toMatchInlineSnapshot(`
+    expect({ cssModule, diagnostics }).toMatchInlineSnapshot(`
       {
         "cssModule": {
           "fileName": "/test.module.css",

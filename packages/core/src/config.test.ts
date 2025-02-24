@@ -38,6 +38,7 @@ describe('readTsConfigFile', () => {
         arbitraryExtensions: undefined,
       },
       diagnostics: [],
+      text: expect.any(String),
     });
   });
   test('returns a config object if config file has syntax errors', async () => {
@@ -64,6 +65,7 @@ describe('readTsConfigFile', () => {
         arbitraryExtensions: true,
       },
       diagnostics: [],
+      text: expect.any(String),
     });
   });
   test('returns a config object with diagnostics if config file has semantic errors', async () => {
@@ -110,6 +112,7 @@ describe('readTsConfigFile', () => {
           fileName: iff.paths['tsconfig.json'],
         },
       ],
+      text: expect.any(String),
     });
   });
   test('throws error if no config file is found', async () => {

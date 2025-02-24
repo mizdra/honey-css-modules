@@ -62,6 +62,8 @@ export interface HCMConfig {
   configFileName: string;
   /** The diagnostics that occurred while reading the config file. */
   diagnostics: SemanticDiagnostic[];
+  /** The source text of the config file. */
+  text: string;
 }
 
 /**
@@ -169,13 +171,14 @@ export { parseRawData as parseRawDataForTest };
  * @throws {TsConfigFileNotFoundError}
  */
 export function readConfigFile(project: string): HCMConfig {
-  const { configFileName, config, diagnostics } = readTsConfigFile(project);
+  const { configFileName, config, diagnostics, text } = readTsConfigFile(project);
   const basePath = dirname(configFileName);
   return {
     ...normalizeConfig(config, basePath),
     basePath,
     configFileName,
     diagnostics,
+    text,
   };
 }
 
@@ -206,6 +209,7 @@ function mergeParsedRawData(base: ParsedRawData, overrides: ParsedRawData): Pars
 // TODO: Allow `extends` options to inherit `hcmOptions`
 export function readTsConfigFile(project: string): {
   configFileName: string;
+  text: string;
 } & ParsedRawData {
   const configFileName = findTsConfigFile(project);
   if (!configFileName) throw new TsConfigFileNotFoundError();
@@ -251,6 +255,7 @@ export function readTsConfigFile(project: string): {
 
   return {
     configFileName,
+    text: tsConfigSourceFile.text,
     ...parsedRawData,
   };
 }

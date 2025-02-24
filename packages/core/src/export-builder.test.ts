@@ -18,6 +18,7 @@ describe('ExportBuilder', () => {
       fileName: resolve('/a.css'),
       localTokens: [createToken('a_1')],
       tokenImporters: [],
+      text: '',
     };
     expect(exportBuilder.build(cssModule)).toMatchInlineSnapshot(`
       {
@@ -35,12 +36,14 @@ describe('ExportBuilder', () => {
             fileName: resolve('/b.module.css'),
             localTokens: [createToken('b_1')],
             tokenImporters: [],
+            text: '',
           };
         } else if (path === resolve('/c.module.css')) {
           return {
             fileName: resolve('/c.module.css'),
             localTokens: [createToken('c_1'), createToken('c_2')],
             tokenImporters: [],
+            text: '',
           };
         } else {
           return undefined;
@@ -60,6 +63,7 @@ describe('ExportBuilder', () => {
         createAtImportTokenImporter('./b.module.css'),
         createAtValueTokenImporter('./c.module.css', ['c_1']),
       ],
+      text: '',
     };
     expect(exportBuilder.build(cssModule)).toMatchInlineSnapshot(`
       {
@@ -79,12 +83,14 @@ describe('ExportBuilder', () => {
             fileName: resolve('/b.module.css'),
             localTokens: [createToken('b_1')],
             tokenImporters: [createAtImportTokenImporter('./c.module.css')],
+            text: '',
           };
         } else if (path === resolve('/c.module.css')) {
           return {
             fileName: resolve('/c.module.css'),
             localTokens: [createToken('c_1')],
             tokenImporters: [],
+            text: '',
           };
         } else {
           return undefined;
@@ -101,6 +107,7 @@ describe('ExportBuilder', () => {
       fileName: resolve('/a.module.css'),
       localTokens: [createToken('a_1')],
       tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+      text: '',
     };
     expect(exportBuilder.build(cssModule)).toMatchInlineSnapshot(`
       {
@@ -122,6 +129,7 @@ describe('ExportBuilder', () => {
       fileName: resolve('/a.module.css'),
       localTokens: [],
       tokenImporters: [createAtImportTokenImporter('./unresolvable.module.css')],
+      text: '',
     };
     expect(exportBuilder.build(cssModule)).toMatchInlineSnapshot(`
       {
@@ -139,6 +147,7 @@ describe('ExportBuilder', () => {
       fileName: resolve('/a.module.css'),
       localTokens: [],
       tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+      text: '',
     };
     expect(exportBuilder.build(cssModule)).toMatchInlineSnapshot(`
       {
@@ -156,6 +165,7 @@ describe('ExportBuilder', () => {
       fileName: resolve('/a.module.css'),
       localTokens: [],
       tokenImporters: [createAtImportTokenImporter('./non-existing.module.css')],
+      text: '',
     };
     expect(exportBuilder.build(cssModule)).toMatchInlineSnapshot(`
       {
