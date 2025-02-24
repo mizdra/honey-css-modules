@@ -39,9 +39,10 @@ const plugin = createLanguageServicePlugin((ts, info) => {
 
   const resolver = createResolver(config.paths);
   const matchesPattern = createMatchesPattern(config);
+  const asFileName = (scriptId: string) => scriptId;
 
   return {
-    languagePlugins: [createCSSModuleLanguagePlugin(config, resolver, matchesPattern)],
+    languagePlugins: [createCSSModuleLanguagePlugin(config, resolver, matchesPattern, asFileName)],
     setup: (language) => {
       info.languageService = proxyLanguageService(
         language,
