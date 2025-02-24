@@ -36,4 +36,3 @@ export {
 export { checkCSSModule } from './checker.js';
 export { type ExportBuilder, createExportBuilder } from './export-builder.js';
 export { join, resolve, relative, dirname, basename, parse, matchesGlob, isAbsolute } from './path.js';
-export { createCSSModuleLanguagePlugin, isCSSModuleScript, HCM_DATA_KEY } from './language-plugin.js';
