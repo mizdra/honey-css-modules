@@ -20,20 +20,21 @@ interface CSSModuleVirtualCode extends VirtualCode {
   };
 }
 
-export interface CSSModuleScript extends SourceScript<string> {
-  generated: SourceScript<string>['generated'] & {
+export interface CSSModuleScript<T> extends SourceScript<T> {
+  generated: SourceScript<T>['generated'] & {
     root: CSSModuleVirtualCode;
   };
 }
 
-export function createCSSModuleLanguagePlugin(
+export function createCSSModuleLanguagePlugin<T>(
   config: HCMConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
-): LanguagePlugin<string, VirtualCode> {
+  asFileName: (scriptId: T) => string,
+): LanguagePlugin<T, VirtualCode> {
   return {
     getLanguageId(scriptId) {
-      if (!matchesPattern(scriptId)) return undefined;
+      if (!matchesPattern(asFileName(scriptId))) return undefined;
       return LANGUAGE_ID;
     },
     createVirtualCode(scriptId, languageId, snapshot): CSSModuleVirtualCode | undefined {
@@ -42,7 +43,7 @@ export function createCSSModuleLanguagePlugin(
       const length = snapshot.getLength();
       const cssModuleCode = snapshot.getText(0, length);
       const { cssModule, diagnostics } = parseCSSModule(cssModuleCode, {
-        fileName: scriptId,
+        fileName: asFileName(scriptId),
         dashedIdents: config.dashedIdents,
         // The CSS in the process of being written in an editor often contains invalid syntax.
         // So, ts-plugin uses a fault-tolerant Parser to parse CSS.
@@ -86,7 +87,7 @@ export function createCSSModuleLanguagePlugin(
   };
 }
 
-export function isCSSModuleScript(script: SourceScript<string> | undefined): script is CSSModuleScript {
+export function isCSSModuleScript<T>(script: SourceScript<T> | undefined): script is CSSModuleScript<T> {
   return (
     !!script && script.languageId === LANGUAGE_ID && !!script.generated?.root && HCM_DATA_KEY in script.generated.root
   );

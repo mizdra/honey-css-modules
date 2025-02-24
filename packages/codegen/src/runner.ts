@@ -1,39 +1,22 @@
-import { readFile } from 'node:fs/promises';
-import type {
-  CSSModule,
-  HCMConfig,
-  MatchesPattern,
-  ParseCSSModuleResult,
-  Resolver,
-  SemanticDiagnostic,
-  SyntacticDiagnostic,
-} from 'honey-css-modules-core';
+import { createTypeScriptInferredChecker } from '@volar/kit';
+import type { CSSModule, HCMConfig, MatchesPattern, Resolver } from 'honey-css-modules-core';
 import {
-  checkCSSModule,
+  createCSSModuleLanguagePlugin,
   createDts,
-  createExportBuilder,
   createMatchesPattern,
   createResolver,
   getFileNamesByPattern,
-  parseCSSModule,
+  HCM_DATA_KEY,
+  isCSSModuleScript,
   readConfigFile,
+  toNormalizedPath,
 } from 'honey-css-modules-core';
+import ts from 'typescript';
+import { create as createTypeScriptService } from 'volar-service-typescript';
+import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver-types';
+import { URI } from 'vscode-uri';
 import { writeDtsFile } from './dts-writer.js';
-import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
-
-/**
- * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
- */
-async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: HCMConfig): Promise<ParseCSSModuleResult> {
-  let text: string;
-  try {
-    text = await readFile(fileName, 'utf-8');
-  } catch (error) {
-    throw new ReadCSSModuleFileError(fileName, error);
-  }
-  return parseCSSModule(text, { fileName, dashedIdents, safe: false });
-}
 
 /**
  * @throws {WriteDtsFileError}
@@ -69,9 +52,10 @@ export async function runHCM(project: string, logger: Logger): Promise<void> {
 
   const resolver = createResolver(config.paths);
   const matchesPattern = createMatchesPattern(config);
-
-  const cssModuleMap = new Map<string, CSSModule>();
-  const syntacticDiagnostics: SyntacticDiagnostic[] = [];
+  const asFileName = (scriptId: URI) => {
+    const path = toNormalizedPath(scriptId.fsPath);
+    return path;
+  };
 
   const fileNames = getFileNamesByPattern(config);
   if (fileNames.length === 0) {
@@ -84,35 +68,62 @@ export async function runHCM(project: string, logger: Logger): Promise<void> {
     ]);
     return;
   }
-  const parseResults = await Promise.all(fileNames.map(async (fileName) => parseCSSModuleByFileName(fileName, config)));
-  for (const parseResult of parseResults) {
-    cssModuleMap.set(parseResult.cssModule.fileName, parseResult.cssModule);
-    syntacticDiagnostics.push(...parseResult.diagnostics);
-  }
 
-  if (syntacticDiagnostics.length > 0) {
-    logger.logDiagnostics(syntacticDiagnostics);
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
-
-  const getCSSModule = (path: string) => cssModuleMap.get(path);
-  const exportBuilder = createExportBuilder({ getCSSModule, matchesPattern, resolver });
-  const semanticDiagnostics: SemanticDiagnostic[] = [];
-  for (const { cssModule } of parseResults) {
-    const diagnostics = checkCSSModule(cssModule, exportBuilder, matchesPattern, resolver, getCSSModule);
-    semanticDiagnostics.push(...diagnostics);
-  }
-
-  if (semanticDiagnostics.length > 0) {
-    logger.logDiagnostics(semanticDiagnostics);
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
-
-  await Promise.all(
-    parseResults.map(async (parseResult) =>
-      writeDtsByCSSModule(parseResult.cssModule, config, resolver, matchesPattern),
-    ),
+  const checker = createTypeScriptInferredChecker(
+    [createCSSModuleLanguagePlugin(config, resolver, matchesPattern, asFileName)],
+    [...createTypeScriptService(ts)],
+    () => fileNames,
+    config.compilerOptions,
   );
+
+  let hasError = false;
+  const cssModules: CSSModule[] = [];
+  for (const fileName of fileNames) {
+    const script = checker.language.scripts.get(URI.file(fileName));
+    if (isCSSModuleScript(script)) {
+      const hcmData = script.generated.root[HCM_DATA_KEY];
+      const syntacticDiagnostics: Diagnostic[] = hcmData.diagnostics.map((d) => {
+        return Diagnostic.create(
+          {
+            start: { line: d.start.line - 1, character: d.start.column - 1 },
+            end:
+              d.end ?
+                { line: d.end.line - 1, character: d.end.column - 1 }
+              : { line: d.start.line - 1, character: d.start.column - 1 },
+          },
+          d.text,
+          d.category === 'error' ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+          0,
+          'honey-css-modules',
+        );
+      });
+      if (syntacticDiagnostics.length > 0) {
+        hasError = true;
+        logger.logError(checker.printErrors(fileName, syntacticDiagnostics));
+      }
+    }
+  }
+  if (hasError) {
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+
+  for (const fileName of fileNames) {
+    // eslint-disable-next-line no-await-in-loop
+    const semanticDiagnostics = await checker.check(fileName);
+    if (semanticDiagnostics.length > 0) {
+      hasError = true;
+      logger.logError(checker.printErrors(fileName, semanticDiagnostics));
+    }
+  }
+
+  if (hasError) {
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+
+  for (const cssModule of cssModules) {
+    // eslint-disable-next-line no-await-in-loop
+    await writeDtsByCSSModule(cssModule, config, resolver, matchesPattern);
+  }
 }
