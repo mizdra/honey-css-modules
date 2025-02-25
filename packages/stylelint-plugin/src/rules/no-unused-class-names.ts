@@ -1,4 +1,4 @@
-import { basename, findComponentFile, isCSSModuleFile, parseRule } from 'css-modules-kit-core';
+import { basename, findComponentFile, isCSSModuleFile, parseRule } from '@css-modules-kit/core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
 import { readFile } from '../util.js';

@@ -10,7 +10,7 @@ export default defineWorkspace([
     },
     resolve: {
       alias: {
-        'css-modules-kit-core': resolve('packages/core/src/index.ts'),
+        '@css-modules-kit/core': resolve('packages/core/src/index.ts'),
       },
     },
   }),

@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { join } from 'css-modules-kit-core';
+import { join } from '@css-modules-kit/core';
 import dedent from 'dedent';
 import { expect, test } from 'vitest';
 import { createIFF } from '../src/test/fixture.js';

@@ -1,4 +1,4 @@
-import { SystemError } from 'css-modules-kit-core';
+import { SystemError } from '@css-modules-kit/core';
 
 export class WriteDtsFileError extends SystemError {
   constructor(fileName: string, cause: unknown) {

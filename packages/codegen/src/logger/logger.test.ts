@@ -1,4 +1,4 @@
-import { type Diagnostic, SystemError } from 'css-modules-kit-core';
+import { type Diagnostic, SystemError } from '@css-modules-kit/core';
 import { describe, expect, test, vi } from 'vitest';
 import { createLogger } from './logger.js';
 

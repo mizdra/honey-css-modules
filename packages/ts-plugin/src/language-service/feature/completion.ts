@@ -1,4 +1,4 @@
-import { getCssModuleFileName, isComponentFileName, STYLES_EXPORT_NAME } from 'css-modules-kit-core';
+import { getCssModuleFileName, isComponentFileName, STYLES_EXPORT_NAME } from '@css-modules-kit/core';
 import ts from 'typescript';
 
 export function getCompletionsAtPosition(

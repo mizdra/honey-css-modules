@@ -1,5 +1,5 @@
 {
-  "name": "css-modules-kit-core",
+  "name": "@css-modules-kit/core",
   "description": "The core of css-modules-kit",
   "version": "0.0.0",
   "type": "commonjs",

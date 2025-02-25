@@ -1,5 +1,5 @@
 import { access, chmod } from 'node:fs/promises';
-import { type Diagnostic } from 'css-modules-kit-core';
+import { type Diagnostic } from '@css-modules-kit/core';
 import dedent from 'dedent';
 import { describe, expect, test, vi } from 'vitest';
 import { ReadCSSModuleFileError } from './error.js';

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { SystemError } from 'css-modules-kit-core';
+import { SystemError } from '@css-modules-kit/core';
 import { createLogger, runCMK } from '../dist/index.js';
 
 // TODO: Support `--help` option

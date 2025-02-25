@@ -7,7 +7,7 @@ import type {
   Resolver,
   SemanticDiagnostic,
   SyntacticDiagnostic,
-} from 'css-modules-kit-core';
+} from '@css-modules-kit/core';
 import {
   checkCSSModule,
   createDts,
@@ -17,7 +17,7 @@ import {
   getFileNamesByPattern,
   parseCSSModule,
   readConfigFile,
-} from 'css-modules-kit-core';
+} from '@css-modules-kit/core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';

@@ -1,4 +1,4 @@
-import { resolve } from 'css-modules-kit-core';
+import { resolve } from '@css-modules-kit/core';
 import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { getDtsFilePath, writeDtsFile } from './dts-writer.js';

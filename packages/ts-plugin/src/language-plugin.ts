@@ -1,7 +1,7 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { CSSModule, CMKConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from 'css-modules-kit-core';
-import { createDts, parseCSSModule } from 'css-modules-kit-core';
+import type { CSSModule, CMKConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from '@css-modules-kit/core';
+import { createDts, parseCSSModule } from '@css-modules-kit/core';
 import ts from 'typescript';
 
 export const LANGUAGE_ID = 'css-module';

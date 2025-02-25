@@ -37,7 +37,7 @@
     "dist"
   ],
   "dependencies": {
-    "css-modules-kit-core": "^0.0.0"
+    "@css-modules-kit/core": "^0.0.0"
   },
   "peerDependencies": {
     "stylelint": "^16.0.0"

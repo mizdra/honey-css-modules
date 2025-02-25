@@ -1,7 +1,7 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
-import type { CMKConfig } from 'css-modules-kit-core';
-import { createMatchesPattern, createResolver, readConfigFile } from 'css-modules-kit-core';
-import { TsConfigFileNotFoundError } from 'css-modules-kit-core';
+import type { CMKConfig } from '@css-modules-kit/core';
+import { createMatchesPattern, createResolver, readConfigFile } from '@css-modules-kit/core';
+import { TsConfigFileNotFoundError } from '@css-modules-kit/core';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
 import { proxyLanguageService } from './language-service/proxy.js';
 

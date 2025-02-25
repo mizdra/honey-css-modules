@@ -1,4 +1,4 @@
-import { join } from 'css-modules-kit-core';
+import { join } from '@css-modules-kit/core';
 import dedent from 'dedent';
 import type ts from 'typescript';
 import { describe, expect, test } from 'vitest';
