@@ -1,4 +1,4 @@
-import { getCssModuleFileName, isComponentFileName } from 'honey-css-modules-core';
+import { getCssModuleFileName, isComponentFileName } from 'css-modules-kit-core';
 import type ts from 'typescript';
 
 export const createCssModuleFileRefactor = {

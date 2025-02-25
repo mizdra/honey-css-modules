@@ -1,4 +1,4 @@
-import { type SemanticDiagnostic, type SyntacticDiagnostic, SystemError } from 'honey-css-modules-core';
+import { type SemanticDiagnostic, type SyntacticDiagnostic, SystemError } from 'css-modules-kit-core';
 import { describe, expect, test } from 'vitest';
 import { formatDiagnostic, formatSystemError } from './formatter';
 

@@ -1,6 +1,6 @@
 import type { Language } from '@volar/language-core';
-import type { CSSModule, ExportBuilder, MatchesPattern, Resolver, SemanticDiagnostic } from 'honey-css-modules-core';
-import { checkCSSModule } from 'honey-css-modules-core';
+import type { CSSModule, ExportBuilder, MatchesPattern, Resolver, SemanticDiagnostic } from 'css-modules-kit-core';
+import { checkCSSModule } from 'css-modules-kit-core';
 import ts from 'typescript';
 import { HCM_DATA_KEY, isCSSModuleScript } from '../../language-plugin.js';
 import { convertErrorCategory, TS_ERROR_CODE_FOR_HCM_ERROR } from '../../util.js';

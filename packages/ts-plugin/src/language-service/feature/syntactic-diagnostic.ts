@@ -1,5 +1,5 @@
 import type { Language } from '@volar/language-core';
-import type { SyntacticDiagnostic } from 'honey-css-modules-core';
+import type { SyntacticDiagnostic } from 'css-modules-kit-core';
 import ts from 'typescript';
 import { HCM_DATA_KEY, isCSSModuleScript } from '../../language-plugin.js';
 import { convertErrorCategory, TS_ERROR_CODE_FOR_HCM_ERROR } from '../../util.js';

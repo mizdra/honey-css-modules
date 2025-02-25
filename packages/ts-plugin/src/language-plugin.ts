@@ -1,12 +1,12 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { CSSModule, HCMConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from 'honey-css-modules-core';
-import { createDts, parseCSSModule } from 'honey-css-modules-core';
+import type { CSSModule, HCMConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from 'css-modules-kit-core';
+import { createDts, parseCSSModule } from 'css-modules-kit-core';
 import ts from 'typescript';
 
 export const LANGUAGE_ID = 'css-module';
 
-export const HCM_DATA_KEY = Symbol('honey-css-modules-data');
+export const HCM_DATA_KEY = Symbol('css-modules-kit-data');
 
 interface CSSModuleVirtualCode extends VirtualCode {
   [HCM_DATA_KEY]: {

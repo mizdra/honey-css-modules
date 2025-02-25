@@ -1,4 +1,4 @@
-import { basename, findComponentFile, isCSSModuleFile, parseRule } from 'honey-css-modules-core';
+import { basename, findComponentFile, isCSSModuleFile, parseRule } from 'css-modules-kit-core';
 import type { Rule } from 'stylelint';
 import stylelint from 'stylelint';
 import { readFile } from '../util.js';
@@ -6,7 +6,7 @@ import { readFile } from '../util.js';
 // TODO: Report cjs-module-lexer compatibility problem to stylelint
 const { createPlugin, utils } = stylelint;
 
-const ruleName = 'honey-css-modules/no-unused-class-names';
+const ruleName = 'css-modules-kit/no-unused-class-names';
 
 const messages = utils.ruleMessages(ruleName, {
   disallow: (className: string, componentFileName: string) =>
@@ -14,7 +14,7 @@ const messages = utils.ruleMessages(ruleName, {
 });
 
 const meta = {
-  url: 'https://github.com/mizdra/honey-css-modules/blob/main/packages/stylelint-plugin-honey-css-modules/docs/rules/no-unused-class-names.md',
+  url: 'https://github.com/mizdra/css-modules-kit/blob/main/packages/stylelint-plugin-css-modules-kit/docs/rules/no-unused-class-names.md',
 };
 
 const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {

@@ -7,7 +7,7 @@ import type {
   Resolver,
   SemanticDiagnostic,
   SyntacticDiagnostic,
-} from 'honey-css-modules-core';
+} from 'css-modules-kit-core';
 import {
   checkCSSModule,
   createDts,
@@ -17,7 +17,7 @@ import {
   getFileNamesByPattern,
   parseCSSModule,
   readConfigFile,
-} from 'honey-css-modules-core';
+} from 'css-modules-kit-core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
@@ -53,7 +53,7 @@ async function writeDtsByCSSModule(
 }
 
 /**
- * Run honey-css-modules .d.ts generation.
+ * Run css-modules-kit .d.ts generation.
  * @param project The absolute path to the project directory or the path to `tsconfig.json`.
  * @throws {GlobError} When failed to retrieve files by glob pattern.
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.

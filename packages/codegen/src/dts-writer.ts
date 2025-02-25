@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { dirname, join, parse, relative, resolve } from 'honey-css-modules-core';
+import { dirname, join, parse, relative, resolve } from 'css-modules-kit-core';
 import { WriteDtsFileError } from './error.js';
 
 /**

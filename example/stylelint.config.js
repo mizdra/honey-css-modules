@@ -1,8 +1,8 @@
 /** @type {import('stylelint').Config} */
 export default {
-  plugins: ['stylelint-plugin-honey-css-modules'],
+  plugins: ['stylelint-plugin-css-modules-kit'],
   rules: {
-    'honey-css-modules/no-unused-class-names': true,
-    'honey-css-modules/no-missing-component-file': true,
+    'css-modules-kit/no-unused-class-names': true,
+    'css-modules-kit/no-missing-component-file': true,
   },
 };

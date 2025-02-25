@@ -9,7 +9,7 @@ async function lint(rootDir: string) {
     config: {
       plugins: [noMissingComponentFile],
       rules: {
-        'honey-css-modules/no-missing-component-file': true,
+        'css-modules-kit/no-missing-component-file': true,
       },
     },
     files: ['**/*.module.css'],
@@ -33,8 +33,8 @@ describe('no-missing-component-file', () => {
               "endColumn": 2,
               "endLine": 1,
               "line": 1,
-              "rule": "honey-css-modules/no-missing-component-file",
-              "text": "The corresponding component file is not found. (honey-css-modules/no-missing-component-file)",
+              "rule": "css-modules-kit/no-missing-component-file",
+              "text": "The corresponding component file is not found. (css-modules-kit/no-missing-component-file)",
             },
           ],
         },

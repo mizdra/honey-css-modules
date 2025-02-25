@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { SystemError } from 'honey-css-modules-core';
+import { SystemError } from 'css-modules-kit-core';
 import { createLogger, runHCM } from '../dist/index.js';
 
 // TODO: Support `--help` option

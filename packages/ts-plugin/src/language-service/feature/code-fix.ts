@@ -1,5 +1,5 @@
 import type { Language } from '@volar/language-core';
-import { isComponentFileName } from 'honey-css-modules-core';
+import { isComponentFileName } from 'css-modules-kit-core';
 import ts from 'typescript';
 import { isCSSModuleScript } from '../../language-plugin.js';
 

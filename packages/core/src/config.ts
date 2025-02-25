@@ -11,7 +11,7 @@ type RemoveUndefined<T> = {
 };
 
 /**
- * The config used by honey-css-modules.
+ * The config used by css-modules-kit.
  * This is normalized. Paths are resolved from relative to absolute, and default values are set for missing options.
  */
 export interface HCMConfig {
@@ -214,7 +214,7 @@ export function readTsConfigFile(project: string): {
   // MEMO: `tsConfigSourceFile.parseDiagnostics` (Internal API) contains a syntax error for `tsconfig.json`.
   // However, it is ignored so that ts-plugin will work even if `tsconfig.json` is somewhat broken.
   // Also, this error is reported to the user by `tsc` or `tsserver`.
-  // We discard it since there is no need to report it from honey-css-modules.
+  // We discard it since there is no need to report it from css-modules-kit.
 
   const parsedCommandLine = ts.parseJsonSourceFileConfigFileContent(
     tsConfigSourceFile,

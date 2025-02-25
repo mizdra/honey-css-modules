@@ -1,5 +1,5 @@
+import { join } from 'css-modules-kit-core';
 import dedent from 'dedent';
-import { join } from 'honey-css-modules-core';
 import type ts from 'typescript';
 import { describe, expect, test } from 'vitest';
 import { createIFF } from './test/fixture.js';

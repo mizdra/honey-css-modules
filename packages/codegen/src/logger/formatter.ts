@@ -5,7 +5,7 @@ import {
   type DiagnosticPosition,
   relative,
   type SystemError,
-} from 'honey-css-modules-core';
+} from 'css-modules-kit-core';
 
 export function formatDiagnostic(diagnostic: Diagnostic, cwd: string): string {
   let result = '';

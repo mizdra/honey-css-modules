@@ -1,12 +1,12 @@
 {
-  "name": "honey-css-modules",
+  "name": "css-modules-kit",
   "description": "Generate .d.ts files from .module.css",
   "version": "0.0.0",
   "type": "commonjs",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/mizdra/honey-css-modules.git",
+    "url": "https://github.com/mizdra/css-modules-kit.git",
     "directory": "packages/codegen"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
@@ -46,7 +46,7 @@
     "dist"
   ],
   "dependencies": {
-    "honey-css-modules-core": "^0.0.0"
+    "css-modules-kit-core": "^0.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.7.3"

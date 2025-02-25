@@ -49,8 +49,8 @@ const IMPORTED_ITEM_PATTERN = /^([\w-]+)(?:\s+as\s+([\w-]+))?/du;
  * WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH
  * THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-// MEMO: honey-css-modules does not support `@value` with parentheses (e.g., `@value (a, b) from '...';`) to simplify the implementation.
-// MEMO: honey-css-modules does not support `@value` with variable module name (e.g., `@value a from moduleName;`) to simplify the implementation.
+// MEMO: css-modules-kit does not support `@value` with parentheses (e.g., `@value (a, b) from '...';`) to simplify the implementation.
+// MEMO: css-modules-kit does not support `@value` with variable module name (e.g., `@value a from moduleName;`) to simplify the implementation.
 export function parseAtValue(atValue: AtRule): ParseAtValueResult {
   const matchesForValueImport = atValue.params.match(VALUE_IMPORT_PATTERN);
   const diagnostics: SyntacticDiagnostic[] = [];

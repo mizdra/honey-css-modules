@@ -1,4 +1,4 @@
-import type { Diagnostic, SystemError } from 'honey-css-modules-core';
+import type { Diagnostic, SystemError } from 'css-modules-kit-core';
 import { formatDiagnostic, formatSystemError } from './formatter.js';
 
 export interface Logger {

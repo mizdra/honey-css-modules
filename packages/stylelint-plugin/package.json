@@ -1,12 +1,12 @@
 {
-  "name": "stylelint-plugin-honey-css-modules",
+  "name": "stylelint-plugin-css-modules-kit",
   "description": "ESLint Plugin for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/mizdra/honey-css-modules.git",
+    "url": "https://github.com/mizdra/css-modules-kit.git",
     "directory": "packages/stylelint-plugin"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
@@ -37,7 +37,7 @@
     "dist"
   ],
   "dependencies": {
-    "honey-css-modules-core": "^0.0.0"
+    "css-modules-kit-core": "^0.0.0"
   },
   "peerDependencies": {
     "stylelint": "^16.0.0"
