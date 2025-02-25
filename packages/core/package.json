@@ -11,7 +11,7 @@
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "exports": {
     ".": {
       "default": {
