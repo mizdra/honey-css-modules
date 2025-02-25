@@ -18,11 +18,11 @@ npm i -D @css-modules-kit/ts-plugin
 
 Add the "plugin" option to your tsconfig.json file. For example:
 
-```json
+```jsonc
 {
   "compilerOptions": {
-    "plugins": [{ "name": "@css-modules-kit/ts-plugin" }]
-  }
+    "plugins": [{ "name": "@css-modules-kit/ts-plugin" }],
+  },
 }
 ```
 

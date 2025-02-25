@@ -35,13 +35,13 @@ css-modules-kit uses `tsconfig.json` as its configuration file.
 
 In TypeScript, the `include`/`exclude` properties specify which `*.ts` files to compile. css-modules-kit reuses these options to determine which `*.module.css` files to handle with codegen and ts-plugin. Therefore, make sure your `*.module.css` files are included in the `include` or `exclude` settings.
 
-```json
+```jsonc
 {
   // For example, if your project's `*.module.css` files are in `src/`:
   "include": ["src"],
   "compilerOptions": {
     // ...
-  }
+  },
 }
 ```
 
@@ -49,14 +49,14 @@ In TypeScript, the `include`/`exclude` properties specify which `*.ts` files to 
 
 Specifies the directory where `*.d.ts` files are output. The default is `"generated"`.
 
-```json
+```jsonc
 {
   "compilerOptions": {
     // ...
   },
   "cmkOptions": {
-    "dtsOutDir": "generated/cmk"
-  }
+    "dtsOutDir": "generated/cmk",
+  },
 }
 ```
 
