@@ -1,6 +1,6 @@
 {
   "name": "@css-modules-kit/stylelint-plugin",
-  "description": "ESLint Plugin for CSS Modules",
+  "description": "A stylelint plugin for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
   "sideEffects": false,
@@ -11,7 +11,7 @@
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc -b tsconfig.build.json"

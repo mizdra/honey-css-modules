@@ -1,6 +1,6 @@
 {
   "name": "@css-modules-kit/ts-plugin",
-  "description": "TypeScript Language Service Plugin for CSS Modules",
+  "description": "A TypeScript Language Service Plugin for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
   "sideEffects": false,
@@ -25,7 +25,8 @@
   },
   "keywords": [
     "css-modules",
-    "typescript"
+    "typescript",
+    "language service"
   ],
   "files": [
     "bin",
