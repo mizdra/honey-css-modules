@@ -1,5 +1,5 @@
 {
-  "name": "stylelint-plugin-css-modules-kit",
+  "name": "@css-modules-kit/stylelint-plugin",
   "description": "ESLint Plugin for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
