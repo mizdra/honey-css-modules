@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import type {
-  CSSModule,
   CMKConfig,
+  CSSModule,
   MatchesPattern,
   ParseCSSModuleResult,
   Resolver,
