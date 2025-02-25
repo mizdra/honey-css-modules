@@ -4,7 +4,7 @@ import dedent from 'dedent';
 import { expect, test } from 'vitest';
 import { createIFF } from '../src/test/fixture.js';
 
-const binPath = join(__dirname, '../bin/hcm.mjs');
+const binPath = join(__dirname, '../bin/cmk.mjs');
 
 test('generates .d.ts', async () => {
   const iff = await createIFF({
@@ -21,21 +21,21 @@ test('generates .d.ts', async () => {
         "compilerOptions": {
           "paths": { "@/*": ["./src/*"] }
         },
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "dist"
         }
       }
     `,
   });
-  const hcm = spawnSync('node', [binPath], {
+  const cmk = spawnSync('node', [binPath], {
     cwd: iff.rootDir,
     // MEMO: Suppress ExperimentalWarning output from `fs.promises.glob` and `path.matchesGlob`
     // TODO: Remove `--no-warnings=ExperimentalWarning`
     env: { ...process.env, NODE_OPTIONS: '--no-warnings=ExperimentalWarning' },
   });
-  expect(hcm.error).toBeUndefined();
-  expect(hcm.stderr.toString()).toBe('');
-  expect(hcm.status).toBe(0);
+  expect(cmk.error).toBeUndefined();
+  expect(cmk.stderr.toString()).toBe('');
+  expect(cmk.status).toBe(0);
   expect(await iff.readFile('dist/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
     "declare const styles = {
       a1: '' as readonly string,
@@ -63,11 +63,11 @@ test('generates .d.ts', async () => {
 
 test('reports system error', async () => {
   const iff = await createIFF({});
-  const hcm = spawnSync('node', [binPath], {
+  const cmk = spawnSync('node', [binPath], {
     cwd: iff.rootDir,
   });
-  expect(hcm.status).toBe(1);
-  expect(hcm.stderr.toString()).toMatchInlineSnapshot(`
+  expect(cmk.status).toBe(1);
+  expect(cmk.stderr.toString()).toMatchInlineSnapshot(`
     "error TS_CONFIG_NOT_FOUND: No tsconfig.json found.
     "
   `);
@@ -89,21 +89,21 @@ test('generates .d.ts with circular import', async () => {
     `,
     'tsconfig.json': dedent`
       {
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "dist"
         }
       }
     `,
   });
-  const hcm = spawnSync('node', [binPath], {
+  const cmk = spawnSync('node', [binPath], {
     cwd: iff.rootDir,
     // MEMO: Suppress ExperimentalWarning output from `fs.promises.glob` and `path.matchesGlob`
     // TODO: Remove `--no-warnings=ExperimentalWarning`
     env: { ...process.env, NODE_OPTIONS: '--no-warnings=ExperimentalWarning' },
   });
-  expect(hcm.error).toBeUndefined();
-  expect(hcm.stderr.toString()).toBe('');
-  expect(hcm.status).toBe(0);
+  expect(cmk.error).toBeUndefined();
+  expect(cmk.stderr.toString()).toBe('');
+  expect(cmk.status).toBe(0);
   expect(await iff.readFile('dist/src/a.module.css.d.ts')).toMatchInlineSnapshot(`
     "declare const styles = {
       a1: '' as readonly string,

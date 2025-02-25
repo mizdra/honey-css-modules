@@ -12,7 +12,7 @@ describe('Refactor', async () => {
     'tsconfig.json': dedent`
       {
         "compilerOptions": { "jsx": "react-jsx" },
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "generated"
         }
       }

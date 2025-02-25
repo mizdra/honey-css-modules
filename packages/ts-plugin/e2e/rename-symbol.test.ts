@@ -63,7 +63,7 @@ describe('Rename Symbol', async () => {
     'tsconfig.json': dedent`
       {
         "compilerOptions": {},
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "generated"
         }
       }

@@ -1,15 +1,15 @@
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
-import type { CSSModule, HCMConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from 'css-modules-kit-core';
+import type { CSSModule, CMKConfig, MatchesPattern, Resolver, SyntacticDiagnostic } from 'css-modules-kit-core';
 import { createDts, parseCSSModule } from 'css-modules-kit-core';
 import ts from 'typescript';
 
 export const LANGUAGE_ID = 'css-module';
 
-export const HCM_DATA_KEY = Symbol('css-modules-kit-data');
+export const CMK_DATA_KEY = Symbol('css-modules-kit-data');
 
 interface CSSModuleVirtualCode extends VirtualCode {
-  [HCM_DATA_KEY]: {
+  [CMK_DATA_KEY]: {
     cssModule: CSSModule;
     diagnostics: SyntacticDiagnostic[];
   };
@@ -22,7 +22,7 @@ export interface CSSModuleScript extends SourceScript<string> {
 }
 
 export function createCSSModuleLanguagePlugin(
-  config: HCMConfig,
+  config: CMKConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
 ): LanguagePlugin<string, VirtualCode> {
@@ -56,7 +56,7 @@ export function createCSSModuleLanguagePlugin(
         mappings: [{ ...mapping, data: { navigation: true } }],
         // `linkedCodeMappings` are required to support "Go to Definition" and renaming for the imported tokens
         linkedCodeMappings: [{ ...linkedCodeMapping, data: undefined }],
-        [HCM_DATA_KEY]: {
+        [CMK_DATA_KEY]: {
           cssModule,
           diagnostics,
         },
@@ -83,6 +83,6 @@ export function createCSSModuleLanguagePlugin(
 
 export function isCSSModuleScript(script: SourceScript<string> | undefined): script is CSSModuleScript {
   return (
-    !!script && script.languageId === LANGUAGE_ID && !!script.generated?.root && HCM_DATA_KEY in script.generated.root
+    !!script && script.languageId === LANGUAGE_ID && !!script.generated?.root && CMK_DATA_KEY in script.generated.root
   );
 }

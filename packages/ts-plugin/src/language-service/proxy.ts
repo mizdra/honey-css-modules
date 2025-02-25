@@ -1,7 +1,7 @@
 import type { Language } from '@volar/language-core';
 import { createExportBuilder, type MatchesPattern, type Resolver } from 'css-modules-kit-core';
 import type ts from 'typescript';
-import { HCM_DATA_KEY, isCSSModuleScript } from '../language-plugin.js';
+import { CMK_DATA_KEY, isCSSModuleScript } from '../language-plugin.js';
 import { getCodeFixesAtPosition } from './feature/code-fix.js';
 import { getCompletionsAtPosition } from './feature/completion.js';
 import { getApplicableRefactors, getEditsForRefactor } from './feature/refactor.js';
@@ -27,7 +27,7 @@ export function proxyLanguageService(
   const getCSSModule = (path: string) => {
     const script = language.scripts.get(path);
     if (isCSSModuleScript(script)) {
-      return script.generated.root[HCM_DATA_KEY].cssModule;
+      return script.generated.root[CMK_DATA_KEY].cssModule;
     }
     return undefined;
   };

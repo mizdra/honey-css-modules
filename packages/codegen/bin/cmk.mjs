@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { SystemError } from 'css-modules-kit-core';
-import { createLogger, runHCM } from '../dist/index.js';
+import { createLogger, runCMK } from '../dist/index.js';
 
 // TODO: Support `--help` option
 // TODO: Support `--version` option
@@ -11,7 +11,7 @@ const cwd = process.cwd();
 const project = cwd;
 const logger = createLogger(cwd);
 try {
-  await runHCM(project, logger);
+  await runCMK(project, logger);
 } catch (e) {
   if (e instanceof SystemError) {
     logger.logSystemError(e);

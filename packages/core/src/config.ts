@@ -14,7 +14,7 @@ type RemoveUndefined<T> = {
  * The config used by css-modules-kit.
  * This is normalized. Paths are resolved from relative to absolute, and default values are set for missing options.
  */
-export interface HCMConfig {
+export interface CMKConfig {
   includes: string[];
   excludes: string[];
   paths: Record<string, string[]>;
@@ -68,7 +68,7 @@ export interface HCMConfig {
  * The config loaded from `tsconfig.json`.
  * This is unnormalized. Paths are relative, and some options may be omitted.
  */
-interface UnnormalizedHCMConfig {
+interface UnnormalizedCMKConfig {
   includes: string[] | undefined;
   excludes: string[] | undefined;
   paths: Record<string, string[]> | undefined;
@@ -80,7 +80,7 @@ interface UnnormalizedHCMConfig {
  * The validated data of `ts.ParsedCommandLine['raw']`.
  */
 interface ParsedRawData {
-  config: UnnormalizedHCMConfig;
+  config: UnnormalizedCMKConfig;
   diagnostics: SemanticDiagnostic[];
 }
 
@@ -130,10 +130,10 @@ function parseRawData(raw: unknown, configFileName: string): ParsedRawData {
       // MEMO: The errors for this option are reported by `tsc` or `tsserver`, so we don't need to report.
     }
   }
-  if ('hcmOptions' in raw && typeof raw.hcmOptions === 'object' && raw.hcmOptions !== null) {
-    if ('dtsOutDir' in raw.hcmOptions) {
-      if (typeof raw.hcmOptions.dtsOutDir === 'string') {
-        result.config.dtsOutDir = raw.hcmOptions.dtsOutDir;
+  if ('cmkOptions' in raw && typeof raw.cmkOptions === 'object' && raw.cmkOptions !== null) {
+    if ('dtsOutDir' in raw.cmkOptions) {
+      if (typeof raw.cmkOptions.dtsOutDir === 'string') {
+        result.config.dtsOutDir = raw.cmkOptions.dtsOutDir;
       } else {
         result.diagnostics.push({
           type: 'semantic',
@@ -143,9 +143,9 @@ function parseRawData(raw: unknown, configFileName: string): ParsedRawData {
         });
       }
     }
-    if ('arbitraryExtensions' in raw.hcmOptions) {
-      if (typeof raw.hcmOptions.arbitraryExtensions === 'boolean') {
-        result.config.arbitraryExtensions = raw.hcmOptions.arbitraryExtensions;
+    if ('arbitraryExtensions' in raw.cmkOptions) {
+      if (typeof raw.cmkOptions.arbitraryExtensions === 'boolean') {
+        result.config.arbitraryExtensions = raw.cmkOptions.arbitraryExtensions;
       } else {
         result.diagnostics.push({
           type: 'semantic',
@@ -168,7 +168,7 @@ export { parseRawData as parseRawDataForTest };
  * @param project The absolute path to the project directory or the path to `tsconfig.json`.
  * @throws {TsConfigFileNotFoundError}
  */
-export function readConfigFile(project: string): HCMConfig {
+export function readConfigFile(project: string): CMKConfig {
   const { configFileName, config, diagnostics } = readTsConfigFile(project);
   const basePath = dirname(configFileName);
   return {
@@ -203,7 +203,7 @@ function mergeParsedRawData(base: ParsedRawData, overrides: ParsedRawData): Pars
 /**
  * @throws {TsConfigFileNotFoundError}
  */
-// TODO: Allow `extends` options to inherit `hcmOptions`
+// TODO: Allow `extends` options to inherit `cmkOptions`
 export function readTsConfigFile(project: string): {
   configFileName: string;
 } & ParsedRawData {
@@ -269,9 +269,9 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
  * @param basePath A root directory to resolve relative path entries in the config file to.
  */
 export function normalizeConfig(
-  config: UnnormalizedHCMConfig,
+  config: UnnormalizedCMKConfig,
   basePath: string,
-): RemoveUndefined<UnnormalizedHCMConfig> & { dashedIdents: boolean } {
+): RemoveUndefined<UnnormalizedCMKConfig> & { dashedIdents: boolean } {
   return {
     // If `include` is not specified, fallback to the default include spec.
     // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102

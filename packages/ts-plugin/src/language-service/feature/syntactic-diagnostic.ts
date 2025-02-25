@@ -1,8 +1,8 @@
 import type { Language } from '@volar/language-core';
 import type { SyntacticDiagnostic } from 'css-modules-kit-core';
 import ts from 'typescript';
-import { HCM_DATA_KEY, isCSSModuleScript } from '../../language-plugin.js';
-import { convertErrorCategory, TS_ERROR_CODE_FOR_HCM_ERROR } from '../../util.js';
+import { CMK_DATA_KEY, isCSSModuleScript } from '../../language-plugin.js';
+import { convertErrorCategory, TS_ERROR_CODE_FOR_CMK_ERROR } from '../../util.js';
 
 export function getSyntacticDiagnostics(
   language: Language<string>,
@@ -13,7 +13,7 @@ export function getSyntacticDiagnostics(
     const script = language.scripts.get(fileName);
     if (isCSSModuleScript(script)) {
       const virtualCode = script.generated.root;
-      const diagnostics = virtualCode[HCM_DATA_KEY].diagnostics;
+      const diagnostics = virtualCode[CMK_DATA_KEY].diagnostics;
       const sourceFile = languageService.getProgram()!.getSourceFile(fileName)!;
       const tsDiagnostics = diagnostics.map((diagnostic) => convertDiagnostic(diagnostic, sourceFile));
       prior.push(...tsDiagnostics);
@@ -34,6 +34,6 @@ function convertDiagnostic(diagnostic: SyntacticDiagnostic, sourceFile: ts.Sourc
     category: convertErrorCategory(diagnostic.category),
     length,
     messageText: diagnostic.text,
-    code: TS_ERROR_CODE_FOR_HCM_ERROR,
+    code: TS_ERROR_CODE_FOR_CMK_ERROR,
   };
 }

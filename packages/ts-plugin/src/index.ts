@@ -1,5 +1,5 @@
 import { createLanguageServicePlugin } from '@volar/typescript/lib/quickstart/createLanguageServicePlugin.js';
-import type { HCMConfig } from 'css-modules-kit-core';
+import type { CMKConfig } from 'css-modules-kit-core';
 import { createMatchesPattern, createResolver, readConfigFile } from 'css-modules-kit-core';
 import { TsConfigFileNotFoundError } from 'css-modules-kit-core';
 import { createCSSModuleLanguagePlugin } from './language-plugin.js';
@@ -11,7 +11,7 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     return { languagePlugins: [] };
   }
 
-  let config: HCMConfig;
+  let config: CMKConfig;
   try {
     config = readConfigFile(info.project.getProjectName());
     // TODO: Report diagnostics

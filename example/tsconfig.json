@@ -12,7 +12,7 @@
     "rootDirs": ["src", "generated/src"],
     "types": [] // Simplify tsserver.log
   },
-  "hcmOptions": {
+  "cmkOptions": {
     "dtsOutDir": "generated"
   }
 }

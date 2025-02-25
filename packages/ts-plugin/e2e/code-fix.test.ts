@@ -22,7 +22,7 @@ describe('Get Code Fixes', async () => {
     'tsconfig.json': dedent`
       {
         "compilerOptions": {},
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "generated"
         }
       }

@@ -31,7 +31,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "bin": {
-    "hcm": "bin/hcm.mjs"
+    "cmk": "bin/cmk.mjs"
   },
   "keywords": [
     "css-modules",

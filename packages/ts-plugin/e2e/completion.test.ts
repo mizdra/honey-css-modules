@@ -33,7 +33,7 @@ describe('Completion', async () => {
           "jsx": "react-jsx",
           "types": ["${reactDtsPath}"]
         },
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "generated"
         }
       }

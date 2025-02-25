@@ -1,4 +1,4 @@
-export type { HCMConfig } from './config.js';
+export type { CMKConfig } from './config.js';
 export { readConfigFile } from './config.js';
 export { TsConfigFileNotFoundError, SystemError } from './error.js';
 export {

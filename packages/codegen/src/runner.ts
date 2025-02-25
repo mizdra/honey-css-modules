@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import type {
   CSSModule,
-  HCMConfig,
+  CMKConfig,
   MatchesPattern,
   ParseCSSModuleResult,
   Resolver,
@@ -25,7 +25,7 @@ import type { Logger } from './logger/logger.js';
 /**
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  */
-async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: HCMConfig): Promise<ParseCSSModuleResult> {
+async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: CMKConfig): Promise<ParseCSSModuleResult> {
   let text: string;
   try {
     text = await readFile(fileName, 'utf-8');
@@ -40,7 +40,7 @@ async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: HCMC
  */
 async function writeDtsByCSSModule(
   cssModule: CSSModule,
-  { dtsOutDir, basePath, arbitraryExtensions }: HCMConfig,
+  { dtsOutDir, basePath, arbitraryExtensions }: CMKConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
 ): Promise<void> {
@@ -59,7 +59,7 @@ async function writeDtsByCSSModule(
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(project: string, logger: Logger): Promise<void> {
+export async function runCMK(project: string, logger: Logger): Promise<void> {
   const config = readConfigFile(project);
   if (config.diagnostics.length > 0) {
     logger.logDiagnostics(config.diagnostics);
