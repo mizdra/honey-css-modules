@@ -25,7 +25,8 @@
   },
   "keywords": [
     "css-modules",
-    "typescript"
+    "typescript",
+    "language service"
   ],
   "files": [
     "bin",
