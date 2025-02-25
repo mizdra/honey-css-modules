@@ -14,7 +14,7 @@ const messages = utils.ruleMessages(ruleName, {
 });
 
 const meta = {
-  url: 'https://github.com/mizdra/css-modules-kit/blob/main/packages/@css-modules-kit/stylelint-plugin/docs/rules/no-unused-class-names.md',
+  url: 'https://github.com/mizdra/css-modules-kit/blob/main/packages/stylelint-plugin/docs/rules/no-unused-class-names.md',
 };
 
 const ruleFunction: Rule = (_primaryOptions, _secondaryOptions, _context) => {
