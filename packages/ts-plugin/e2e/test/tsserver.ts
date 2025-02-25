@@ -37,7 +37,7 @@ export function launchTsserver(): Tsserver {
     [
       '--disableAutomaticTypingAcquisition',
       '--globalPlugins',
-      'ts-css-modules-kit-plugin',
+      '@css-modules-kit/ts-plugin',
       '--pluginProbeLocations',
       __dirname,
     ],

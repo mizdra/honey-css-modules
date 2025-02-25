@@ -7,7 +7,7 @@ import { proxyLanguageService } from './language-service/proxy.js';
 
 const plugin = createLanguageServicePlugin((ts, info) => {
   if (info.project.projectKind !== ts.server.ProjectKind.Configured) {
-    info.project.projectService.logger.info(`[ts-css-modules-kit-plugin] info: Project is not configured`);
+    info.project.projectService.logger.info(`[@css-modules-kit/ts-plugin] info: Project is not configured`);
     return { languagePlugins: [] };
   }
 
@@ -16,14 +16,14 @@ const plugin = createLanguageServicePlugin((ts, info) => {
     config = readConfigFile(info.project.getProjectName());
     // TODO: Report diagnostics
     info.project.projectService.logger.info(
-      `[ts-css-modules-kit-plugin] info: Config file is found '${config.configFileName}'`,
+      `[@css-modules-kit/ts-plugin] info: Config file is found '${config.configFileName}'`,
     );
   } catch (error) {
     // If the config file is not found, disable the plugin.
     if (error instanceof TsConfigFileNotFoundError) {
       return { languagePlugins: [] };
     } else {
-      let msg = `[ts-css-modules-kit-plugin] error: Fail to read config file`;
+      let msg = `[@css-modules-kit/ts-plugin] error: Fail to read config file`;
       if (error instanceof Error) {
         msg += `\n: ${error.message}`;
         msg += `\n${error.stack}`;

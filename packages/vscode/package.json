@@ -35,7 +35,7 @@
   "contributes": {
     "typescriptServerPlugins": [
       {
-        "name": "ts-css-modules-kit-plugin",
+        "name": "@css-modules-kit/ts-plugin",
         "configNamespace": "typescript",
         "languages": [
           "css"
@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "css-modules-kit-language-server": "../language-server",
-    "ts-css-modules-kit-plugin": "../ts-plugin",
+    "@css-modules-kit/ts-plugin": "../ts-plugin",
     "vscode-languageclient": "^9.0.1"
   }
 }

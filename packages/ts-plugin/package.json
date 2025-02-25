@@ -1,5 +1,5 @@
 {
-  "name": "ts-css-modules-kit-plugin",
+  "name": "@css-modules-kit/ts-plugin",
   "description": "TypeScript Language Service Plugin for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
