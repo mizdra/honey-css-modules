@@ -359,7 +359,7 @@ describe('parseRule', () => {
     });
     test('The class names wrapped by `:local(...)` is local', () => {
       expect(parseRuleSimply(':local(.local1 :is(.local2)) {}')).toStrictEqual(['local1', 'local2']);
-      // If honey-css-modules supports `:local` and `:global`, the following test should pass.
+      // If css-modules-kit supports `:local` and `:global`, the following test should pass.
       // expect(parseRuleSimply(':global .global1 :local(.local1 :is(.local2)) .global2 {}')).toStrictEqual([
       //   'local1',
       //   'local2',
@@ -457,7 +457,7 @@ describe('parseRule', () => {
       `);
     });
     test('`:local()` and `:global()` is allowed', () => {
-      // postcss-modules does not allow it, but honey-css-modules allows it.
+      // postcss-modules does not allow it, but css-modules-kit allows it.
       // Because allowing it does not harm users.
       const rules = createRules(
         createRoot(dedent`
@@ -486,7 +486,7 @@ describe('parseRule', () => {
     });
   });
   describe('`:local` and `:global`', () => {
-    // The :local and :global specifications are complex. Therefore, honey-css-modules does not support them.
+    // The :local and :global specifications are complex. Therefore, css-modules-kit does not support them.
     test('reports diagnostics when using `:local` or `:global`', () => {
       const rules = createRules(
         createRoot(dedent`

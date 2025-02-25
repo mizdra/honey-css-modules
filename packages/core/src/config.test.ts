@@ -22,8 +22,8 @@ describe('readTsConfigFile', () => {
         {
           "include": ["src"],
           "exclude": ["src/test"],
-          "hcmOptions": {
-            "dtsOutDir": "generated/hcm"
+          "cmkOptions": {
+            "dtsOutDir": "generated/cmk"
           }
         }
       `,
@@ -34,7 +34,7 @@ describe('readTsConfigFile', () => {
         includes: ['src'],
         excludes: ['src/test'],
         paths: undefined,
-        dtsOutDir: 'generated/hcm',
+        dtsOutDir: 'generated/cmk',
         arbitraryExtensions: undefined,
       },
       diagnostics: [],
@@ -46,8 +46,8 @@ describe('readTsConfigFile', () => {
         {
           "include": ["src"]
           //                ^ error: ',' is missing
-          "hcmOptions": {
-            "dtsOutDir": "generated/hcm"
+          "cmkOptions": {
+            "dtsOutDir": "generated/cmk"
             //                          ^ error: ',' is missing
             "arbitraryExtensions": true
           }
@@ -60,7 +60,7 @@ describe('readTsConfigFile', () => {
         includes: ['src'],
         excludes: undefined,
         paths: undefined,
-        dtsOutDir: 'generated/hcm',
+        dtsOutDir: 'generated/cmk',
         arbitraryExtensions: true,
       },
       diagnostics: [],
@@ -78,7 +78,7 @@ describe('readTsConfigFile', () => {
               "#/*": 1,
             }
           },
-          "hcmOptions": {
+          "cmkOptions": {
             "dtsOutDir": 1,
             "arbitraryExtensions": 1
             //                     ^ error: "arbitraryExtensions" must be a boolean
@@ -86,7 +86,7 @@ describe('readTsConfigFile', () => {
         }
       `,
     });
-    // MEMO: The errors not derived from `hcmOptions` are not returned.
+    // MEMO: The errors not derived from `cmkOptions` are not returned.
     expect(readTsConfigFile(iff.rootDir)).toStrictEqual({
       configFileName: iff.paths['tsconfig.json'],
       config: {
@@ -121,13 +121,13 @@ describe('readTsConfigFile', () => {
       const iff = await createIFF({
         'tsconfig.base.json': dedent`
           {
-            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+            "cmkOptions": { "dtsOutDir": "generated/cmk" }
           }
         `,
         'tsconfig.json': dedent`
           {
             "extends": "./tsconfig.base.json",
-            "hcmOptions": { "arbitraryExtensions": true }
+            "cmkOptions": { "arbitraryExtensions": true }
           }
         `,
       });
@@ -135,7 +135,7 @@ describe('readTsConfigFile', () => {
         includes: undefined,
         excludes: undefined,
         paths: undefined,
-        dtsOutDir: 'generated/hcm',
+        dtsOutDir: 'generated/cmk',
         arbitraryExtensions: true,
       });
     });
@@ -173,13 +173,13 @@ describe('readTsConfigFile', () => {
       const iff = await createIFF({
         'tsconfig.base1.json': dedent`
           {
-            "hcmOptions": { "dtsOutDir": "generated/hcm" },
+            "cmkOptions": { "dtsOutDir": "generated/cmk" },
           }
         `,
         'tsconfig.base2.json': dedent`
           {
             "extends": "./tsconfig.base1.json",
-            "hcmOptions": { "arbitraryExtensions": true }
+            "cmkOptions": { "arbitraryExtensions": true }
           }
         `,
         'tsconfig.json': dedent`
@@ -192,7 +192,7 @@ describe('readTsConfigFile', () => {
         includes: undefined,
         excludes: undefined,
         paths: undefined,
-        dtsOutDir: 'generated/hcm',
+        dtsOutDir: 'generated/cmk',
         arbitraryExtensions: true,
       });
     });
@@ -200,7 +200,7 @@ describe('readTsConfigFile', () => {
       const iff = await createIFF({
         'node_modules/some-pkg/tsconfig.json': dedent`
           {
-            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+            "cmkOptions": { "dtsOutDir": "generated/cmk" }
           }
         `,
         'tsconfig.json': dedent`
@@ -213,7 +213,7 @@ describe('readTsConfigFile', () => {
         includes: undefined,
         excludes: undefined,
         paths: undefined,
-        dtsOutDir: 'generated/hcm',
+        dtsOutDir: 'generated/cmk',
         arbitraryExtensions: undefined,
       });
     });
@@ -221,12 +221,12 @@ describe('readTsConfigFile', () => {
       const iff = await createIFF({
         'tsconfig.base1.json': dedent`
           {
-            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+            "cmkOptions": { "dtsOutDir": "generated/cmk" }
           }
         `,
         'tsconfig.base2.json': dedent`
           {
-            "hcmOptions": { "arbitraryExtensions": true }
+            "cmkOptions": { "arbitraryExtensions": true }
           }
         `,
         'tsconfig.json': dedent`
@@ -239,7 +239,7 @@ describe('readTsConfigFile', () => {
         includes: undefined,
         excludes: undefined,
         paths: undefined,
-        dtsOutDir: 'generated/hcm',
+        dtsOutDir: 'generated/cmk',
         arbitraryExtensions: true,
       });
     });
@@ -248,13 +248,13 @@ describe('readTsConfigFile', () => {
         'tsconfig.base.json': dedent`
           {
             "extends": "./un-existing.json",
-            "hcmOptions": { "dtsOutDir": "generated/hcm" }
+            "cmkOptions": { "dtsOutDir": "generated/cmk" }
           }
         `,
         'tsconfig.json': dedent`
           {
             "extends": ["./tsconfig.base.json", "./un-existing.json"],
-            "hcmOptions": { "arbitraryExtensions": true }
+            "cmkOptions": { "arbitraryExtensions": true }
           }
         `,
       });
@@ -262,7 +262,7 @@ describe('readTsConfigFile', () => {
         includes: undefined,
         excludes: undefined,
         paths: undefined,
-        dtsOutDir: 'generated/hcm',
+        dtsOutDir: 'generated/cmk',
         arbitraryExtensions: true,
       });
     });

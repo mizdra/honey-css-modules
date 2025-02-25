@@ -1,7 +1,7 @@
 {
-  "name": "honey-css-modules-monorepo",
+  "name": "css-modules-kit-monorepo",
   "type": "module",
-  "repository": "https://github.com/mizdra/honey-css-modules.git",
+  "repository": "https://github.com/mizdra/css-modules-kit.git",
   "author": "mizdra <pp.mizdra@gmail.com>",
   "license": "MIT",
   "private": true,

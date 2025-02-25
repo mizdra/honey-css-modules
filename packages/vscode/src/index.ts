@@ -6,13 +6,13 @@ import * as lsp from 'vscode-languageclient/node';
 let client: lsp.BaseLanguageClient;
 
 export async function activate(_context: vscode.ExtensionContext) {
-  console.log('[vscode-honey-css-modules] Activated');
+  console.log('[@css-modules-kit/vscode] Activated');
 
   // By default, `vscode.typescript-language-features` is not activated when a user opens *.css in VS Code.
   // So, activate it manually.
   const tsExtension = vscode.extensions.getExtension('vscode.typescript-language-features');
   if (tsExtension) {
-    console.log('[vscode-honey-css-modules] Activating `vscode.typescript-language-features`');
+    console.log('[@css-modules-kit/vscode] Activating `vscode.typescript-language-features`');
     tsExtension.activate();
   }
 
@@ -44,7 +44,7 @@ export async function activate(_context: vscode.ExtensionContext) {
     // The language server is based on the vscode-css-languageservice, but "rename" and "references" features are disabled.
 
     // TODO: Do not use Node.js API
-    const serverModulePath = require.resolve('honey-css-modules-language-server');
+    const serverModulePath = require.resolve('css-modules-kit-language-server');
 
     const serverOptions: lsp.ServerOptions = {
       run: {
@@ -62,12 +62,7 @@ export async function activate(_context: vscode.ExtensionContext) {
       documentSelector: [{ language: 'css' }, { language: 'scss' }, { language: 'less' }],
       initializationOptions: {},
     };
-    client = new lsp.LanguageClient(
-      'vscode-honey-css-modules',
-      'vscode-honey-css-modules',
-      serverOptions,
-      clientOptions,
-    );
+    client = new lsp.LanguageClient('@css-modules-kit/vscode', '@css-modules-kit/vscode', serverOptions, clientOptions);
     await client.start();
   }
 }

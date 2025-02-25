@@ -17,7 +17,7 @@ describe('handle invalid syntax CSS without crashing', async () => {
     'tsconfig.json': dedent`
       {
         "compilerOptions": {},
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "generated"
         }
       }

@@ -36,7 +36,7 @@ describe('Go to Definition', async () => {
         "compilerOptions": {
           "paths": { "@/*": ["./*"] }
         },
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "generated"
         }
       }

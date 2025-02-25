@@ -1,12 +1,12 @@
 {
-  "name": "vscode-honey-css-modules",
-  "displayName": "vscode-honey-css-modules",
+  "name": "@css-modules-kit/vscode",
+  "displayName": "@css-modules-kit/vscode",
   "description": "The VS Code extension for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mizdra/honey-css-modules.git",
+    "url": "https://github.com/mizdra/css-modules-kit.git",
     "directory": "packages/vscode"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
@@ -35,7 +35,7 @@
   "contributes": {
     "typescriptServerPlugins": [
       {
-        "name": "ts-honey-css-modules-plugin",
+        "name": "@css-modules-kit/ts-plugin",
         "configNamespace": "typescript",
         "languages": [
           "css"
@@ -56,8 +56,8 @@
     }
   },
   "dependencies": {
-    "honey-css-modules-language-server": "../language-server",
-    "ts-honey-css-modules-plugin": "../ts-plugin",
+    "css-modules-kit-language-server": "../language-server",
+    "@css-modules-kit/ts-plugin": "../ts-plugin",
     "vscode-languageclient": "^9.0.1"
   }
 }

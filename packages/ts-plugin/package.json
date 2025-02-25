@@ -1,12 +1,12 @@
 {
-  "name": "ts-honey-css-modules-plugin",
+  "name": "@css-modules-kit/ts-plugin",
   "description": "TypeScript Language Service Plugin for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/mizdra/honey-css-modules.git",
+    "url": "https://github.com/mizdra/css-modules-kit.git",
     "directory": "packages/ts-plugin"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",
@@ -38,7 +38,7 @@
   "dependencies": {
     "@volar/language-core": "^2.4.11",
     "@volar/typescript": "^2.4.11",
-    "honey-css-modules-core": "^0.0.0"
+    "@css-modules-kit/core": "^0.0.0"
   },
   "peerDependencies": {
     "typescript": ">=5.6.3"

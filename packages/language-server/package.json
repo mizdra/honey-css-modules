@@ -1,12 +1,12 @@
 {
-  "name": "honey-css-modules-language-server",
+  "name": "css-modules-kit-language-server",
   "description": "Language Server for CSS Modules",
   "version": "0.0.0",
   "type": "commonjs",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/mizdra/honey-css-modules.git",
+    "url": "https://github.com/mizdra/css-modules-kit.git",
     "directory": "packages/language-server"
   },
   "author": "mizdra <pp.mizdra@gmail.com>",

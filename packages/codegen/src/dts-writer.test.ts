@@ -1,5 +1,5 @@
+import { resolve } from '@css-modules-kit/core';
 import dedent from 'dedent';
-import { resolve } from 'honey-css-modules-core';
 import { describe, expect, test } from 'vitest';
 import { getDtsFilePath, writeDtsFile } from './dts-writer.js';
 import { WriteDtsFileError } from './error.js';

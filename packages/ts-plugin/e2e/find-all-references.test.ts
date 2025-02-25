@@ -46,7 +46,7 @@ describe('Find All References', async () => {
     'tsconfig.json': dedent`
       {
         "compilerOptions": {},
-        "hcmOptions": {
+        "cmkOptions": {
           "dtsOutDir": "generated"
         }
       }

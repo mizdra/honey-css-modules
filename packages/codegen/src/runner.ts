@@ -1,13 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import type {
+  CMKConfig,
   CSSModule,
-  HCMConfig,
   MatchesPattern,
   ParseCSSModuleResult,
   Resolver,
   SemanticDiagnostic,
   SyntacticDiagnostic,
-} from 'honey-css-modules-core';
+} from '@css-modules-kit/core';
 import {
   checkCSSModule,
   createDts,
@@ -17,7 +17,7 @@ import {
   getFileNamesByPattern,
   parseCSSModule,
   readConfigFile,
-} from 'honey-css-modules-core';
+} from '@css-modules-kit/core';
 import { writeDtsFile } from './dts-writer.js';
 import { ReadCSSModuleFileError } from './error.js';
 import type { Logger } from './logger/logger.js';
@@ -25,7 +25,7 @@ import type { Logger } from './logger/logger.js';
 /**
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  */
-async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: HCMConfig): Promise<ParseCSSModuleResult> {
+async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: CMKConfig): Promise<ParseCSSModuleResult> {
   let text: string;
   try {
     text = await readFile(fileName, 'utf-8');
@@ -40,7 +40,7 @@ async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: HCMC
  */
 async function writeDtsByCSSModule(
   cssModule: CSSModule,
-  { dtsOutDir, basePath, arbitraryExtensions }: HCMConfig,
+  { dtsOutDir, basePath, arbitraryExtensions }: CMKConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
 ): Promise<void> {
@@ -53,13 +53,13 @@ async function writeDtsByCSSModule(
 }
 
 /**
- * Run honey-css-modules .d.ts generation.
+ * Run css-modules-kit .d.ts generation.
  * @param project The absolute path to the project directory or the path to `tsconfig.json`.
  * @throws {GlobError} When failed to retrieve files by glob pattern.
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  * @throws {WriteDtsFileError}
  */
-export async function runHCM(project: string, logger: Logger): Promise<void> {
+export async function runCMK(project: string, logger: Logger): Promise<void> {
   const config = readConfigFile(project);
   if (config.diagnostics.length > 0) {
     logger.logDiagnostics(config.diagnostics);
