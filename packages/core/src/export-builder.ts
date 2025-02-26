@@ -18,16 +18,24 @@ export interface ExportRecord {
 
 export interface ExportBuilder {
   build(cssModule: CSSModule): ExportRecord;
+  clearCache(): void;
 }
 
 /**
  * A builder for exported token records of CSS modules.
  */
-// TODO: Add cache
-// TODO: Add support for circular dependencies
 // TODO: Handle same token name from different modules
 export function createExportBuilder(host: ExportBuilderHost): ExportBuilder {
+  const cache = new Map<string, ExportRecord>();
+
   function build(cssModule: CSSModule): ExportRecord {
+    const cached = cache.get(cssModule.fileName);
+    if (cached) return cached;
+
+    // Set an empty record to prevent infinite loop
+    // when the module graph has circular dependencies.
+    cache.set(cssModule.fileName, { allTokens: [] });
+
     const result: ExportRecord = { allTokens: [...cssModule.localTokens.map((t) => t.name)] };
 
     for (const tokenImporter of cssModule.tokenImporters) {
@@ -45,7 +53,11 @@ export function createExportBuilder(host: ExportBuilderHost): ExportBuilder {
         }
       }
     }
+    cache.set(cssModule.fileName, result);
     return result;
   }
-  return { build };
+  function clearCache() {
+    cache.clear();
+  }
+  return { build, clearCache };
 }

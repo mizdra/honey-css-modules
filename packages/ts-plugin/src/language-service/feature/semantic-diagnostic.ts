@@ -20,6 +20,10 @@ export function getSemanticDiagnostics(
     if (isCSSModuleScript(script)) {
       const virtualCode = script.generated.root;
       const cssModule = virtualCode[CMK_DATA_KEY].cssModule;
+
+      // Clear cache to update export records for all files
+      exportBuilder.clearCache();
+
       const diagnostics = checkCSSModule(cssModule, exportBuilder, matchesPattern, resolver, getCSSModule);
       const sourceFile = languageService.getProgram()!.getSourceFile(fileName)!;
       const tsDiagnostics = diagnostics.map((diagnostic) => convertDiagnostic(diagnostic, sourceFile));
