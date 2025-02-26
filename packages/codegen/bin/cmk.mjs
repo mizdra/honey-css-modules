@@ -1,17 +1,14 @@
 #!/usr/bin/env node
 
 import { SystemError } from '@css-modules-kit/core';
-import { createLogger, runCMK } from '../dist/index.js';
-
-// TODO: Support `--help` option
-// TODO: Support `--version` option
-// TODO: Support `--project` option
+import { createLogger, parseCLIArgs, runCMK } from '../dist/index.js';
 
 const cwd = process.cwd();
-const project = cwd;
 const logger = createLogger(cwd);
+const args = parseCLIArgs(process.argv.slice(2), cwd, logger);
+
 try {
-  await runCMK(project, logger);
+  await runCMK(args.project, logger);
 } catch (e) {
   if (e instanceof SystemError) {
     logger.logSystemError(e);

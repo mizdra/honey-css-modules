@@ -1,11 +1,12 @@
 import { access, chmod } from 'node:fs/promises';
 import { type Diagnostic } from '@css-modules-kit/core';
 import dedent from 'dedent';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { ReadCSSModuleFileError } from './error.js';
-import type { Logger } from './logger/logger.js';
 import { runCMK } from './runner.js';
 import { createIFF } from './test/fixture.js';
+import { createLoggerSpy } from './test/logger.js';
+import { mockProcessExit, ProcessExitError } from './test/process.js';
 
 function formatDiagnostic(diagnostic: Diagnostic, rootDir: string) {
   return {
@@ -18,24 +19,7 @@ function formatDiagnostics(diagnostics: Diagnostic[], rootDir: string) {
   return diagnostics.map((diagnostic) => formatDiagnostic(diagnostic, rootDir));
 }
 
-class ProcessExitError extends Error {
-  exitCode: string | number | null | undefined;
-  constructor(exitCode: string | number | null | undefined) {
-    super();
-    this.exitCode = exitCode;
-  }
-}
-
-vi.spyOn(process, 'exit').mockImplementation((code) => {
-  throw new ProcessExitError(code);
-});
-
-function createLoggerSpy() {
-  return {
-    logDiagnostics: vi.fn(),
-    logSystemError: vi.fn(),
-  } satisfies Logger;
-}
+mockProcessExit();
 
 describe('runCMK', () => {
   test('generates .d.ts files', async () => {

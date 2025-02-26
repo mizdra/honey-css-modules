@@ -13,9 +13,19 @@ npm i -D @css-modules-kit/codegen
 From the command line, run the `cmk` command.
 
 ```bash
-cmk
+$ # Generate .d.ts for .module.css
+$ npx cmk
+
+$ # Show help
+$ npx cmk --help
+Usage: cmk [options]
+
+Options:
+  --help, -h     Show help information
+  --version, -v  Show version number
+  --project, -p  The path to its configuration file, or to a folder with a 'tsconfig.json'.
 ```
 
-## Options
+## Configuration
 
-See [css-modules-kit's README](https://github.com/mizdra/css-modules-kit?tab=readme-ov-file#options).
+See [css-modules-kit's README](https://github.com/mizdra/css-modules-kit?tab=readme-ov-file#configuration).
