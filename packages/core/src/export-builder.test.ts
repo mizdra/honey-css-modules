@@ -163,4 +163,128 @@ describe('ExportBuilder', () => {
       }
     `);
   });
+
+  test('cache export record and return same result on subsequent builds', () => {
+    let getCSSModuleCalls = 0;
+    const exportBuilder = createExportBuilder({
+      getCSSModule: (path) => {
+        getCSSModuleCalls++;
+        if (path === resolve('/b.module.css')) {
+          return {
+            fileName: resolve('/b.module.css'),
+            localTokens: [createToken('b_1')],
+            tokenImporters: [],
+          };
+        }
+        return undefined;
+      },
+      matchesPattern: () => true,
+      resolver,
+    });
+    const cssModule: CSSModule = {
+      fileName: resolve('/a.module.css'),
+      localTokens: [createToken('a_1')],
+      tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+    };
+
+    // First build should call getCSSModule
+    const result1 = exportBuilder.build(cssModule);
+    expect(result1).toMatchInlineSnapshot(`
+      {
+        "allTokens": [
+          "a_1",
+          "b_1",
+        ],
+      }
+    `);
+    expect(getCSSModuleCalls).toBe(1);
+
+    // Second build should use cache and not call getCSSModule again
+    const result2 = exportBuilder.build(cssModule);
+    expect(result2).toMatchInlineSnapshot(`
+      {
+        "allTokens": [
+          "a_1",
+          "b_1",
+        ],
+      }
+    `);
+    expect(getCSSModuleCalls).toBe(1);
+  });
+
+  test('clear cache and rebuild export record', () => {
+    let getCSSModuleCalls = 0;
+    const exportBuilder = createExportBuilder({
+      getCSSModule: (path) => {
+        getCSSModuleCalls++;
+        if (path === resolve('/b.module.css')) {
+          return {
+            fileName: resolve('/b.module.css'),
+            localTokens: [createToken('b_1')],
+            tokenImporters: [],
+          };
+        }
+        return undefined;
+      },
+      matchesPattern: () => true,
+      resolver,
+    });
+    const cssModule: CSSModule = {
+      fileName: resolve('/a.module.css'),
+      localTokens: [createToken('a_1')],
+      tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+    };
+
+    // First build
+    exportBuilder.build(cssModule);
+    expect(getCSSModuleCalls).toBe(1);
+
+    // Clear cache
+    exportBuilder.clearCache();
+
+    // Second build should call getCSSModule again
+    exportBuilder.build(cssModule);
+    expect(getCSSModuleCalls).toBe(2);
+  });
+
+  test('maintain separate cache entries for different modules', () => {
+    let getCSSModuleCalls = 0;
+    const exportBuilder = createExportBuilder({
+      getCSSModule: (path) => {
+        getCSSModuleCalls++;
+        if (path === resolve('/b.module.css')) {
+          return {
+            fileName: resolve('/b.module.css'),
+            localTokens: [createToken('b_1')],
+            tokenImporters: [],
+          };
+        }
+        return undefined;
+      },
+      matchesPattern: () => true,
+      resolver,
+    });
+    const moduleA: CSSModule = {
+      fileName: resolve('/a.module.css'),
+      localTokens: [createToken('a_1')],
+      tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+    };
+    const moduleC: CSSModule = {
+      fileName: resolve('/c.module.css'),
+      localTokens: [createToken('c_1')],
+      tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+    };
+
+    // Build moduleA
+    exportBuilder.build(moduleA);
+    expect(getCSSModuleCalls).toBe(1);
+
+    // Build moduleC should call getCSSModule again
+    exportBuilder.build(moduleC);
+    expect(getCSSModuleCalls).toBe(2);
+
+    // Build moduleA again should use cache
+    exportBuilder.build(moduleA);
+    expect(getCSSModuleCalls).toBe(2);
+  });
 });

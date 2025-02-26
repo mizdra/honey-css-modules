@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { checkCSSModule } from './checker.js';
+import type { ExportBuilder } from './export-builder.js';
 import type { CSSModule } from './parser/css-module-parser.js';
 import { createResolver } from './resolver.js';
 import { createAtImportTokenImporter, createAtValueTokenImporter } from './test/token.js';
@@ -16,8 +17,9 @@ describe('checkCSSModule', () => {
         createAtValueTokenImporter('./c.module.css', ['c_1']),
       ],
     };
-    const exportBuilder = {
+    const exportBuilder: ExportBuilder = {
       build: () => ({ allTokens: [] }),
+      clearCache: () => {},
     };
     const matchesPattern = () => true;
     const getCSSModule = () => undefined;
@@ -61,8 +63,9 @@ describe('checkCSSModule', () => {
       localTokens: [],
       tokenImporters: [createAtValueTokenImporter('./b.module.css', ['b_1', 'b_2'])],
     };
-    const exportBuilder = {
+    const exportBuilder: ExportBuilder = {
       build: () => ({ allTokens: ['b_1'] }),
+      clearCache: () => {},
     };
     const matchesPattern = () => true;
     const getCSSModule = () => cssModule;
@@ -92,8 +95,9 @@ describe('checkCSSModule', () => {
       localTokens: [],
       tokenImporters: [createAtImportTokenImporter('./unresolvable.module.css')],
     };
-    const exportBuilder = {
+    const exportBuilder: ExportBuilder = {
       build: () => ({ allTokens: [] }),
+      clearCache: () => {},
     };
     const matchesPattern = () => true;
     const resolver = () => undefined;
@@ -110,8 +114,9 @@ describe('checkCSSModule', () => {
         createAtValueTokenImporter('./c.module.css', ['c_1']),
       ],
     };
-    const exportBuilder = {
+    const exportBuilder: ExportBuilder = {
       build: () => ({ allTokens: [] }),
+      clearCache: () => {},
     };
     const matchesPattern = () => false;
     const getCSSModule = () => undefined;
