@@ -4,6 +4,7 @@ import { formatDiagnostic, formatSystemError } from './formatter.js';
 export interface Logger {
   logDiagnostics(diagnostics: Diagnostic[]): void;
   logSystemError(error: SystemError): void;
+  logMessage(message: string): void;
 }
 
 export function createLogger(cwd: string): Logger {
@@ -17,6 +18,9 @@ export function createLogger(cwd: string): Logger {
     },
     logSystemError(error: SystemError): void {
       process.stderr.write(`${formatSystemError(error)}\n`);
+    },
+    logMessage(message: string): void {
+      process.stdout.write(`${message}\n`);
     },
   };
 }
