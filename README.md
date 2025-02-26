@@ -27,7 +27,7 @@ Additionally, css-modules-kit provides various development tools for CSS Modules
 - [`@css-modules-kit/stylelint-plugin`](packages/stylelint-plugin/README.md)
   - A stylelint plugin for CSS Modules
 
-## Options
+## Configuration
 
 css-modules-kit uses `tsconfig.json` as its configuration file.
 

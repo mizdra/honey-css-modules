@@ -90,6 +90,6 @@ Add the "plugin" option to your tsconfig.json file. For example:
 }
 ```
 
-## Options
+## Configuration
 
-See [css-modules-kit's README](https://github.com/mizdra/css-modules-kit?tab=readme-ov-file#options).
+See [css-modules-kit's README](https://github.com/mizdra/css-modules-kit?tab=readme-ov-file#configuration).
