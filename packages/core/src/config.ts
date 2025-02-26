@@ -202,7 +202,6 @@ function mergeParsedRawData(base: ParsedRawData, overrides: ParsedRawData): Pars
 /**
  * @throws {TsConfigFileNotFoundError}
  */
-// TODO: Allow `extends` options to inherit `cmkOptions`
 export function readTsConfigFile(project: string): {
   configFileName: string;
 } & ParsedRawData {
