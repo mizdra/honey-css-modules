@@ -29,9 +29,6 @@ test('generates .d.ts', async () => {
   });
   const cmk = spawnSync('node', [binPath], {
     cwd: iff.rootDir,
-    // MEMO: Suppress ExperimentalWarning output from `fs.promises.glob` and `path.matchesGlob`
-    // TODO: Remove `--no-warnings=ExperimentalWarning`
-    env: { ...process.env, NODE_OPTIONS: '--no-warnings=ExperimentalWarning' },
   });
   expect(cmk.error).toBeUndefined();
   expect(cmk.stderr.toString()).toBe('');
@@ -97,9 +94,6 @@ test('generates .d.ts with circular import', async () => {
   });
   const cmk = spawnSync('node', [binPath], {
     cwd: iff.rootDir,
-    // MEMO: Suppress ExperimentalWarning output from `fs.promises.glob` and `path.matchesGlob`
-    // TODO: Remove `--no-warnings=ExperimentalWarning`
-    env: { ...process.env, NODE_OPTIONS: '--no-warnings=ExperimentalWarning' },
   });
   expect(cmk.error).toBeUndefined();
   expect(cmk.stderr.toString()).toBe('');
