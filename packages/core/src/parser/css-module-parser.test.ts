@@ -2,7 +2,7 @@ import dedent from 'dedent';
 import { describe, expect, test } from 'vitest';
 import { parseCSSModule, type ParseCSSModuleOptions } from './css-module-parser.js';
 
-const options: ParseCSSModuleOptions = { fileName: '/test.module.css', dashedIdents: false, safe: false };
+const options: ParseCSSModuleOptions = { fileName: '/test.module.css', safe: false };
 
 describe('parseCSSModule', () => {
   test('collects local tokens', () => {
@@ -428,22 +428,7 @@ describe('parseCSSModule', () => {
   });
   // TODO: Support local tokens by CSS variables. This is supported by lightningcss.
   // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L34
-  test.fails('collects local tokens as CSS variables if dashedIdents is true', () => {
-    const text1 = ':root { --a: red; }';
-    const parsed1 = parseCSSModule(text1, { ...options, dashedIdents: false });
-    expect(parsed1.cssModule?.localTokens).toEqual([]);
 
-    const text2 = dedent`
-        :root { --a: red; }
-        .a {
-          color: var(--b);
-          background-color: var(--c from './a.module.css');
-          background-color: var(--d from global);
-        }
-      `;
-    const parsed2 = parseCSSModule(text2, { ...options, dashedIdents: true });
-    expect(parsed2.cssModule?.localTokens).toEqual(['--a', 'a', '--b']);
-  });
   // TODO: Support local tokens by animation names. This is supported by postcss-modules-local-by-default and lightningcss.
   // https://github.com/css-modules/postcss-modules-local-by-default/blob/39a2f78d9f39f5c0e30dd9b2a25f4a145431cb20/test/index.test.js#L162-L399
   // https://github.com/parcel-bundler/lightningcss/blob/a3390fd4140ca87f5035595d22bc9357cf72177e/src/css_modules.rs#L37
