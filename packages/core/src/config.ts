@@ -20,7 +20,6 @@ export interface CMKConfig {
   paths: Record<string, string[]>;
   dtsOutDir: string;
   arbitraryExtensions: boolean;
-  dashedIdents: boolean;
   /**
    * A root directory to resolve relative path entries in the config file to.
    * This is an absolute path.
@@ -203,7 +202,6 @@ function mergeParsedRawData(base: ParsedRawData, overrides: ParsedRawData): Pars
 /**
  * @throws {TsConfigFileNotFoundError}
  */
-// TODO: Allow `extends` options to inherit `cmkOptions`
 export function readTsConfigFile(project: string): {
   configFileName: string;
 } & ParsedRawData {
@@ -271,7 +269,7 @@ function resolvePaths(paths: Record<string, string[]> | undefined, cwd: string):
 export function normalizeConfig(
   config: UnnormalizedCMKConfig,
   basePath: string,
-): RemoveUndefined<UnnormalizedCMKConfig> & { dashedIdents: boolean } {
+): RemoveUndefined<UnnormalizedCMKConfig> {
   return {
     // If `include` is not specified, fallback to the default include spec.
     // ref: https://github.com/microsoft/TypeScript/blob/caf1aee269d1660b4d2a8b555c2d602c97cb28d7/src/compiler/commandLineParser.ts#L3102
@@ -280,6 +278,5 @@ export function normalizeConfig(
     paths: resolvePaths(config.paths, basePath),
     dtsOutDir: join(basePath, config.dtsOutDir ?? 'generated'),
     arbitraryExtensions: config.arbitraryExtensions ?? false,
-    dashedIdents: false, // TODO: Support dashedIdents
   };
 }

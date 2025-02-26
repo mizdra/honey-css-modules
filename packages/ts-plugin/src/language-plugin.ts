@@ -1,4 +1,4 @@
-import type { CMKConfig, CSSModule, MatchesPattern, Resolver, SyntacticDiagnostic } from '@css-modules-kit/core';
+import type { CSSModule, MatchesPattern, Resolver, SyntacticDiagnostic } from '@css-modules-kit/core';
 import { createDts, parseCSSModule } from '@css-modules-kit/core';
 import type { LanguagePlugin, SourceScript, VirtualCode } from '@volar/language-core';
 import type {} from '@volar/typescript';
@@ -22,7 +22,6 @@ export interface CSSModuleScript extends SourceScript<string> {
 }
 
 export function createCSSModuleLanguagePlugin(
-  config: CMKConfig,
   resolver: Resolver,
   matchesPattern: MatchesPattern,
 ): LanguagePlugin<string, VirtualCode> {
@@ -38,7 +37,6 @@ export function createCSSModuleLanguagePlugin(
       const cssModuleCode = snapshot.getText(0, length);
       const { cssModule, diagnostics } = parseCSSModule(cssModuleCode, {
         fileName: scriptId,
-        dashedIdents: config.dashedIdents,
         // The CSS in the process of being written in an editor often contains invalid syntax.
         // So, ts-plugin uses a fault-tolerant Parser to parse CSS.
         safe: true,

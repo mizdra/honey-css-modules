@@ -147,7 +147,6 @@ export interface CSSModule {
 
 export interface ParseCSSModuleOptions {
   fileName: string;
-  dashedIdents: boolean;
   safe: boolean;
 }
 

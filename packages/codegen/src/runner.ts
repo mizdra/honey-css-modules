@@ -25,14 +25,14 @@ import type { Logger } from './logger/logger.js';
 /**
  * @throws {ReadCSSModuleFileError} When failed to read CSS Module file.
  */
-async function parseCSSModuleByFileName(fileName: string, { dashedIdents }: CMKConfig): Promise<ParseCSSModuleResult> {
+async function parseCSSModuleByFileName(fileName: string): Promise<ParseCSSModuleResult> {
   let text: string;
   try {
     text = await readFile(fileName, 'utf-8');
   } catch (error) {
     throw new ReadCSSModuleFileError(fileName, error);
   }
-  return parseCSSModule(text, { fileName, dashedIdents, safe: false });
+  return parseCSSModule(text, { fileName, safe: false });
 }
 
 /**
@@ -84,7 +84,7 @@ export async function runCMK(project: string, logger: Logger): Promise<void> {
     ]);
     return;
   }
-  const parseResults = await Promise.all(fileNames.map(async (fileName) => parseCSSModuleByFileName(fileName, config)));
+  const parseResults = await Promise.all(fileNames.map(async (fileName) => parseCSSModuleByFileName(fileName)));
   for (const parseResult of parseResults) {
     cssModuleMap.set(parseResult.cssModule.fileName, parseResult.cssModule);
     syntacticDiagnostics.push(...parseResult.diagnostics);
