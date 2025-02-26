@@ -287,4 +287,43 @@ describe('ExportBuilder', () => {
     exportBuilder.build(moduleA);
     expect(getCSSModuleCalls).toBe(2);
   });
+
+  test('handle circular dependencies', () => {
+    const exportBuilder = createExportBuilder({
+      getCSSModule: (path) => {
+        if (path === resolve('/a.module.css')) {
+          return {
+            fileName: resolve('/a.module.css'),
+            localTokens: [createToken('a_1')],
+            tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+          };
+        } else if (path === resolve('/b.module.css')) {
+          return {
+            fileName: resolve('/b.module.css'),
+            localTokens: [createToken('b_1')],
+            tokenImporters: [createAtImportTokenImporter('./a.module.css')],
+          };
+        }
+        return undefined;
+      },
+      matchesPattern: () => true,
+      resolver,
+    });
+    const cssModule: CSSModule = {
+      fileName: resolve('/a.module.css'),
+      localTokens: [createToken('a_1')],
+      tokenImporters: [createAtImportTokenImporter('./b.module.css')],
+    };
+
+    // Should not cause infinite recursion
+    const result = exportBuilder.build(cssModule);
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "allTokens": [
+          "a_1",
+          "b_1",
+        ],
+      }
+    `);
+  });
 });

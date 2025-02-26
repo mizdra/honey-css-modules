@@ -24,7 +24,6 @@ export interface ExportBuilder {
 /**
  * A builder for exported token records of CSS modules.
  */
-// TODO: Add support for circular dependencies
 // TODO: Handle same token name from different modules
 export function createExportBuilder(host: ExportBuilderHost): ExportBuilder {
   const cache = new Map<string, ExportRecord>();
@@ -32,6 +31,11 @@ export function createExportBuilder(host: ExportBuilderHost): ExportBuilder {
   function build(cssModule: CSSModule): ExportRecord {
     const cached = cache.get(cssModule.fileName);
     if (cached) return cached;
+
+    // Set an empty record to prevent infinite loop
+    // when the module graph has circular dependencies.
+    cache.set(cssModule.fileName, { allTokens: [] });
+
     const result: ExportRecord = { allTokens: [...cssModule.localTokens.map((t) => t.name)] };
 
     for (const tokenImporter of cssModule.tokenImporters) {
