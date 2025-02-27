@@ -1,5 +1,11 @@
 # @css-modules-kit/core
 
+## 0.0.3
+
+### Patch Changes
+
+- 508b4b6: Retry publishing
+
 ## 0.0.2
 
 ### Patch Changes
