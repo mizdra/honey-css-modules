@@ -1,5 +1,13 @@
 # @css-modules-kit/codegen
 
+## 0.1.1
+
+### Patch Changes
+
+- 508b4b6: Retry publishing
+- Updated dependencies [508b4b6]
+  - @css-modules-kit/core@0.0.3
+
 ## 0.1.0
 
 ### Minor Changes
