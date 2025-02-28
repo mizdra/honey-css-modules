@@ -6,11 +6,9 @@ on:
       - main
 
 permissions:
-  id-token: write
-  contents: write
-  packages: write
-  pull-requests: write
-  issues: read
+  id-token: write # Required for provenance
+  contents: write # Required for changesets/action
+  pull-requests: write # Required for changesets/action
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
